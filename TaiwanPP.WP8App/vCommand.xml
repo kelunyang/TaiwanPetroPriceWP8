@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.0">
+  <CommandSet xml:lang="zh-hant">
+    <CommandPrefix>油價查詢</CommandPrefix>
+    <Example> 顯示本周油價、油價預測與附近的加油站，或直接導航到最近的加油站 </Example>
+
+    <Command Name="voiceCommand">
+      <Example> 顯示油價預測 </Example>
+      <ListenFor> [顯示] {commands} </ListenFor>
+      <Feedback> 執行 {commands} </Feedback>
+      <Navigate Target="MainPage.xaml" />
+    </Command>
+    
+    <Command Name="navigation">
+      <Example> 導航到最近的加油站 </Example>
+      <ListenFor> [導航] 到最近的加油站 </ListenFor>
+      <Feedback> 搜尋最近的加油站 </Feedback>
+      <Navigate Target="MainPage.xaml"/>
+    </Command>
+
+    <PhraseList Label="commands">
+      <Item>油價預測</Item>
+      <Item>本周油價</Item>
+      <Item>附近的加油站</Item>
+    </PhraseList>
+
+  </CommandSet>
+  <CommandSet xml:lang="zh-hans">
+      <CommandPrefix>油价查询</CommandPrefix>
+      <Example> 显示本周油价、油价预测与附近的加油站，或直接导航到最近的加油站 </Example>
+
+      <Command Name="voiceCommand">
+        <Example> 显示油价预测 </Example>
+        <ListenFor> [显示] {commands} </ListenFor>
+        <Feedback> 执行 {commands} </Feedback>
+        <Navigate Target="MainPage.xaml" />
+      </Command>
+    
+     <Command Name="navigation">
+      <Example> 导航到最近的加油站 </Example>
+      <ListenFor> [导航] 到最近的加油站 </ListenFor>
+      <Feedback> 搜索最近的加油站 </Feedback>
+      <Navigate Target="MainPage.xaml"/>
+    </Command>
+
+      <PhraseList Label="commands">
+        <Item>油价预测</Item>
+        <Item>本周油价</Item>
+        <Item>附近的加油站</Item>
+      </PhraseList>
+  </CommandSet>
+</VoiceCommands>
+
+<!-- 目標為 Windows Phone 8.1 的應用程式專用 -->
+<!--
+    1. 將版本變更為 1.1
+        <VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.1">
+
+    2. 加入 PhraseTopic 區段
+        <PhraseTopic Label="dateTopic" Scenario="Form Filling"> 
+            <Subject> Date/Time </Subject> 
+            <Subject> MyCustomSubject </Subject> 
+        </PhraseTopic>
+-->
+
+<!-- 範例-->
+<!--
+
+    前面的範例所示範的是一個稱為 'Contoso ROD3O!' 的假定遊戲，它定義了兩個
+    使用者可以說出的命令，可以開始一場新遊戲或重玩遊戲三個關卡中的其中一關。
+    若要啟始 PlayGame 命令，使用者可以說出「Contoso Rodeo 玩一場新遊戲」或「Contoso Rodeo
+    玩新遊戲」。兩者中的任意一個片語都會開始新遊戲。若要啟始第二個命令，使用者可以說出
+    「Contoso Rodeo 重玩第一關」、「Contoso Rodeo 重玩第二關」或「Contoso Rodeo 重玩
+    第三關」。
+    第二個命令示範的是如何在命令中使用 PhraseList。PhraseLists 可以由
+    應用程式動態更新 (例如，如果使用者解開了新關卡、遊戲或功能，您可能
+    會想讓使用者可以在語音命令已經註冊的情況下，仍然可以使用新功能的語音命令)。
+    第三個命令示範的是如何使用 {*} 序列定義另一個平行的命令，用以辨識
+    未在 CommandSet 中定義的語音。
+
+  注意:
+
+      [和] 表示「和」是選用的。使用這一類的選擇項來連結單字
+            可以讓「Contoso Rodeo，玩新遊戲」和「開啟 Contoso Rodeo 和玩一場新遊戲」感覺
+            可以更自然地說出。
+                 
+      {number} 在命令之外單獨定義，分別對應至「一」或「二」或「三」。
+
+-->

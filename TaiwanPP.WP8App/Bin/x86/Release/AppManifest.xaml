@@ -1,0 +1,31 @@
+﻿<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="TaiwanPP.WP8App" EntryPointType="TaiwanPP.WP8App.App" RuntimeVersion="4.7.50308.0">
+  <Deployment.Parts>
+    <AssemblyPart x:Name="TaiwanPP.WP8App" Source="TaiwanPP.WP8App.dll" />
+    <AssemblyPart x:Name="Autofac" Source="Autofac.dll" />
+    <AssemblyPart x:Name="Microsoft.Expression.Interactions" Source="Microsoft.Expression.Interactions.dll" />
+    <AssemblyPart x:Name="Microsoft.Phone.Controls.Toolkit" Source="Microsoft.Phone.Controls.Toolkit.dll" />
+    <AssemblyPart x:Name="Nito.AsyncEx" Source="Nito.AsyncEx.dll" />
+    <AssemblyPart x:Name="Nito.AsyncEx.Enlightenment" Source="Nito.AsyncEx.Enlightenment.dll" />
+    <AssemblyPart x:Name="OxyPlot" Source="OxyPlot.dll" />
+    <AssemblyPart x:Name="OxyPlot.WP8" Source="OxyPlot.WP8.dll" />
+    <AssemblyPart x:Name="SQLite.Net.Async" Source="SQLite.Net.Async.dll" />
+    <AssemblyPart x:Name="SQLite.Net" Source="SQLite.Net.dll" />
+    <AssemblyPart x:Name="SQLite.Net.Platform.WindowsPhone8" Source="SQLite.Net.Platform.WindowsPhone8.dll" />
+    <AssemblyPart x:Name="System.Net.Http" Source="System.Net.Http.dll" />
+    <AssemblyPart x:Name="System.Net.Http.Extensions" Source="System.Net.Http.Extensions.dll" />
+    <AssemblyPart x:Name="System.Net.Http.Primitives" Source="System.Net.Http.Primitives.dll" />
+    <AssemblyPart x:Name="System.Windows.Interactivity" Source="System.Windows.Interactivity.dll" />
+    <AssemblyPart x:Name="TaiwanPP.Library" Source="TaiwanPP.Library.dll" />
+    <AssemblyPart x:Name="TaiwanPP.schedulerAgent" Source="TaiwanPP.schedulerAgent.dll" />
+    <AssemblyPart x:Name="TaiwanPP.Tile" Source="TaiwanPP.Tile.dll" />
+    <AssemblyPart x:Name="HtmlAgilityPack-PCL" Source="HtmlAgilityPack-PCL.dll" />
+    <AssemblyPart x:Name="Newtonsoft.Json" Source="Newtonsoft.Json.dll" />
+    <AssemblyPart x:Name="Portable.Text.Encoding" Source="Portable.Text.Encoding.dll" />
+    <AssemblyPart x:Name="ImageTools.Utils" Source="ImageTools.Utils.dll" />
+    <AssemblyPart x:Name="ImageTools" Source="ImageTools.dll" />
+    <AssemblyPart x:Name="ImageTools.IO.Png" Source="ImageTools.IO.Png.dll" />
+    <AssemblyPart x:Name="PhoneCodeContractsAssemblies" Source="PhoneCodeContractsAssemblies.dll" />
+    <AssemblyPart x:Name="ICSharpCode.SharpZLib.Phone" Source="ICSharpCode.SharpZLib.Phone.dll" />
+    <AssemblyPart x:Name="Sqlite" Source="Sqlite.dll" />
+  </Deployment.Parts>
+</Deployment>

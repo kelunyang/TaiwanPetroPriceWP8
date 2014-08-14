@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="c:\program files (x86)\microsoft visual studio 12.0\team tools\static analysis tools\fxcop\Xml\CodeAnalysisReport.xsl"?>
+<FxCopReport Version="12.0">
+ <Targets>
+  <Target Name="C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Debug\TaiwanPP.Library.dll">
+   <Modules>
+    <Module Name="taiwanpp.library.dll">
+     <Namespaces>
+      <Namespace Name="TaiwanPP.Library.ViewModels">
+       <Types>
+        <Type Name="dcViewModel" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Messages>
+          <Message TypeName="TypesThatOwnDisposableFieldsShouldBeDisposable" Category="Microsoft.Design" CheckId="CA1001" Status="Active" Created="2014-08-14 02:34:24Z" FixCategory="DependsOnFix">
+           <Issue Name="DependsOnFix" Certainty="95" Level="CriticalError">在 'dcViewModel' 上實作 IDisposable，因為它會建立下列 IDisposable 類型的成員:  'HttpClient'。如果先前已發佈 'dcViewModel'，則把實作 IDisposable 的成員加入這個類型會被視為現有消費者的中斷變更。</Issue>
+          </Message>
+         </Messages>
+        </Type>
+        <Type Name="stationViewModel" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Messages>
+          <Message TypeName="TypesThatOwnDisposableFieldsShouldBeDisposable" Category="Microsoft.Design" CheckId="CA1001" Status="Active" Created="2014-08-14 02:34:24Z" FixCategory="DependsOnFix">
+           <Issue Name="DependsOnFix" Certainty="95" Level="CriticalError">在 'stationViewModel' 上實作 IDisposable，因為它會建立下列 IDisposable 類型的成員:  'CancellationTokenSource'。如果先前已發佈 'stationViewModel'，則把實作 IDisposable 的成員加入這個類型會被視為現有消費者的中斷變更。</Issue>
+          </Message>
+         </Messages>
+        </Type>
+       </Types>
+      </Namespace>
+     </Namespaces>
+    </Module>
+   </Modules>
+  </Target>
+ </Targets>
+ <Rules>
+  <Rule TypeName="TypesThatOwnDisposableFieldsShouldBeDisposable" Category="Microsoft.Design" CheckId="CA1001">
+   <Name>具有 Dispose 方法的類型應該明確釋放資源</Name>
+   <Description>宣告可處置成員的類型也應該實作 IDisposable。如果類型並未擁有任何 Unmanaged 資源，則切勿在此類型上實作完成項。</Description>
+   <Resolution Name="DependsOnFix">在 {0} 上實作 IDisposable，因為它會建立下列 IDisposable 類型的成員:  {1}。如果先前已發佈 {0}，則把實作 IDisposable 的成員加入這個類型會被視為現有消費者的中斷變更。</Resolution>
+   <Owner />
+   <Url>http://msdn.microsoft.com/library/ms182172.aspx</Url>
+   <Email>[none]</Email>
+   <MessageLevel Certainty="95">CriticalError</MessageLevel>
+   <File Name="designrules.dll" Version="12.0.0.0" />
+  </Rule>
+ </Rules>
+ <Localized>
+  <String Key="Category">分類</String>
+  <String Key="Certainty">確實性</String>
+  <String Key="CollapseAll">全部摺疊</String>
+  <String Key="CheckId">檢查 ID</String>
+  <String Key="Error">錯誤</String>
+  <String Key="Errors">錯誤</String>
+  <String Key="ExpandAll">全部展開</String>
+  <String Key="Help">說明</String>
+  <String Key="Line">行</String>
+  <String Key="Messages">訊息</String>
+  <String Key="LocationNotStoredInPdb">[位置未儲存在 PDB]</String>
+  <String Key="Project">專案</String>
+  <String Key="Resolution">解析度</String>
+  <String Key="Rule">規則</String>
+  <String Key="RuleFile">規則檔</String>
+  <String Key="RuleDescription">規則描述</String>
+  <String Key="Source">來源</String>
+  <String Key="Status">狀態</String>
+  <String Key="Target">目標</String>
+  <String Key="Warning">警告</String>
+  <String Key="Warnings">警告</String>
+  <String Key="ReportTitle">程式碼分析報告</String>
+ </Localized>
+</FxCopReport>

@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE appconfig [
+  <!ELEMENT appconfig (info ,predictPrice ,settings, tiles)>
+  <!ELEMENT info (updateDate ,notified ,dailynotify)>
+  <!ELEMENT predictPrice (duration ,price)>
+  <!ELEMENT settings (timing ,defaultProduct ,stationFilters)>
+  <!ELEMENT tiles (tile*)>
+  <!ELEMENT tile (#PCDATA)> <!-- 動態磚 -->
+  <!ELEMENT updateDate EMPTY>
+  <!ELEMENT priceChange EMPTY>
+  <!ELEMENT duration EMPTY>
+  <!ELEMENT timing EMPTY>
+  <!ELEMENT dailynotify (#PCDATA)><!-- 每日預測提醒 -->
+  <!ELEMENT stationFilters (FPCC ,CPC ,Self ,Direct ,Favorite ,Kilometer)>
+  <!ELEMENT defaultProduct EMPTY>
+  <!ELEMENT price (#PCDATA)> <!-- 預測價格 -->
+  <!ELEMENT FPCC EMPTY><!-- 僅顯示台塑加油站 -->
+  <!ELEMENT Self EMPTY><!-- 僅顯示自助加油 -->
+  <!ELEMENT CPC EMPTY><!-- 僅顯示中油加油站 -->
+  <!ELEMENT Direct EMPTY><!-- 僅顯示直營站 -->
+  <!ELEMENT Favorite EMPTY><!-- 僅顯示存檔的加油站 -->
+  <!ELEMENT Kilometer (#PCDATA)><!-- 搜尋範圍 -->
+  <!ELEMENT notified EMPTY><!-- 背景程式提醒 -->
+  <!ATTLIST FPCC filter (0 | 1) #REQUIRED>
+  <!ATTLIST CPC filter (0|1) #REQUIRED>
+  <!ATTLIST Self filter (0 | 1) #REQUIRED>
+  <!ATTLIST Direct filter (0 | 1) #REQUIRED>
+  <!ATTLIST Favorite filter (0 | 1) #REQUIRED>
+  <!ATTLIST appconfig firstload (0 | 1) #REQUIRED> <!-- 初始化模式 -->
+  <!ATTLIST updateDate stationDB  CDATA #REQUIRED> <!-- 加油站資料庫更新時間 -->
+  <!ATTLIST updateDate priceDB CDATA #REQUIRED> <!-- 價格資料庫更新時間 -->
+  <!ATTLIST notified CPC (0|1) #REQUIRED> <!-- 背景程式已通知中油更新日期 -->
+  <!ATTLIST notified FPCC (0|1) #REQUIRED> <!-- 背景程式已通知台塑更新日期 -->
+  <!ATTLIST duration start CDATA #REQUIRED> <!-- 預測周期開始日 -->
+  <!ATTLIST duration end CDATA #REQUIRED> <!-- 預測周期結束日 -->
+  <!ATTLIST duration runday CDATA #REQUIRED> <!-- 預測日 -->
+  <!ATTLIST timing dailynotifytime CDATA #REQUIRED><!-- 每日提醒時刻 -->
+  <!ATTLIST timing updateFreq (0 | 1) #REQUIRED> <!-- 更新時機，每次/周末 -->
+  <!ATTLIST timing saveTime (0 | 1) #REQUIRED> <!-- 儲存價格時機，自動/手動 -->
+  <!ATTLIST defaultProduct CPC (0 | 1 | 2 | 3 | 4) #REQUIRED> <!-- 中油顯示區預設商品 -->
+  <!ATTLIST defaultProduct FPCC (5 | 6 | 7 | 8) #REQUIRED> <!-- 台塑顯示區預設商品 -->
+  <!ATTLIST tiles default CDATA #REQUIRED> <!-- 預設動態磚 -->
+]>
+<appconfig firstload="1">
+  <info>
+    <updateDate priceDB="0" stationDB="635398265841263926"/>
+    <notified CPC="0" FPCC="0"/>
+    <dailynotify>0</dailynotify>
+  </info>
+  <predictPrice>
+    <duration end="0" start="0" runday="0"/>
+    <price>0</price>
+  </predictPrice>
+  <settings>
+    <timing saveTime="0" updateFreq="0" dailynotifytime="0"/>
+    <defaultProduct CPC="0" FPCC="5"/>
+    <stationFilters>
+      <FPCC filter="0"/>
+      <CPC filter="0"/>
+      <Self filter="0"/>
+      <Direct filter="0"/>
+      <Favorite filter="0"/>
+      <Kilometer>3</Kilometer>
+    </stationFilters>
+  </settings>
+  <tiles default="0"></tiles>
+</appconfig>

@@ -1,0 +1,115 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="TaiwanPP.WP8App.about"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:toolkitPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:libViewModels="clr-namespace:TaiwanPP.Library.ViewModels;assembly=TaiwanPP.Library"
+    xmlns:Helpers="clr-namespace:TaiwanPP.WP8App.Helpers"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True" Foreground="Black"
+    shell:SystemTray.Opacity="0"
+    shell:SystemTray.BackgroundColor="Transparent">
+    <phone:PhoneApplicationPage.Resources>
+        <Helpers:connectivitystringConverter x:Key="connectivitystringConverter"/>
+        <Helpers:dateConverter x:Key="dateConverter"/>
+    </phone:PhoneApplicationPage.Resources>
+
+    <!--LayoutRoot 是放置所有頁面的根資料格-->
+    <Grid x:Name="LayoutRoot" Background="#FFF7F7F7" Margin="0,32,0,0" Loaded="LayoutRoot_Loaded" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel 包含應用程式的名稱和頁面標題-->
+        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock Text="關於" Style="{StaticResource PhoneTextNormalStyle}" Foreground="Black" FontSize="45"/>
+        </StackPanel>
+
+        <!--ContentPanel - 其他內容置於此-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,-30,12,0">
+            <StackPanel>
+                <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
+                    <TextBlock Text="資料庫更新日期" FontSize="26"/>
+                </Border>
+                <StackPanel x:Name="station" Orientation="Horizontal">
+                    <StackPanel.DataContext>
+                        <libViewModels:stationViewModel/>
+                    </StackPanel.DataContext>
+                    <TextBlock Text="加油站資料庫："/>
+                    <TextBlock Text="{Binding DataContext.stationDBdate, Converter={StaticResource dateConverter}, ElementName=station, StringFormat=\{0:g\}}"/>
+                </StackPanel>
+                <StackPanel x:Name="pricedb" Orientation="Horizontal">
+                    <StackPanel.DataContext>
+                        <libViewModels:cpViewModel/>
+                    </StackPanel.DataContext>
+                    <TextBlock Text="油價資料庫："/>
+                    <TextBlock Text="{Binding DataContext.priceDBdate, Converter={StaticResource dateConverter}, ElementName=pricedb, StringFormat=\{0:g\}}"/>
+                </StackPanel>
+                <StackPanel x:Name="moeaboedb" Orientation="Horizontal">
+                    <TextBlock Text="能源局油價資料庫："/>
+                    <TextBlock Text="{Binding DataContext.moeaboeDBdate, Converter={StaticResource dateConverter}, ElementName=pricedb, StringFormat=\{0:g\}}"/>
+                </StackPanel>
+                <StackPanel x:Name="info" Orientation="Horizontal">
+                    <StackPanel.DataContext>
+                        <libViewModels:infoViewModel/>
+                    </StackPanel.DataContext>
+                    <TextBlock Text="設定檔版本："/>
+                    <TextBlock Text="{Binding DataContext.version, Converter={StaticResource dateConverter}, ElementName=info, StringFormat=\{0:g\}}"/>
+                </StackPanel>
+                <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
+                    <TextBlock Text="建議&amp;回饋" FontSize="26"/>
+                </Border>
+                <Button Content="請按此進入功能調查"  BorderBrush="Black" Foreground="Black" Click="survey_Click"/>
+                <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
+                    <TextBlock Text="程式資訊" FontSize="26"/>
+                </Border>
+                <Grid Height="225">
+                    <Canvas x:Name="by_sa" Margin="110,154,159,68">
+                        <Path Data="F1M2.86,0L116.214,0.202C117.798,0.202,119.214,-0.034,119.214,3.362L119.075,40.691 0,40.691 0,3.223C0,1.549,0.162,0,2.86,0" Fill="#FFAAB2AB" Height="60.946" Canvas.Left="0.77" Canvas.Top="-16.155" Width="179.293" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M27.27,13.642C27.274,21.171 21.174,27.278 13.644,27.283 6.114,27.288 0.005,21.187 0.001,13.658L0.001,13.642C-0.003,6.112 6.098,0.005 13.626,0 21.158,-0.004 27.266,6.096 27.27,13.625z" Fill="White" Height="41.104" Canvas.Left="10.837" Canvas.Top="-8.116" Width="41.103" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M22.367,14.119C21.976,13.267 21.403,12.842 20.647,12.842 19.241,12.842 18.537,13.769 18.537,15.625 18.537,17.481 19.241,18.409 20.647,18.409 21.559,18.409 22.198,17.956 22.562,17.051L24.515,18.068C23.606,19.686 22.242,20.496 20.423,20.496 19.02,20.496 17.896,20.065 17.052,19.204 16.208,18.343 15.785,17.155 15.785,15.641 15.785,14.153 16.215,12.972 17.072,12.097 17.929,11.223 19.02,10.785 20.346,10.785 22.268,10.785 23.645,11.544 24.476,13.06z M13.377,14.119C12.986,13.267 12.401,12.842 11.621,12.842 10.243,12.842 9.554,13.769 9.554,15.625 9.554,17.481 10.243,18.409 11.621,18.409 12.532,18.409 13.182,17.956 13.572,17.051L15.483,18.068C14.573,19.686 13.206,20.496 11.384,20.496 9.979,20.496 8.853,20.065 8.008,19.204 7.161,18.343 6.739,17.155 6.739,15.641 6.739,14.153 7.174,12.972 8.046,12.097 8.918,11.223 10.004,10.785 11.306,10.785 13.232,10.785 14.611,11.544 15.445,13.06z M6.65,6.57C4.094,9.151 2.816,12.176 2.816,15.645 2.816,19.112 4.081,22.111 6.611,24.64 9.14,27.17 12.153,28.434 15.647,28.434 19.142,28.434 22.18,27.157 24.762,24.602 27.213,22.229 28.439,19.244 28.439,15.645 28.439,12.073 27.193,9.041 24.702,6.55 22.212,4.06 19.194,2.815 15.647,2.815 12.1,2.815 9.101,4.067 6.65,6.57 M26.704,4.536C29.728,7.559 31.24,11.262 31.24,15.641 31.24,20.02 29.754,23.682 26.783,26.628 23.629,29.731 19.902,31.282 15.601,31.282 11.352,31.282 7.69,29.744 4.614,26.667 1.538,23.592 0,19.917 0,15.641 0,11.366 1.538,7.664 4.614,4.536 7.612,1.512 11.274,0 15.601,0 19.98,0 23.681,1.512 26.704,4.536" Fill="Black" Height="46.772" Canvas.Left="7.993" Canvas.Top="-10.92" Width="46.772" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M2.247,1.015L117.754,1.015C118.433,1.015,118.985,1.568,118.985,2.247L118.985,29.492 36.428,29.492C33.402,34.963 27.573,38.677 20.882,38.677 14.188,38.677 8.36,34.966 5.336,29.492L1.015,29.492 1.015,2.247C1.015,1.568,1.568,1.015,2.247,1.015 M117.754,0L2.247,0C1.008,0,0,1.008,0,2.247L0,41.492C0,41.772,0.227,42,0.507,42L119.493,42C119.773,42,120,41.772,120,41.492L120,2.247C120,1.008,118.993,0,117.754,0" Fill="Black" Height="63.072" Canvas.Left="0.143" Canvas.Top="-17.026" Width="180.002" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M1.534,5.148C1.614,5.302 1.721,5.427 1.853,5.524 1.987,5.62 2.141,5.691 2.32,5.737 2.5,5.783 2.685,5.806 2.876,5.806 3.006,5.806 3.144,5.796 3.293,5.775 3.44,5.753 3.579,5.71 3.709,5.649 3.839,5.587 3.946,5.502 4.032,5.394 4.12,5.286 4.163,5.148 4.163,4.981 4.163,4.802 4.104,4.657 3.991,4.545 3.877,4.433 3.726,4.341 3.542,4.267 3.356,4.193 3.146,4.128 2.913,4.072 2.678,4.016 2.44,3.955 2.199,3.886 1.952,3.825 1.711,3.75 1.475,3.66 1.242,3.57 1.032,3.454 0.847,3.312 0.661,3.169 0.512,2.992 0.397,2.779 0.283,2.564 0.225,2.306 0.225,2.003 0.225,1.664 0.299,1.369 0.443,1.118 0.589,0.868 0.779,0.659 1.014,0.492 1.248,0.325 1.514,0.201 1.811,0.121 2.106,0.041 2.403,0 2.7,0 3.046,0 3.378,0.039 3.696,0.117 4.014,0.193 4.298,0.32 4.544,0.492 4.792,0.666 4.987,0.886 5.133,1.156 5.277,1.425 5.35,1.752 5.35,2.135L3.937,2.135C3.925,1.937 3.883,1.773 3.813,1.644 3.742,1.513 3.647,1.412 3.532,1.337 3.414,1.263 3.28,1.21 3.13,1.18 2.978,1.149 2.814,1.133 2.636,1.133 2.519,1.133 2.401,1.146 2.286,1.17 2.168,1.195 2.062,1.239 1.968,1.3 1.871,1.363 1.792,1.439 1.731,1.533 1.671,1.626 1.639,1.743 1.639,1.884 1.639,2.015 1.663,2.121 1.713,2.201 1.763,2.281 1.86,2.355 2.005,2.423 2.149,2.491 2.35,2.559 2.606,2.627 2.862,2.695 3.198,2.783 3.612,2.886 3.735,2.912 3.906,2.957 4.126,3.021 4.345,3.087 4.562,3.19 4.778,3.332 4.995,3.475 5.181,3.666 5.34,3.903 5.497,4.141 5.575,4.446 5.575,4.817 5.575,5.121 5.516,5.402 5.399,5.662 5.281,5.921 5.106,6.146 4.875,6.334 4.643,6.523 4.355,6.669 4.013,6.775 3.669,6.88 3.271,6.932 2.821,6.932 2.456,6.932 2.102,6.887 1.759,6.797 1.416,6.708 1.112,6.566 0.848,6.375 0.587,6.182 0.378,5.937 0.223,5.64 0.069,5.343 -0.005,4.991 0.001,4.582L1.414,4.582C1.414,4.804,1.454,4.994,1.534,5.148" Fill="White" Height="10.629" Canvas.Left="127.188" Canvas.Top="31.906" Width="8.502" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M4.082,4.06L3.248,1.631 3.228,1.631 2.365,4.06z M3.998,0L6.477,6.622 4.963,6.622 4.463,5.147 1.984,5.147 1.466,6.622 0,6.622 2.505,0z" Fill="White" Height="9.922" Canvas.Left="135.807" Canvas.Top="32.174" Width="9.922" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M3.02,5.488C3.164,5.488 3.3,5.474 3.43,5.446 3.56,5.418 3.674,5.372 3.774,5.307 3.874,5.242 3.952,5.154 4.011,5.043 4.07,4.931 4.098,4.789 4.098,4.616 4.098,4.277 4.003,4.034 3.81,3.888 3.618,3.744 3.364,3.672 3.048,3.672L1.458,3.672 1.458,5.488z M2.936,2.677C3.196,2.677 3.408,2.616 3.576,2.492 3.744,2.369 3.828,2.169 3.828,1.891 3.828,1.737 3.798,1.611 3.744,1.511 3.688,1.413 3.614,1.336 3.52,1.281 3.427,1.225 3.32,1.186 3.2,1.165 3.08,1.143 2.954,1.133 2.824,1.133L1.458,1.133 1.458,2.677z M3.122,0C3.438,0 3.724,0.027 3.986,0.083 4.246,0.138 4.468,0.23 4.654,0.356 4.84,0.482 4.984,0.651 5.086,0.861 5.188,1.072 5.24,1.331 5.24,1.64 5.24,1.974 5.164,2.252 5.012,2.474 4.862,2.697 4.636,2.879 4.338,3.021 4.748,3.138 5.054,3.343 5.256,3.638 5.458,3.931 5.558,4.287 5.558,4.701 5.558,5.035 5.494,5.324 5.364,5.568 5.234,5.812 5.058,6.011 4.838,6.166 4.618,6.321 4.368,6.435 4.085,6.509 3.802,6.584 3.514,6.621 3.216,6.621L-0.001,6.621 -0.001,0z" Fill="White" Height="9.921" Canvas.Left="85.356" Canvas.Top="32.173" Width="8.505" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M0,0L1.634,0 3.185,2.615 4.726,0 6.349,0 3.892,4.08 3.892,6.621 2.431,6.621 2.431,4.043z" Fill="White" Height="9.921" Canvas.Left="94.399" Canvas.Top="32.173" Width="9.213" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M21.171,10.592C21.174,16.437 16.44,21.179 10.594,21.183 4.748,21.187 0.006,16.453 0,10.607L0,10.592C-0.004,4.746 4.733,0.005 10.578,0 16.424,-0.004 21.167,4.731 21.171,10.576z" Fill="White" Height="31.89" Canvas.Left="121.933" Canvas.Top="-10.435" Width="31.891" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M11.61,2.087C14.242,2.087 16.478,3.014 18.316,4.869 20.174,6.705 21.102,8.947 21.102,11.595 21.102,14.261 20.194,16.474 18.374,18.233 16.458,20.127 14.204,21.073 11.61,21.073 9.017,21.073 6.782,20.135 4.906,18.262 3.029,16.387 2.09,14.165 2.09,11.595 2.09,9.024 3.038,6.782 4.934,4.869 6.754,3.014 8.978,2.087 11.61,2.087 M11.582,0C8.368,0 5.651,1.121 3.424,3.362 1.142,5.681 0.001,8.425 0.001,11.595 0.001,14.764 1.142,17.489 3.424,19.769 5.708,22.049 8.426,23.19 11.582,23.19 14.774,23.19 17.542,22.04 19.884,19.74 22.09,17.557 23.192,14.841 23.192,11.595 23.192,8.349 22.07,5.604 19.824,3.362 17.58,1.121 14.832,0 11.582,0" Fill="Black" Height="34.725" Canvas.Left="120.425" Canvas.Top="-11.844" Width="34.725" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M0.915,4.477C1.377,1.56 3.432,0 6.006,0 9.707,0 11.962,2.686 11.962,6.268 11.962,9.763 9.562,12.478 5.946,12.478 3.458,12.478 1.232,10.947 0.828,7.944L3.749,7.944C3.836,9.503 4.848,10.052 6.294,10.052 7.942,10.052 9.014,8.521 9.014,6.181 9.014,3.727 8.088,2.427 6.352,2.427 5.08,2.427 3.98,2.889 3.749,4.477L4.6,4.473 2.298,6.771 -0.001,4.473z" Fill="Black" Height="18.425" Canvas.Left="128.865" Canvas.Top="-3.408" Width="17.716" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M10.739,0C16.671,0 21.478,4.808 21.478,10.738 21.478,16.668 16.671,21.476 10.739,21.476 4.808,21.476 0,16.668 0,10.738 0,4.808 4.808,0 10.739,0" Fill="White" Height="32.599" Canvas.Left="78.966" Canvas.Top="-10.3" Width="32.599" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M6.241,0.749C6.241,0.335,5.905,0,5.492,0L0.749,0C0.336,0,0,0.335,0,0.749L0,5.492 1.322,5.492 1.322,11.108 4.918,11.108 4.918,5.492 6.241,5.492z" Fill="Black" Height="17.008" Canvas.Left="90.545" Canvas.Top="0.034" Width="9.213" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M1.623,0C2.519,0 3.244,0.727 3.244,1.622 3.244,2.518 2.519,3.244 1.623,3.244 0.727,3.244 0,2.518 0,1.622 0,0.727 0.727,0 1.623,0" Fill="Black" Height="4.96" Canvas.Left="92.639" Canvas.Top="-5.775" Width="4.961" Stretch="Fill" UseLayoutRounding="False"/>
+                        <Path Data="F1M11.61,2.086C14.242,2.086 16.477,3.014 18.315,4.869 20.173,6.704 21.102,8.946 21.102,11.594 21.102,14.26 20.193,16.474 18.374,18.232 16.458,20.125 14.204,21.072 11.61,21.072 9.016,21.072 6.782,20.135 4.905,18.261 3.027,16.386 2.089,14.164 2.089,11.594 2.089,9.023 3.038,6.782 4.934,4.869 6.753,3.014 8.979,2.086 11.61,2.086 M11.581,0C8.369,0 5.65,1.12 3.424,3.362 1.141,5.68 0,8.425 0,11.594 0,14.762 1.141,17.488 3.424,19.769 5.708,22.049 8.427,23.189 11.581,23.189 14.774,23.189 17.542,22.039 19.882,19.738 22.089,17.556 23.192,14.84 23.192,11.594 23.192,8.347 22.07,5.603 19.825,3.362 17.581,1.12 14.833,0 11.581,0" Fill="Black" Height="34.725" Canvas.Left="77.76" Canvas.Top="-11.844" Width="34.726" Stretch="Fill" UseLayoutRounding="False"/>
+                    </Canvas>
+                    <TextBlock HorizontalAlignment="Left" Margin="4,2,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="173" Width="404">
+								<Run Text="程式開發者：Kelunyang"/>
+								<LineBreak/>
+								<Run Text="Email："/>
+								<LineBreak/>
+								<Run Text="資料來源：data.gov.tw與能源局網站"/>
+								<LineBreak/>
+								<Run Text="一切授權請參照CC-BY-SA"/>
+								<LineBreak/>
+								<Run Text="程式原始碼：https://topmwp.codeplex.com/"/>
+                    </TextBlock>
+                    <TextBlock Text="kelunyang@outlook.com" Margin="73,26,112,165" TextDecorations="Underline" Tap="Email_Click" />
+                </Grid>
+            </StackPanel>
+        </Grid>
+        <Grid HorizontalAlignment="Left" Height="32" Margin="0,-32,0,0" VerticalAlignment="Top" Width="480" Background="{StaticResource PhoneAccentBrush}">
+            <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+            <TextBlock x:Name="title" HorizontalAlignment="Left" TextWrapping="Wrap" Text="台灣油價查詢" VerticalAlignment="Top" Width="132" Foreground="White"/>
+            <TextBlock Foreground="White" Text="{Binding DataContext.connectivity, Converter={StaticResource connectivitystringConverter}, ElementName=info}"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+
+</phone:PhoneApplicationPage>
