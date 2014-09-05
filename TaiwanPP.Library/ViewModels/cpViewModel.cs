@@ -43,7 +43,7 @@ namespace TaiwanPP.Library.ViewModels
             save = new List<priceStorage>();
             tiles = new List<int>();
             priceDB = new List<priceStorage>();
-            //historicalModel = new PlotModel();
+            historicalModel = new PlotModel();
         }
         public DateTime CPCsavedDate
         {
@@ -194,7 +194,7 @@ namespace TaiwanPP.Library.ViewModels
         double _minprice = double.NaN;
         double _avgprice = double.NaN;
         double _predictprice = double.NaN;
-        //PlotModel _historicalmodel;
+        PlotModel _historicalmodel;
         public double maxPrice
         {
             get { return _maxprice; }
@@ -274,7 +274,7 @@ namespace TaiwanPP.Library.ViewModels
             }
             get { return _savedcount; }
         }
-        /* public PlotModel historicalModel
+        public PlotModel historicalModel
         {
             get { return _historicalmodel; }
             set
@@ -282,7 +282,7 @@ namespace TaiwanPP.Library.ViewModels
                 _historicalmodel = value;
                 NotifyPropertyChanged();
             }
-        } */
+        }
         public async Task monitorProduct(priceStorage storage, IProgress<ProgressReport> messenger, bool temp)
         {
             messenger.Report(new ProgressReport() { progress = 0, progressMessage = "將油品加入觀測清單中", display = true });
@@ -359,10 +359,11 @@ namespace TaiwanPP.Library.ViewModels
                     FPCCsavedDate = new DateTime(fpccsaved[0].datetick);
                 }
                 messenger.Report(new ProgressReport() { progress = 90, progressMessage = "擷取目前油價", display = true });
+                List<int> cpcproductlist = soapUpdate ? new List<int>() { 0, 1, 2, 3, 4 } : new List<int>() { 1, 2, 3, 4 };
                 IEnumerable<priceStorage> cpc = (from oil in priceDB
                                                  orderby oil.datetick descending
-                                                 where oil.brand == 0
-                                                 select oil).Distinct().Take(5);
+                                                 where cpcproductlist.Contains(oil.kind)
+                                                 select oil).Distinct().Take(cpcproductlist.Count());
                 IEnumerable<priceStorage> fpcc = (from oil in priceDB
                                                   orderby oil.datetick descending
                                                   where oil.brand == 1
@@ -404,32 +405,48 @@ namespace TaiwanPP.Library.ViewModels
             IEnumerable<priceStorage> tempsaved = from p in priceDB where p.kind == id && p.saved select p;
             historicalSaved = tempsaved.Any() ? tempsaved.First() : new priceStorage() { datetick = 0, price = double.NaN };
             savedchange = tempsaved.Any()  ? historicalCurrent.price - historicalSaved.price : double.NaN;
-            IEnumerable<priceStorage> historical = (from oil in priceDB where oil.kind == id orderby oil.datetick descending select oil).Distinct();
+            IEnumerable<priceStorage> historical = (from oil in priceDB where oil.kind == id orderby oil.datetick descending select oil).Distinct().Reverse();
             messenger.Report(new ProgressReport() { progress = 30, progressMessage = "計算平均價格", display = true });
             maxPrice = historical.Max(x => x.price);
             minPrice = historical.Min(x => x.price);
+            double maxDate = DateTimeAxis.ToDouble(new DateTime(historical.Max(x => x.datetick)).AddDays(7));
+            double minDate = DateTimeAxis.ToDouble(new DateTime(historical.Min(x => x.datetick)));
             avgPrice = historical.Average(x => x.price);
             this.predictPrice = predictPrice;
             messenger.Report(new ProgressReport() { progress = 60, progressMessage = "繪製價格圖表", display = true });
-            /*historicalModel = new PlotModel();
-            historicalModel.Axes.Add(new DateTimeAxis());
+            PlotModel tempModel = new PlotModel();
+            tempModel.Axes.Add(new DateTimeAxis() { Position = AxisPosition.Bottom, Angle = 70, MajorStep = 7, Maximum = maxDate, Minimum = minDate });
+            tempModel.Axes.Add(new LinearAxis() { Position = AxisPosition.Left, Maximum = maxPrice, Minimum = minPrice });
             LineSeries ls = new LineSeries();
             ls.Title = "價格";
             ls.Color = OxyColor.FromRgb(212, 61, 61);
             ls.StrokeThickness = 2;
             ls.MarkerFill = OxyColor.FromRgb(200, 56, 56);
+            ls.MarkerType = MarkerType.Circle;
+            ls.MarkerSize = 5;
+            ls.BrokenLineColor = OxyColor.FromRgb(212, 61, 61);
+            ls.BrokenLineStyle = LineStyle.Dot;
+            ls.BrokenLineThickness = 2;
+            LineSeries avgs = new LineSeries();
+            avgs.Color = OxyColor.FromRgb(76, 134, 203);
+            avgs.StrokeThickness = 1;
+            avgs.Title = "平均價";
+            avgs.BrokenLineColor = OxyColor.FromRgb(76, 134, 203);
+            avgs.BrokenLineStyle = LineStyle.Dot;
+            avgs.BrokenLineThickness = 1;
             foreach (priceStorage ps in historical)
             {
-                ls.Points.Add(new DataPoint(DateTimeAxis.ToDouble(new DateTime(ps.datetick)), ps.price));
+                double d = DateTimeAxis.ToDouble(new DateTime(ps.datetick));
+                ls.Points.Add(new DataPoint(d, ps.price));
+                avgs.Points.Add(new DataPoint(d, avgPrice));
             }
-            messenger.Report(new ProgressReport() { progress = 90, progressMessage = "插入平均值", display = true });
-            ls.Points.Add(new DataPoint(Double.NaN, Double.NaN));
-            ls.Points.Add(new DataPoint(DateTimeAxis.ToDouble(new DateTime(predictDate)), predictPrice));
-            FunctionSeries fs = new FunctionSeries(x => x = avgPrice, 0, 12, 0.1, "平均值");
-            fs.Color = OxyColor.FromRgb(76, 134, 203);
-            fs.StrokeThickness = 1;
-            historicalModel.Series.Add(ls);
-            historicalModel.Series.Add(fs);*/
+            ls.Points.Add(DataPoint.Undefined);
+            ls.Points.Add(new DataPoint(maxDate, predictPrice));
+            avgs.Points.Add(DataPoint.Undefined);
+            avgs.Points.Add(new DataPoint(maxDate, avgPrice));
+            tempModel.Series.Add(ls);
+            tempModel.Series.Add(avgs);
+            historicalModel = tempModel;
             messenger.Report(new ProgressReport() { progress = 100, progressMessage = "歷史資料庫計算完成！", display = false });
         }
         public async Task buildDB()

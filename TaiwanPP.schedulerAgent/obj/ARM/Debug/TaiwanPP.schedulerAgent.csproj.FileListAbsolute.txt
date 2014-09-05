@@ -44,7 +44,6 @@ C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\obj\ARM\Debug\TaiwanPP.schedulerAgent.csprojResolveAssemblyReference.cache
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\obj\ARM\Debug\TaiwanPP.schedulerAgent.dll
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\obj\ARM\Debug\TaiwanPP.schedulerAgent.pdb
-C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\PCLWebUtility.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\TaiwanPP.schedulerAgent.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\TaiwanPP.schedulerAgent.pdb
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\Autofac.dll
@@ -62,7 +61,6 @@ D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\SQLite.Net.Async.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\Newtonsoft.Json.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\Portable.Text.Encoding.dll
-D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\PCLWebUtility.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\ImageTools.Utils.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\ImageTools.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\ImageTools.IO.Png.dll
@@ -92,5 +90,6 @@ D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\obj\ARM\Debug\TaiwanPP.schedulerAgent.csprojResolveAssemblyReference.cache
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\obj\ARM\Debug\TaiwanPP.schedulerAgent.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\obj\ARM\Debug\TaiwanPP.schedulerAgent.pdb
-C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\TaiwanPP.schedulerAgent.dll.CodeAnalysisLog.xml
-C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\TaiwanPP.schedulerAgent.dll.lastcodeanalysissucceeded
+D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\OxyPlot.dll
+D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\OxyPlot.pdb
+D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Debug\OxyPlot.xml

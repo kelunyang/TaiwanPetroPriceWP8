@@ -105,7 +105,7 @@ namespace TaiwanPP.WP8App
                     titlebar.Visibility = System.Windows.Visibility.Collapsed;
                     ifvm.connectivity = Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
                     await dcvm.load(ifvm.connectivity, progress);
-                    dcvm.buildList(false);
+                    await dcvm.buildList(false, progress);
                     titlebar.Visibility = System.Windows.Visibility.Visible;
                 }
                 catch (Exception ex)

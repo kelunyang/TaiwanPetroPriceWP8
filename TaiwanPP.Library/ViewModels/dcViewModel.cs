@@ -9,6 +9,9 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Net.Http;
 using System.Collections.ObjectModel;
+using System.Net;
+using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace TaiwanPP.Library.ViewModels
 {
@@ -17,6 +20,7 @@ namespace TaiwanPP.Library.ViewModels
         dcModel dc;
         HttpClient httpClient;
         bool connectivity = true;
+        string urlstr = "https://bitbucket.org/api/1.0/repositories/kelunyang/taiwan-petrol-price/wiki/Home";
         public ObservableCollection<feedItem> feedlist { set; get; }
         public dcViewModel()
         {
@@ -30,63 +34,70 @@ namespace TaiwanPP.Library.ViewModels
             this.connectivity = connectivity;
             if (connectivity)
             {
-                messenger.Report(new ProgressReport() { progress = 0, progressMessage = "開發者公告擷取中", display = true });
+                messenger.Report(new ProgressReport() { progress = 0, progressMessage = "開發者公告清單擷取中", display = true });
                 try
                 {
                     feedlist.Clear();
-                    httpClient = new HttpClient();
+                    HttpClientHandler handler = new HttpClientHandler();
+                    if (handler.SupportsAutomaticDecompression)
+                    {
+                        handler.AutomaticDecompression = DecompressionMethods.GZip |
+                                                         DecompressionMethods.Deflate;
+                    }
+                    httpClient = new HttpClient(handler);
+                    httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                     httpClient.MaxResponseContentBufferSize = 256000;
                     httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
-                    string content = await httpClient.GetStringAsync(new Uri(dc.uri + "&nocache=" + DateTime.Now.Ticks));
-                    dc.feed = XDocument.Parse(content);
-                    messenger.Report(new ProgressReport() { progress = 100, progressMessage = "開發者公告擷取完成", display = true });
+                    Uri url = new Uri(Uri.EscapeUriString(urlstr));
+                    bitbucketPage obj = JsonConvert.DeserializeObject<bitbucketPage>(await httpClient.GetStringAsync(url));
+                    IEnumerable<string> data = from s in obj.data.Split('\n') where s.Contains("1.") || s.Contains("2.") select s;
+                    foreach (string s in data)
+                    {
+                        var da = Regex.Match(s, @"\*(\d*\/\d*\/\d*)\*");
+                        string date = da.Value.Replace("*", "");
+                        var li = Regex.Match(s, @"\wiki\/\S*\)");
+                        string link = li.Value.Replace(")", "");
+                        var ti = Regex.Match(s, @"\[\S*\]");
+                        string title = ti.Value.Replace("[", "").Replace("]", "");
+                        dc.items.Add(new feedItem() { pubDate = DateTime.Parse(date), title = title, content = link, type = s.Contains("1.") ? 1 : 2 });
+                    }
+                    messenger.Report(new ProgressReport() { progress = 100, progressMessage = "開發者公告清單擷取完成", display = true });
                 }
                 catch
                 {
-                    throw new htmlException("取得開發者公告");
+                    throw new htmlException("取得開發者公告清單");
                 }
-                messenger.Report(new ProgressReport() { progress = 100, progressMessage = "開發者公告儲存完成", display = false });
+                messenger.Report(new ProgressReport() { progress = 100, progressMessage = "開發者公告清單儲存完成", display = false });
             }
         }
-        public void buildList(bool fulllog)
+        public async Task buildList(bool fulllog, IProgress<ProgressReport> messenger)
         {
             if (connectivity)
             {
-                IEnumerable<feedItem> fulllist = from el in dc.feed.Descendants("item")
-                                                 where el.Element("title").Value.Contains("開發") || el.Element("title").Value.Contains("調查")
-                                                 select new feedItem()
-                                                 {
-                                                     title = el.Element("title").Value.Replace("Updated Wiki:", ""),
-                                                     content = el.Element("description").Value,
-                                                     pubDate = DateTime.Parse(el.Element("pubDate").Value)
-                                                 };
-                IEnumerable<feedItem> list = fulllog ? (from item in fulllist select item).Distinct().Take(3)
-                                                        :
-                                                       (from item in fulllist where item.title.Contains("開發") select item).Distinct().Take(1);
+                messenger.Report(new ProgressReport() { progress = 100, progressMessage = "開始擷取開發者公告內容", display = true });
+                IEnumerable<feedItem> list = fulllog ? (from item in dc.items where item.type == 1 select item).Distinct().Take(2).Concat((from item in dc.items where item.type == 2 select item).Distinct().Take(1))
+                    :
+                                                       (from item in dc.items where item.type == 1 select item).Distinct().Take(1);
                 feedlist.Clear();
+                messenger.Report(new ProgressReport() { progress = 100, progressMessage = "開發者公告內容擷取中", display = true });
                 foreach (feedItem fi in list)
                 {
-                    if (!fulllog)
+                    string urlstr = "https://bitbucket.org/api/1.0/repositories/kelunyang/taiwan-petrol-price/" + fi.content;
+                    HttpClientHandler handler = new HttpClientHandler();
+                    if (handler.SupportsAutomaticDecompression)
                     {
-                        string content = PCLWebUtility.WebUtility.HtmlDecode(fi.content);
-                        XDocument xml = XDocument.Parse("<root>" + content + "</root>");
-                        IEnumerable<XElement> lilist = from li in xml.Descendants("li") select li;
-                        if (!lilist.Any())
-                        {
-                            fi.content = xml.Root.Element("div").Value;
-                        }
-                        else
-                        {
-                            string output = "";
-                            foreach (XElement li in lilist)
-                            {
-                                output += li.Value + "\n";
-                            }
-                            fi.content = output;
-                        }
+                        handler.AutomaticDecompression = DecompressionMethods.GZip |
+                                                         DecompressionMethods.Deflate;
                     }
+                    var httpClient = new HttpClient(handler);
+                    httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                    httpClient.MaxResponseContentBufferSize = 256000;
+                    httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
+                    bitbucketPage obj = JsonConvert.DeserializeObject<bitbucketPage>(await httpClient.GetStringAsync(new Uri(urlstr)));
+                    fi.content = obj.data;
                     feedlist.Add(fi);
                 }
+                messenger.Report(new ProgressReport() { progress = 100, progressMessage = "開發者公告擷取完成", display = false });
             }
             else
             {

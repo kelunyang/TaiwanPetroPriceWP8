@@ -650,6 +650,11 @@
             Initializes a new instance of the <see cref="T:Nito.AsyncEx.AsyncContextThread"/> class, creating a child thread waiting for commands.
             </summary>
         </member>
+        <member name="M:Nito.AsyncEx.AsyncContextThread.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Nito.AsyncEx.AsyncContextThread"/> class, creating a child thread waiting for commands. If <paramref name="sta"/> is <c>true</c>, then the child thread is an STA thread (throwing <see cref="T:System.NotSupportedException"/> if the platform does not support STA threads).
+            </summary>
+        </member>
         <member name="M:Nito.AsyncEx.AsyncContextThread.AllowThreadToExit">
             <summary>
             Permits the thread to exit, if we have not already done so.
@@ -1619,6 +1624,11 @@
             The queue of TCSs that other tasks are awaiting to acquire the lock.
             </summary>
         </member>
+        <member name="F:Nito.AsyncEx.AsyncLock._cachedKeyTask">
+            <summary>
+            A task that is completed with the key object for this lock.
+            </summary>
+        </member>
         <member name="F:Nito.AsyncEx.AsyncLock._id">
             <summary>
             The semi-unique identifier for this instance. This is 0 if the id has not yet been created.
@@ -1690,7 +1700,7 @@
             </summary>
             <param name="asyncLock">The lock to release. May not be <c>null</c>.</param>
         </member>
-        <member name="M:Nito.AsyncEx.AsyncLock.Key.System#IDisposable#Dispose">
+        <member name="M:Nito.AsyncEx.AsyncLock.Key.Dispose">
             <summary>
             Release the lock.
             </summary>
@@ -2272,6 +2282,16 @@
             The object used for mutual exclusion.
             </summary>
         </member>
+        <member name="F:Nito.AsyncEx.AsyncReaderWriterLock._cachedReaderKeyTask">
+            <summary>
+            A task that is completed with the reader key object for this lock.
+            </summary>
+        </member>
+        <member name="F:Nito.AsyncEx.AsyncReaderWriterLock._cachedWriterKeyTask">
+            <summary>
+            A task that is completed with the writer key object for this lock.
+            </summary>
+        </member>
         <member name="M:Nito.AsyncEx.AsyncReaderWriterLock.#ctor(Nito.AsyncEx.IAsyncWaitQueue{System.IDisposable},Nito.AsyncEx.IAsyncWaitQueue{System.IDisposable},Nito.AsyncEx.IAsyncWaitQueue{Nito.AsyncEx.AsyncReaderWriterLock.UpgradeableReaderKey},Nito.AsyncEx.IAsyncWaitQueue{System.IDisposable})">
             <summary>
             Creates a new async-compatible reader/writer lock.
@@ -2458,9 +2478,9 @@
             The task doing the upgrade.
             </summary>
         </member>
-        <member name="F:Nito.AsyncEx.AsyncReaderWriterLock.UpgradeableReaderKey._disposed">
+        <member name="F:Nito.AsyncEx.AsyncReaderWriterLock.UpgradeableReaderKey._cachedUpgradeKeyTask">
             <summary>
-            Whether or not this instance has been disposed.
+            A task that is completed with the upgrade key object for this key.
             </summary>
         </member>
         <member name="M:Nito.AsyncEx.AsyncReaderWriterLock.UpgradeableReaderKey.#ctor(Nito.AsyncEx.AsyncReaderWriterLock)">
@@ -2666,6 +2686,45 @@
             The default wait queue implementation, which uses a double-ended queue.
             </summary>
             <typeparam name="T">The type of the results. If this isn't needed, use <see cref="T:System.Object"/>.</typeparam>
+        </member>
+        <member name="T:Nito.AsyncEx.AwaitableDisposable`1">
+            <summary>
+            An awaitable wrapper around a task whose result is disposable. The wrapper is not disposable, so this prevents usage errors like "using (MyAsync())" when the appropriate usage should be "using (await MyAsync())".
+            </summary>
+            <typeparam name="T">The type of the result of the underlying task.</typeparam>
+        </member>
+        <member name="F:Nito.AsyncEx.AwaitableDisposable`1._task">
+            <summary>
+            The underlying task.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.AwaitableDisposable`1.#ctor(System.Threading.Tasks.Task{`0})">
+            <summary>
+            Initializes a new awaitable wrapper around the specified task.
+            </summary>
+            <param name="task">The underlying task to wrap.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AwaitableDisposable`1.AsTask">
+            <summary>
+            Returns the underlying task.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.AwaitableDisposable`1.op_Implicit(Nito.AsyncEx.AwaitableDisposable{`0})~System.Threading.Tasks.Task{`0}">
+            <summary>
+            Implicit conversion to the underlying task.
+            </summary>
+            <param name="source">The awaitable wrapper.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AwaitableDisposable`1.GetAwaiter">
+            <summary>
+            Infrastructure. Returns the task awaiter for the underlying task.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.AwaitableDisposable`1.ConfigureAwait(System.Boolean)">
+            <summary>
+            Infrastructure. Returns a configured task awaiter for the underlying task.
+            </summary>
+            <param name="continueOnCapturedContext">Whether to attempt to marshal the continuation back to the captured context.</param>
         </member>
         <member name="T:Nito.AsyncEx.CancellationTokenExtensions">
             <summary>
@@ -2915,13 +2974,6 @@
             An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
             </returns>
         </member>
-        <member name="M:Nito.Deque`1.ObjectIsT(System.Object)">
-            <summary>
-            Returns whether or not the type of a given item indicates it is appropriate for storing in this container.
-            </summary>
-            <param name="item">The item to test.</param>
-            <returns><c>true</c> if the item is appropriate to store in this container; otherwise, <c>false</c>.</returns>
-        </member>
         <member name="M:Nito.Deque`1.CheckNewIndexArgument(System.Int32,System.Int32)">
             <summary>
             Checks the <paramref name="index"/> argument to see if it refers to a valid insertion point in a source of a given length.
@@ -3158,480 +3210,6 @@
             </summary>
             <param name="id">A reference to the field containing the id.</param>
         </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.DefaultEnlightenmentProvider">
-            <summary>
-            The default enlightenment provider, used when the platform enlightenment provider could not be found.
-            </summary>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.IEnlightenmentProvider">
-            <summary>
-            An enlightenment provider, which creates enlightenments on demand.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.IEnlightenmentProvider.CreateEnlightenment``1">
-            <summary>
-            Creates an enlightenment of the specified type.
-            </summary>
-            <typeparam name="T">The type of enlightenment to create.</typeparam>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.DefaultEnlightenmentProvider.ConcurrentCollectionsEnlightenment">
-            <summary>
-            The default concurrent collections enlightenment.
-            </summary>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.IConcurrentCollectionsEnlightenment">
-            <summary>
-            Creates concurrent and blocking collections.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.IConcurrentCollectionsEnlightenment.CreateBlockingQueue``1">
-            <summary>
-            Creates a blocking queue.
-            </summary>
-            <typeparam name="T">The type of items contained in the queue.</typeparam>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.IBlockingQueue`1">
-            <summary>
-            A blocking queue.
-            </summary>
-            <typeparam name="T">The type of items contained in the queue.</typeparam>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.IBlockingQueue`1.GetConsumingEnumerable">
-            <summary>
-            Returns an enumerable that will not complete until <see cref="M:Nito.AsyncEx.Internal.PlatformEnlightenment.IBlockingQueue`1.CompleteAdding"/> is called.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.IBlockingQueue`1.EnumerateForDebugger">
-            <summary>
-            Returns an enumerable that enumerates this collection without taking any locks.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.IBlockingQueue`1.TryAdd(`0)">
-            <summary>
-            Attempts to add an item to the queue. If <see cref="M:Nito.AsyncEx.Internal.PlatformEnlightenment.IBlockingQueue`1.CompleteAdding"/> has already been called, then this method returns <c>false</c>.
-            </summary>
-            <param name="item">The item to add.</param>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.IBlockingQueue`1.CompleteAdding">
-            <summary>
-            Notifies the queue that no more items will be added.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.DefaultEnlightenmentProvider.ConcurrentCollectionsEnlightenment.BlockingQueue`1._queue">
-            <summary>
-            The underlying queue.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.DefaultEnlightenmentProvider.ConcurrentCollectionsEnlightenment.BlockingQueue`1._nonEmpty">
-            <summary>
-            An event that is set whenever the queue is non-empty or if the queue is empty and done.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.DefaultEnlightenmentProvider.ConcurrentCollectionsEnlightenment.BlockingQueue`1._done">
-            <summary>
-            Whether we are done adding tasks to the queue.
-            </summary>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.DefaultEnlightenmentProvider.ThreadPoolEnlightenment">
-            <summary>
-            The default thread pool enlightenment, which will use <c>ThreadPool</c> if it exists, falling back on manual tasks.
-            </summary>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.IThreadPoolEnlightenment">
-            <summary>
-            A portable interface to thread pool operations.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.IThreadPoolEnlightenment.RegisterWaitForSingleObject(System.Threading.WaitHandle,System.Action{System.Object,System.Boolean},System.Object,System.TimeSpan)">
-            <summary>
-            Registers <paramref name="handle"/> with the thread pool so that when it is signalled (or when a timeout occurs), <paramref name="callback"/> is invoked passing <paramref name="state"/> as an argument.
-            </summary>
-            <param name="handle">The handle to observe.</param>
-            <param name="callback">The callback to invoke when the handle is signalled or when a timeout occurs.</param>
-            <param name="state">The state object to pass to the callback.</param>
-            <param name="timeout">The timeout after which the thread pool will no longer listen to the handle.</param>
-            <returns>An object that, when disposed, unregisters the handle from the thread pool. This object should be disposed even if the handle is signalled or a timeout occurs.</returns>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.DefaultEnlightenmentProvider.ThreadPoolEnlightenment.RegisterWaitForSingleObject">
-            <summary>
-            A delegate that will call <c>ThreadPool.RegisterWaitForSingleObject</c>.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.DefaultEnlightenmentProvider.ThreadPoolEnlightenment.Unregister">
-            <summary>
-            A delegate that will call <c>RegisteredWaitHandle.Unregister</c>.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.DefaultEnlightenmentProvider.ThreadPoolEnlightenment.#cctor">
-            <summary>
-            Examines the current runtime and initializes the static delegates appropriately.
-            </summary>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.DefaultEnlightenmentProvider.TraceEnlightenment">
-            <summary>
-            The default trace enlightenment.
-            </summary>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment">
-            <summary>
-            Provides detailed trace information.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncContext_TaskQueueFailed(Nito.AsyncEx.AsyncContext,System.Threading.Tasks.Task)">
-            <summary>
-            Fatal error: a task could not be queued to a context.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncContext_TaskScheduled(Nito.AsyncEx.AsyncContext,System.Threading.Tasks.Task)">
-            <summary>
-            Detailed log: a task has been scheduled to a context.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncContext_ExplicitOperationIncrement(Nito.AsyncEx.AsyncContext)">
-            <summary>
-            Detailed log: the operation count of a context has been explicitly incremented.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncContext_ExplicitOperationDecrement(Nito.AsyncEx.AsyncContext)">
-            <summary>
-            Detailed log: the operation count of a context has been explicitly decremented.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncContext_OperationIncrement(Nito.AsyncEx.AsyncContext,System.Int32)">
-            <summary>
-            Detailed log: the operation count of a context has been incremented.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncContext_OperationDecrement(Nito.AsyncEx.AsyncContext,System.Int32)">
-            <summary>
-            Detailed log: the operation count of a context has been decremented.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncLock_TrackLock(Nito.AsyncEx.AsyncLock,System.Threading.Tasks.Task)">
-            <summary>
-            Detailed log: a task has started waiting on a lock.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncLock_Unlocked(Nito.AsyncEx.AsyncLock)">
-            <summary>
-            Detailed log: a task has unlocked a lock.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncManualResetEvent_Set(Nito.AsyncEx.AsyncManualResetEvent,System.Threading.Tasks.Task)">
-            <summary>
-            Detailed log: a manual-reset event has been set.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncManualResetEvent_Reset(Nito.AsyncEx.AsyncManualResetEvent,System.Threading.Tasks.Task)">
-            <summary>
-            Detailed log: a manual-reset event has been reset.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncManualResetEvent_Wait(Nito.AsyncEx.AsyncManualResetEvent,System.Threading.Tasks.Task)">
-            <summary>
-            Detailed log: a task is waiting on a manual-reset event.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncLazy_Started``1(Nito.AsyncEx.AsyncLazy{``0},System.Threading.Tasks.Task)">
-            <summary>
-            Detailed log: asynchronous lazy initialization has started.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncConditionVariable_NotifyOne(Nito.AsyncEx.AsyncConditionVariable,Nito.AsyncEx.AsyncLock)">
-            <summary>
-            Detailed log: a task has notified another single task on a condition variable.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncConditionVariable_NotifyAll(Nito.AsyncEx.AsyncConditionVariable,Nito.AsyncEx.AsyncLock)">
-            <summary>
-            Detailed log: a task has notified all other tasks on a condition variable.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncConditionVariable_TrackWait(Nito.AsyncEx.AsyncConditionVariable,Nito.AsyncEx.AsyncLock,System.Threading.Tasks.Task,System.Threading.Tasks.Task)">
-            <summary>
-            Detailed log: a task has started waiting on a condition variable.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncMonitor_Created(Nito.AsyncEx.AsyncLock,Nito.AsyncEx.AsyncConditionVariable)">
-            <summary>
-            Detailed log: a monitor has been created.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncAutoResetEvent_TrackWait(Nito.AsyncEx.AsyncAutoResetEvent,System.Threading.Tasks.Task)">
-            <summary>
-            Detailed log: a task has started waiting on an auto-reset event.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncAutoResetEvent_Set(Nito.AsyncEx.AsyncAutoResetEvent)">
-            <summary>
-            Detailed log: an auto-reset event has been set.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncCountdownEvent_CountChanged(Nito.AsyncEx.AsyncCountdownEvent,System.Int32,System.Int32)">
-            <summary>
-            Detailed log: a countdown event has changed.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncBarrier_PhaseChanged(Nito.AsyncEx.AsyncBarrier,System.Int64,System.Int32,System.Threading.Tasks.Task)">
-            <summary>
-            Detailed log: a barrier has finished its phase.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncBarrier_CountChanged(Nito.AsyncEx.AsyncBarrier,System.Int64,System.Int32)">
-            <summary>
-            Detailed log: the count of a barrier has changed.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncBarrier_ParticipantsChanged(Nito.AsyncEx.AsyncBarrier,System.Int64,System.Int32)">
-            <summary>
-            Detailed log: the number of participants in a barrier has changed.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncSemaphore_CountChanged(Nito.AsyncEx.AsyncSemaphore,System.Int32)">
-            <summary>
-            Detailed log: the count of a semaphore has changed.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncSemaphore_TrackWait(Nito.AsyncEx.AsyncSemaphore,System.Threading.Tasks.Task)">
-            <summary>
-            Detailed log: a task has started waiting on a semaphore.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncReaderWriterLock_TrackLock(Nito.AsyncEx.AsyncReaderWriterLock,Nito.AsyncEx.Internal.PlatformEnlightenment.AsyncReaderWriterLockLockType,System.Threading.Tasks.Task)">
-            <summary>
-            Detailed log: a task is waiting on a reader-writer lock.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ITraceEnlightenment.AsyncReaderWriterLock_LockReleased(Nito.AsyncEx.AsyncReaderWriterLock,Nito.AsyncEx.Internal.PlatformEnlightenment.AsyncReaderWriterLockLockType)">
-            <summary>
-            Detailed log: a reader-writer lock has been released.
-            </summary>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.IExceptionEnlightenment">
-            <summary>
-            Provides exception-related services.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.IExceptionEnlightenment.PrepareForRethrow(System.Exception)">
-            <summary>
-            Attempts to prepare the exception for re-throwing by preserving the stack trace. Returns the exception passed into this method. The returned exception should be immediately thrown.
-            </summary>
-            <param name="exception">The exception. May not be <c>null</c>.</param>
-            <returns>The <see cref="T:System.Exception"/> that was passed into this method.</returns>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.IAsyncEnlightenment">
-            <summary>
-            A portable interface to async-related utilities.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.IAsyncEnlightenment.AddDenyChildAttach(System.Threading.Tasks.TaskCreationOptions)">
-            <summary>
-            Adds the <c>DenyChildAttach</c> bit to the existing <see cref="T:System.Threading.Tasks.TaskCreationOptions"/>.
-            </summary>
-            <param name="options">The existing <see cref="T:System.Threading.Tasks.TaskCreationOptions"/></param>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.ILazyEnlightenment">
-            <summary>
-            Provides lazy-created values.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ILazyEnlightenment.CreateLazy``1(System.Func{``0})">
-            <summary>
-            Creates a new lazy-created value.
-            </summary>
-            <typeparam name="T">The type of the value.</typeparam>
-            <param name="factory">The factory method used to create the value on-demand. This method may be called while under lock.</param>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.ILazy`1">
-            <summary>
-            A lazy-created value.
-            </summary>
-            <typeparam name="T">The type of the value.</typeparam>
-        </member>
-        <member name="P:Nito.AsyncEx.Internal.PlatformEnlightenment.ILazy`1.IsValueCreated">
-            <summary>
-            Whether or not the value is created.
-            </summary>
-        </member>
-        <member name="P:Nito.AsyncEx.Internal.PlatformEnlightenment.ILazy`1.Value">
-            <summary>
-            Gets the value, creating it if necessary.
-            </summary>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.DefaultEnlightenmentProvider.SynchronizationContextEnlightenment">
-            <summary>
-            This enlightenment will work on all platforms (net4/win8/sl4/wp75).
-            However, it is not supported in portable libraries for: net40/net403/sl5/wp70/wp71.
-            </summary>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.ISynchronizationContextEnlightenment">
-            <summary>
-            Provides a way to set <see cref="P:System.Threading.SynchronizationContext.Current"/>.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.ISynchronizationContextEnlightenment.SetCurrent(System.Threading.SynchronizationContext)">
-            <summary>
-            Sets <see cref="P:System.Threading.SynchronizationContext.Current"/>
-            </summary>
-            <param name="context">The context to set.</param>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.DefaultEnlightenmentProvider.ThreadIdentityEnlightenment">
-            <summary>
-            The default thread identity enlightenment, which will use <c>Environment.CurrentManagedThreadId</c>.
-            </summary>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.IThreadIdentityEnlightenment">
-            <summary>
-            A portable interface to the current thread.
-            </summary>
-        </member>
-        <member name="P:Nito.AsyncEx.Internal.PlatformEnlightenment.IThreadIdentityEnlightenment.CurrentManagedThreadId">
-            <summary>
-            Gets the managed thread identifier for the current thread.
-            </summary>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment">
-            <summary>
-            Provides static members to access enlightenments.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.DefaultProvider">
-            <summary>
-            The default enlightenment provider.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment._platform">
-            <summary>
-            Cached instance of the platform enlightenment provider. This is equal to <see cref="F:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.DefaultProvider"/> if the platform couldn't be found.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment._exception">
-            <summary>
-            Cached instance of the exception enlightenment.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment._async">
-            <summary>
-            Cached instance of the async enlightenment.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment._synchronizationContext">
-            <summary>
-            Cached instance of the synchronization context enlightenment.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment._trace">
-            <summary>
-            Cached instance of the trace enlightenment.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment._concurrentCollections">
-            <summary>
-            Cached instance of the concurrent collections enlightenment.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment._lazy">
-            <summary>
-            Cached instance of the lazy enlightenment.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment._threadPool">
-            <summary>
-            Cached instance of the thread pool enlightenment.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment._threadIdentity">
-            <summary>
-            Cached instance of the thread identity enlightenment.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.CreateProvider">
-            <summary>
-            Loads the <c>PlatformEnlightenmentProvider</c> if it can be found; otherwise, returns an instance of <see cref="T:Nito.AsyncEx.Internal.PlatformEnlightenment.DefaultEnlightenmentProvider"/>.
-            </summary>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.TryLoadAssemblyAndGetType(System.String)">
-            <summary>
-            Attempts to load a type that is expected to be in another assembly. Returns <c>null</c> if the type could not be found or the assembly could not be loaded.
-            </summary>
-            <param name="typeName">The full name of the type to load.</param>
-        </member>
-        <member name="M:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.CreateEnlightenment``1">
-            <summary>
-            Creates an enlightenment using the platform enlightenment provider; falls back to the default enlightenment provider if the platform provider returns <c>null</c>.
-            </summary>
-            <typeparam name="T">The type of enlightenment to create.</typeparam>
-        </member>
-        <member name="P:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.Platform">
-            <summary>
-            Returns the platform enlightenment provider, if it could be found; otherwise, returns the default enlightenment provider.
-            </summary>
-        </member>
-        <member name="P:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.Exception">
-            <summary>
-            Returns the exception enlightenment.
-            </summary>
-        </member>
-        <member name="P:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.Async">
-            <summary>
-            Returns the async enlightenment.
-            </summary>
-        </member>
-        <member name="P:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.SynchronizationContext">
-            <summary>
-            Returns the synchronization context enlightenment.
-            </summary>
-        </member>
-        <member name="P:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.Trace">
-            <summary>
-            Returns the trace enlightenment.
-            </summary>
-        </member>
-        <member name="P:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.ConcurrentCollections">
-            <summary>
-            Returns the concurrent collections enlightenment.
-            </summary>
-        </member>
-        <member name="P:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.Lazy">
-            <summary>
-            Returns the lazy enlightenment.
-            </summary>
-        </member>
-        <member name="P:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.ThreadPool">
-            <summary>
-            Returns the thread pool enlightenment.
-            </summary>
-        </member>
-        <member name="P:Nito.AsyncEx.Internal.PlatformEnlightenment.Enlightenment.ThreadIdentity">
-            <summary>
-            Returns the thread identity enlightenment.
-            </summary>
-        </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.AsyncReaderWriterLockLockType">
-            <summary>
-            The type of reader/writer lock being acquired or released.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.AsyncReaderWriterLockLockType.Reader">
-            <summary>
-            A reader lock.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.AsyncReaderWriterLockLockType.UpgradeableReader">
-            <summary>
-            An upgradeable reader lock.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.AsyncReaderWriterLockLockType.Writer">
-            <summary>
-            A writer lock.
-            </summary>
-        </member>
-        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.AsyncReaderWriterLockLockType.UpgradingToWriter">
-            <summary>
-            An upgradeable reader lock upgrading to a writer lock.
-            </summary>
-        </member>
         <member name="T:Nito.AsyncEx.NormalizedCancellationToken">
             <summary>
             A <see cref="P:Nito.AsyncEx.NormalizedCancellationToken.Token"/> that may or may not also reference its own <see cref="T:System.Threading.CancellationTokenSource"/>. Instances of this type should always be disposed.
@@ -3684,6 +3262,11 @@
             Gets the task being watched. This property never changes and is never <c>null</c>.
             </summary>
         </member>
+        <member name="P:Nito.AsyncEx.INotifyTaskCompletion.TaskCompleted">
+            <summary>
+            Gets a task that completes successfully when <see cref="P:Nito.AsyncEx.INotifyTaskCompletion.Task"/> completes (successfully, faulted, or canceled). This property never changes and is never <c>null</c>.
+            </summary>
+        </member>
         <member name="P:Nito.AsyncEx.INotifyTaskCompletion.Status">
             <summary>
             Gets the current task status. This property raises a notification when the task completes.
@@ -3692,6 +3275,11 @@
         <member name="P:Nito.AsyncEx.INotifyTaskCompletion.IsCompleted">
             <summary>
             Gets whether the task has completed. This property raises a notification when the value changes to <c>true</c>.
+            </summary>
+        </member>
+        <member name="P:Nito.AsyncEx.INotifyTaskCompletion.IsNotCompleted">
+            <summary>
+            Gets whether the task is busy (not completed). This property raises a notification when the value changes to <c>false</c>.
             </summary>
         </member>
         <member name="P:Nito.AsyncEx.INotifyTaskCompletion.IsSuccessfullyCompleted">
@@ -3759,6 +3347,20 @@
             <typeparam name="TResult">The type of the task result.</typeparam>
             <param name="task">The task to watch.</param>
             <returns>A new task notifier watching the specified task.</returns>
+        </member>
+        <member name="M:Nito.AsyncEx.NotifyTaskCompletion.Create(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Executes the specified asynchronous code and creates a new task notifier watching the returned task.
+            </summary>
+            <param name="asyncAction">The asynchronous code to execute.</param>
+            <returns>A new task notifier watching the returned task.</returns>
+        </member>
+        <member name="M:Nito.AsyncEx.NotifyTaskCompletion.Create``1(System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Executes the specified asynchronous code and creates a new task notifier watching the returned task.
+            </summary>
+            <param name="asyncAction">The asynchronous code to execute.</param>
+            <returns>A new task notifier watching the returned task.</returns>
         </member>
         <member name="T:Nito.AsyncEx.NotifyTaskCompletion.NotifyTaskCompletionImplementation">
             <summary>

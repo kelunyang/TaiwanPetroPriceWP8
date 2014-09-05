@@ -32,6 +32,8 @@ namespace TaiwanPP.schedulerAgent
         SQLitePlatformWP8 sqliteplaform = new SQLitePlatformWP8();
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication();
         bool connectivity = false;
+        bool insequence = false;
+        bool lastevent = true;
         /// <remarks>
         /// ScheduledAgent 建構函式，會初始化 UnhandledException 處理常式
         /// </remarks>
@@ -58,6 +60,8 @@ namespace TaiwanPP.schedulerAgent
             cpvm = container.Resolve<cpViewModel>();
             ifvm = container.Resolve<infoViewModel>();
             connectivity = Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
+            PeriodicTask tileTask = (PeriodicTask)ScheduledActionService.Find("oilTilePeriodicAgent");
+            lastevent = tileTask.LastExitReason == AgentExitReason.Completed ? true : false;
             using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
             {
                 ifvm.loadConfig(isf);
@@ -80,6 +84,7 @@ namespace TaiwanPP.schedulerAgent
                         ifvm.notifycheckedHour = DateTime.Now;
                         if (originalDate - cpvm.moeaboeDBdate.Ticks != 0)
                         {
+                            insequence = true;
                             IEnumerable<priceStorage> product95 = from p in cpvm.currentCollections where p.kind == typeDB.CPC95.key select p;
                             IEnumerable<priceStorage> productdiesel = from p in cpvm.currentCollections where p.kind == typeDB.CPCdiesel.key select p;
                             if (product95.Any())
@@ -133,6 +138,7 @@ namespace TaiwanPP.schedulerAgent
                             {
                                 if (!ifvm.dailynotified)
                                 {
+                                    insequence = true;
                                     ifvm.dailynotified = true;
                                     ifvm.dailycheckHour = DateTime.Now;
                                     connectivity = ifvm.dbcheckedDate.AddMinutes(5) < DateTime.Now ? connectivity : false;
@@ -173,6 +179,18 @@ namespace TaiwanPP.schedulerAgent
                                     isf.Dispose();
                                 }
                             }
+                        }
+                    }
+                }
+                if (!insequence)
+                {
+                    if (!lastevent)
+                    {
+                        if (Math.Abs(DateTime.Now.Subtract(ifvm.tileupdateTime).Hours) > 6)
+                        {
+                            await cpvm.currentPrice(progress, true);
+                            tilescan();
+                            runtile();
                         }
                     }
                 }
@@ -234,7 +252,7 @@ namespace TaiwanPP.schedulerAgent
         {
             if (active.Any())
             {
-                tileChange(active.First(), true, true);
+                tileChange(active.First(), true, active.First() == ifvm.defaultTile);
             }
         }
 
@@ -245,10 +263,17 @@ namespace TaiwanPP.schedulerAgent
                 active.RemoveAt(0);
                 if (active.Any())
                 {
-                    tileChange(active.First(), false, false);
+                    tileChange(active.First(), false, active.First() == ifvm.defaultTile);
                 }
                 else
                 {
+                    ifvm.tileupdateTime = DateTime.Now;
+                    using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+                    {
+                        ifvm.saveConfig(isf);
+                        isf.Close();
+                        isf.Dispose();
+                    }
                     NotifyComplete();
                 }
             }

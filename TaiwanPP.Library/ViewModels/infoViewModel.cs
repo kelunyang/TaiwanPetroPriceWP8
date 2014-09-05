@@ -292,6 +292,20 @@ namespace TaiwanPP.Library.ViewModels
                 NotifyPropertyChanged();
             }
         }
+        DateTime _tileupdateTime = DateTime.MinValue;
+        public DateTime tileupdateTime
+        {
+            get
+            {
+                _tileupdateTime = im.tileupdateTime;
+                return _tileupdateTime;
+            }
+            set
+            {
+                im.tileupdateTime = value;
+                NotifyPropertyChanged();
+            }
+        }
         bool _connectivity = true;
         public bool connectivity
         {

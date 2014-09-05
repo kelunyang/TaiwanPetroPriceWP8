@@ -64,6 +64,10 @@
                     <TextBlock Text="設定檔版本："/>
                     <TextBlock Text="{Binding DataContext.version, Converter={StaticResource dateConverter}, ElementName=info, StringFormat=\{0:g\}}"/>
                 </StackPanel>
+                <StackPanel x:Name="tile" Orientation="Horizontal">
+                    <TextBlock Text="動態磚最後更新時間："/>
+                    <TextBlock Text="{Binding DataContext.tileupdateTime, Converter={StaticResource dateConverter}, ElementName=info, StringFormat=\{0:g\}}"/>
+                </StackPanel>
                 <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
                     <TextBlock Text="建議&amp;回饋" FontSize="26"/>
                 </Border>
@@ -72,7 +76,7 @@
                     <TextBlock Text="程式資訊" FontSize="26"/>
                 </Border>
                 <Grid Height="225">
-                    <Canvas x:Name="by_sa" Margin="110,154,159,68">
+                    <Canvas x:Name="by_sa" Margin="110,180,159,42">
                         <Path Data="F1M2.86,0L116.214,0.202C117.798,0.202,119.214,-0.034,119.214,3.362L119.075,40.691 0,40.691 0,3.223C0,1.549,0.162,0,2.86,0" Fill="#FFAAB2AB" Height="60.946" Canvas.Left="0.77" Canvas.Top="-16.155" Width="179.293" Stretch="Fill" UseLayoutRounding="False"/>
                         <Path Data="F1M27.27,13.642C27.274,21.171 21.174,27.278 13.644,27.283 6.114,27.288 0.005,21.187 0.001,13.658L0.001,13.642C-0.003,6.112 6.098,0.005 13.626,0 21.158,-0.004 27.266,6.096 27.27,13.625z" Fill="White" Height="41.104" Canvas.Left="10.837" Canvas.Top="-8.116" Width="41.103" Stretch="Fill" UseLayoutRounding="False"/>
                         <Path Data="F1M22.367,14.119C21.976,13.267 21.403,12.842 20.647,12.842 19.241,12.842 18.537,13.769 18.537,15.625 18.537,17.481 19.241,18.409 20.647,18.409 21.559,18.409 22.198,17.956 22.562,17.051L24.515,18.068C23.606,19.686 22.242,20.496 20.423,20.496 19.02,20.496 17.896,20.065 17.052,19.204 16.208,18.343 15.785,17.155 15.785,15.641 15.785,14.153 16.215,12.972 17.072,12.097 17.929,11.223 19.02,10.785 20.346,10.785 22.268,10.785 23.645,11.544 24.476,13.06z M13.377,14.119C12.986,13.267 12.401,12.842 11.621,12.842 10.243,12.842 9.554,13.769 9.554,15.625 9.554,17.481 10.243,18.409 11.621,18.409 12.532,18.409 13.182,17.956 13.572,17.051L15.483,18.068C14.573,19.686 13.206,20.496 11.384,20.496 9.979,20.496 8.853,20.065 8.008,19.204 7.161,18.343 6.739,17.155 6.739,15.641 6.739,14.153 7.174,12.972 8.046,12.097 8.918,11.223 10.004,10.785 11.306,10.785 13.232,10.785 14.611,11.544 15.445,13.06z M6.65,6.57C4.094,9.151 2.816,12.176 2.816,15.645 2.816,19.112 4.081,22.111 6.611,24.64 9.14,27.17 12.153,28.434 15.647,28.434 19.142,28.434 22.18,27.157 24.762,24.602 27.213,22.229 28.439,19.244 28.439,15.645 28.439,12.073 27.193,9.041 24.702,6.55 22.212,4.06 19.194,2.815 15.647,2.815 12.1,2.815 9.101,4.067 6.65,6.57 M26.704,4.536C29.728,7.559 31.24,11.262 31.24,15.641 31.24,20.02 29.754,23.682 26.783,26.628 23.629,29.731 19.902,31.282 15.601,31.282 11.352,31.282 7.69,29.744 4.614,26.667 1.538,23.592 0,19.917 0,15.641 0,11.366 1.538,7.664 4.614,4.536 7.612,1.512 11.274,0 15.601,0 19.98,0 23.681,1.512 26.704,4.536" Fill="Black" Height="46.772" Canvas.Left="7.993" Canvas.Top="-10.92" Width="46.772" Stretch="Fill" UseLayoutRounding="False"/>
@@ -98,9 +102,10 @@
 								<LineBreak/>
 								<Run Text="一切授權請參照CC-BY-SA"/>
 								<LineBreak/>
-								<Run Text="程式原始碼：https://topmwp.codeplex.com/"/>
+								<Run Text="程式原始碼："/>
                     </TextBlock>
                     <TextBlock Text="kelunyang@outlook.com" Margin="73,26,112,165" TextDecorations="Underline" Tap="Email_Click" />
+                    <TextBlock Text="https://bitbucket.org/kelunyang/taiwan-petrol-price" Margin="130,108,10,66" TextWrapping="Wrap" TextDecorations="Underline" Tap="Website_Click" />
                 </Grid>
             </StackPanel>
         </Grid>

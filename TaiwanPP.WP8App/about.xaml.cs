@@ -83,5 +83,11 @@ namespace TaiwanPP.WP8App
             webBrowserTask.Uri = new Uri(@"https://onedrive.live.com/redir?page=survey&resid=C836A59DFA673571!49792&authkey=!APrZLL0aHQkJzvQ&ithint=file%2c.xlsx", UriKind.Absolute);
             webBrowserTask.Show();
         }
+        private void Website_Click(object sender, RoutedEventArgs e)
+        {
+            WebBrowserTask webBrowserTask = new WebBrowserTask();
+            webBrowserTask.Uri = new Uri(@"https://bitbucket.org/kelunyang/taiwan-petrol-price", UriKind.Absolute);
+            webBrowserTask.Show();
+        }
     }
 }

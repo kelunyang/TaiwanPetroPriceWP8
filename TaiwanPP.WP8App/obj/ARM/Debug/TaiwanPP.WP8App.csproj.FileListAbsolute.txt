@@ -149,7 +149,6 @@ C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\obj\ARM\Debu
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\obj\ARM\Debug\TaiwanPP.WP8App.pdb
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\obj\ARM\Debug\XapCacheFile.xml
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\obj\ARM\Debug\fastConfig.g.cs
-C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\PCLWebUtility.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\Assets\ApplicationIcon.png
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\Assets\Tiles\FlipCycleTileLarge.png
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\Assets\Tiles\FlipCycleTileMedium.png
@@ -186,7 +185,6 @@ D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\T
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\HtmlAgilityPack-PCL.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\Newtonsoft.Json.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\Portable.Text.Encoding.dll
-D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\PCLWebUtility.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\ImageTools.Utils.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\ImageTools.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\ImageTools.IO.Png.dll
@@ -302,5 +300,3 @@ D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\obj\ARM\Debug\T
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\obj\ARM\Debug\TaiwanPP.WP8App.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\obj\ARM\Debug\TaiwanPP.WP8App.pdb
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\obj\ARM\Debug\XapCacheFile.xml
-C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\TaiwanPP.WP8App.dll.CodeAnalysisLog.xml
-C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.WP8App\Bin\ARM\Debug\TaiwanPP.WP8App.dll.lastcodeanalysissucceeded

@@ -92,5 +92,7 @@ C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\obj\ARM\Releas
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\obj\ARM\Release\TaiwanPP.Tile.g.resources
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\obj\ARM\Release\TaiwanPP.Tile.dll
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\obj\ARM\Release\TaiwanPP.Tile.pdb
-D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Release\PCLWebUtility.dll
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Release\PCLWebUtility.dll
+D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Release\OxyPlot.dll
+D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Release\OxyPlot.pdb
+D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Release\OxyPlot.xml

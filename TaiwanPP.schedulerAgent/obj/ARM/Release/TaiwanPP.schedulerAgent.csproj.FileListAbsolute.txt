@@ -86,5 +86,7 @@ C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\obj\ARM\Release\TaiwanPP.schedulerAgent.csprojResolveAssemblyReference.cache
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\obj\ARM\Release\TaiwanPP.schedulerAgent.dll
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\obj\ARM\Release\TaiwanPP.schedulerAgent.pdb
-D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Release\PCLWebUtility.dll
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Release\PCLWebUtility.dll
+D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Release\OxyPlot.dll
+D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Release\OxyPlot.pdb
+D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.schedulerAgent\Bin\ARM\Release\OxyPlot.xml

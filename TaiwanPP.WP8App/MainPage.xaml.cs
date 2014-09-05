@@ -378,7 +378,7 @@ namespace TaiwanPP.WP8App
                         ppvm.getPrice(product95.First().price, productdiesel.First().price);
                     }
                     await dcvm.load(ifvm.connectivity, progress);
-                    dcvm.buildList(true);
+                    await dcvm.buildList(true, progress);
                     if (stvm.stationDBnotifyDate.Month + 3 < DateTime.Now.Month)
                     {
                         if (System.Windows.MessageBox.Show("加油站資料庫已有約" + (DateTime.Now.Month - stvm.stationDBnotifyDate.Month) + "個月未更新，請確定網路穩定下按是進行更新，按否將展延三個月更新（手動更新請按下方更新按鈕）", "更新加油站資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
@@ -739,6 +739,10 @@ namespace TaiwanPP.WP8App
 
         private void contactMail(string content)
         {
+            if (System.Windows.MessageBox.Show("如果您願意提供您App設定，將有助於除錯，如果不願意請按否", "包含App設定？", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
+            {
+                content += "\n config.xml內容： \n"+ifvm.im.export();
+            }
             Microsoft.Phone.Tasks.EmailComposeTask emailComposeTask = new Microsoft.Phone.Tasks.EmailComposeTask();
             emailComposeTask.Subject = "Windows Phone油價查詢聯絡信";
             emailComposeTask.To = "kelunyang@outlook.com";

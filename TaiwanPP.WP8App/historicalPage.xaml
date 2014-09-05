@@ -81,8 +81,7 @@
             <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
                 <TextBlock Text="油價走勢圖" FontSize="26"/>
             </Border>
-            <TextBlock Text="本功能由於使用的第三方工具庫 Oxyplot 圖表Windows Phone 8 版尚在測試中，暫不開放" TextWrapping="Wrap" Foreground="#FF919191"></TextBlock>
-            <!-- <oxy:Plot Model="{Binding DataContext.historicalModel, ElementName=historicalchartPage}" BorderBrush="Black" BorderThickness="1" Width="400" Height="400"/> -->
+            <oxy:Plot Model="{Binding DataContext.historicalModel, ElementName=historicalchartPage}" Background="#FFF7F7F7" BorderThickness="0" Width="450" Height="300" Margin="0,0,0,40"/>
             <StackPanel>
                 <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
                     <TextBlock Text="相關數據" FontSize="26"/>

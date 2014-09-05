@@ -49,5 +49,4 @@ D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\obj\Debug\Taiw
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\obj\Debug\TaiwanPP.Library.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\obj\Debug\TaiwanPP.Library.pdb
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\obj\Debug\TaiwanPP.Library.csprojResolveAssemblyReference.cache
-C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Debug\TaiwanPP.Library.dll.CodeAnalysisLog.xml
-C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Debug\TaiwanPP.Library.dll.lastcodeanalysissucceeded
+C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\obj\Debug\TaiwanPP.Library.csprojResolveAssemblyReference.cache

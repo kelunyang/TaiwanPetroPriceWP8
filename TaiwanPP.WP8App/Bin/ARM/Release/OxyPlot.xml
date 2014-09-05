@@ -325,6 +325,11 @@
             <value>The color of the text.</value>
             <remarks>If the value is <c>null</c>, the TextColor of the parent PlotModel will be used.</remarks>
         </member>
+        <member name="P:OxyPlot.PlotElement.ToolTip">
+            <summary>
+            Gets or sets the tool tip. The default value is <c>null</c>.
+            </summary>
+        </member>
         <member name="P:OxyPlot.PlotElement.ActualFont">
             <summary>
             Gets the actual font.
@@ -4613,11 +4618,11 @@
         </member>
         <member name="M:OxyPlot.IRenderContext.DrawEllipse(OxyPlot.OxyRect,OxyPlot.OxyColor,OxyPlot.OxyColor,System.Double)">
             <summary>
-            Draws an ellipse.
+            Draws an extents.
             </summary>
-            <param name="rect">The rectangle.</param>
-            <param name="fill">The fill color. If set to <c>OxyColors.Undefined</c>, the ellipse will not be filled.</param>
-            <param name="stroke">The stroke color. If set to <c>OxyColors.Undefined</c>, the ellipse will not be stroked.</param>
+            <param name="extents">The rectangle defining the extents of the ellipse.</param>
+            <param name="fill">The fill color. If set to <c>OxyColors.Undefined</c>, the extents will not be filled.</param>
+            <param name="stroke">The stroke color. If set to <c>OxyColors.Undefined</c>, the extents will not be stroked.</param>
             <param name="thickness">The thickness (in device independent units, 1/96 inch).</param>
         </member>
         <member name="M:OxyPlot.IRenderContext.DrawEllipses(System.Collections.Generic.IList{OxyPlot.OxyRect},OxyPlot.OxyColor,OxyPlot.OxyColor,System.Double)">
@@ -4625,7 +4630,7 @@
             Draws a collection of ellipses, where all have the same stroke and fill.
             This performs better than calling DrawEllipse multiple times.
             </summary>
-            <param name="rectangles">The rectangles.</param>
+            <param name="extents">The rectangles defining the extents of the ellipses.</param>
             <param name="fill">The fill color. If set to <c>OxyColors.Undefined</c>, the ellipses will not be filled.</param>
             <param name="stroke">The stroke color. If set to <c>OxyColors.Undefined</c>, the ellipses will not be stroked.</param>
             <param name="thickness">The stroke thickness (in device independent units, 1/96 inch).</param>
@@ -4634,7 +4639,7 @@
             <summary>
             Draws a polyline.
             </summary>
-            <param name="points">The points.</param>
+            <param name="points">The points defining the polyline.</param>
             <param name="stroke">The stroke color.</param>
             <param name="thickness">The stroke thickness (in device independent units, 1/96 inch).</param>
             <param name="dashArray">The dash array (in device independent units, 1/96 inch). Use <c>null</c> to get a solid line.</param>
@@ -4646,7 +4651,7 @@
             Draws line segments defined by points (0,1) (2,3) (4,5) etc.
             This should have better performance than calling DrawLine for each segment.
             </summary>
-            <param name="points">The points.</param>
+            <param name="points">The points defining the line segments.</param>
             <param name="stroke">The stroke color.</param>
             <param name="thickness">The stroke thickness (in device independent units, 1/96 inch).</param>
             <param name="dashArray">The dash array (in device independent units, 1/96 inch).</param>
@@ -4657,7 +4662,7 @@
             <summary>
             Draws a polygon.
             </summary>
-            <param name="points">The points.</param>
+            <param name="points">The points defining the polygon.</param>
             <param name="fill">The fill color. If set to <c>OxyColors.Undefined</c>, the polygon will not be filled.</param>
             <param name="stroke">The stroke color. If set to <c>OxyColors.Undefined</c>, the polygon will not be stroked.</param>
             <param name="thickness">The stroke thickness (in device independent units, 1/96 inch).</param>
@@ -4670,7 +4675,7 @@
             Draws a collection of polygons, where all polygons have the same stroke and fill.
             This performs better than calling DrawPolygon multiple times.
             </summary>
-            <param name="polygons">The polygons.</param>
+            <param name="polygons">The polygons to draw.</param>
             <param name="fill">The fill color. If set to <c>OxyColors.Undefined</c>, the polygons will not be filled.</param>
             <param name="stroke">The stroke color. If set to <c>OxyColors.Undefined</c>, the polygons will not be stroked.</param>
             <param name="thickness">The stroke thickness (in device independent units, 1/96 inch).</param>
@@ -4682,19 +4687,19 @@
             <summary>
             Draws a rectangle.
             </summary>
-            <param name="rect">The rectangle.</param>
+            <param name="rectangle">The rectangle to draw.</param>
             <param name="fill">The fill color. If set to <c>OxyColors.Undefined</c>, the rectangle will not be filled.</param>
             <param name="stroke">The stroke color. If set to <c>OxyColors.Undefined</c>, the rectangle will not be stroked.</param>
             <param name="thickness">The stroke thickness (in device independent units, 1/96 inch).</param>
         </member>
         <member name="M:OxyPlot.IRenderContext.DrawRectangles(System.Collections.Generic.IList{OxyPlot.OxyRect},OxyPlot.OxyColor,OxyPlot.OxyColor,System.Double)">
             <summary>
-            Draws a collection of rectangles, where all have the same stroke and fill.
+            Draws a collection of extents, where all have the same stroke and fill.
             This performs better than calling DrawRectangle multiple times.
             </summary>
-            <param name="rectangles">The rectangles.</param>
-            <param name="fill">The fill color. If set to <c>OxyColors.Undefined</c>, the rectangles will not be filled.</param>
-            <param name="stroke">The stroke color. If set to <c>OxyColors.Undefined</c>, the rectangles will not be stroked.</param>
+            <param name="rectangles">The extents to draw.</param>
+            <param name="fill">The fill color. If set to <c>OxyColors.Undefined</c>, the extents will not be filled.</param>
+            <param name="stroke">The stroke color. If set to <c>OxyColors.Undefined</c>, the extents will not be stroked.</param>
             <param name="thickness">The stroke thickness (in device independent units, 1/96 inch).</param>
         </member>
         <member name="M:OxyPlot.IRenderContext.DrawText(OxyPlot.ScreenPoint,System.String,OxyPlot.OxyColor,System.String,System.Double,System.Double,System.Double,OxyPlot.HorizontalAlignment,OxyPlot.VerticalAlignment,System.Nullable{OxyPlot.OxySize})">
@@ -4707,9 +4712,9 @@
             <param name="fontFamily">The font family.</param>
             <param name="fontSize">Size of the font (in device independent units, 1/96 inch).</param>
             <param name="fontWeight">The font weight.</param>
-            <param name="rotate">The rotation angle.</param>
-            <param name="halign">The horizontal alignment.</param>
-            <param name="valign">The vertical alignment.</param>
+            <param name="rotation">The rotation angle.</param>
+            <param name="horizontalAlignment">The horizontal alignment.</param>
+            <param name="verticalAlignment">The vertical alignment.</param>
             <param name="maxSize">The maximum size of the text (in device independent units, 1/96 inch).</param>
         </member>
         <member name="M:OxyPlot.IRenderContext.MeasureText(System.String,System.String,System.Double,System.Double)">
@@ -4726,7 +4731,7 @@
             <summary>
             Sets the tool tip for the following items.
             </summary>
-            <param name="text">The text in the tooltip.</param>
+            <param name="text">The text in the tool tip, or <c>null</c> if no tool tip should be shown.</param>
         </member>
         <member name="M:OxyPlot.IRenderContext.CleanUp">
             <summary>
@@ -4754,7 +4759,7 @@
             <summary>
             Sets the clipping rectangle.
             </summary>
-            <param name="clippingRect">The clipping rectangle.</param>
+            <param name="clippingRectangle">The clipping rectangle.</param>
             <returns><c>true</c> if the clip rectangle was set.</returns>
         </member>
         <member name="M:OxyPlot.IRenderContext.ResetClip">
@@ -5105,6 +5110,19 @@
             <param name="verticalAlignment">The vertical align.</param>
             <param name="maxSize">Size of the max.</param>
         </member>
+        <member name="M:OxyPlot.RenderingExtensions.DrawMultilineText(OxyPlot.IRenderContext,OxyPlot.ScreenPoint,System.String,OxyPlot.OxyColor,System.String,System.Double,System.Double,System.Double)">
+            <summary>
+            Draws multi-line text at the specified point.
+            </summary>
+            <param name="rc">The render context.</param>
+            <param name="point">The point.</param>
+            <param name="text">The text.</param>
+            <param name="color">The text color.</param>
+            <param name="fontFamily">The font family.</param>
+            <param name="fontSize">The font size.</param>
+            <param name="fontWeight">The font weight.</param>
+            <param name="dy">The line spacing.</param>
+        </member>
         <member name="M:OxyPlot.RenderingExtensions.DrawLine(OxyPlot.IRenderContext,System.Double,System.Double,System.Double,System.Double,OxyPlot.OxyPen,System.Boolean)">
             <summary>
             Draws a line specified by coordinates.
@@ -5298,7 +5316,7 @@
             <summary>
             Sets the tool tip for the following items.
             </summary>
-            <param name="text">The text in the tooltip.</param>
+            <param name="text">The text in the tool tip.</param>
         </member>
         <member name="M:OxyPlot.XkcdRenderingDecorator.CleanUp">
             <summary>
@@ -11717,11 +11735,6 @@
             </summary>
             <remarks>The position is defined by a fraction in the range <c>0</c> to <c>1</c>.</remarks>
         </member>
-        <member name="P:OxyPlot.Axes.Axis.ToolTip">
-            <summary>
-            Gets or sets the tool tip. The default value is <c>null</c>.
-            </summary>
-        </member>
         <member name="P:OxyPlot.Axes.Axis.Unit">
             <summary>
             Gets or sets the unit of the axis. The default value is <c>null</c>.
@@ -14926,6 +14939,15 @@
             <param name="axesOfPositionTier">The axes of position tier.</param>
             <returns>The maximum size.</returns>
         </member>
+        <member name="M:OxyPlot.PlotModel.RenderErrorMessage(OxyPlot.IRenderContext,System.String,System.String,System.Double)">
+            <summary>
+            Renders the specified error message.
+            </summary>
+            <param name="rc">The rendering context.</param>
+            <param name="title">The title.</param>
+            <param name="errorMessage">The error message.</param>
+            <param name="fontSize">The font size. The default value is 12.</param>
+        </member>
         <member name="M:OxyPlot.PlotModel.IsPlotMarginAutoSized(OxyPlot.Axes.AxisPosition)">
             <summary>
             Determines whether the plot margin for the specified axis position is auto-sized.
@@ -15010,6 +15032,12 @@
             The current color index.
             </summary>
         </member>
+        <member name="F:OxyPlot.PlotModel.updateException">
+            <summary>
+            The last update exception.
+            </summary>
+            <value>The exception or <c>null</c> if there was no exceptions during the last update.</value>
+        </member>
         <member name="M:OxyPlot.PlotModel.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:OxyPlot.PlotModel"/> class.
@@ -15038,9 +15066,9 @@
         </member>
         <member name="M:OxyPlot.PlotModel.CreateTextReport">
             <summary>
-            Creates a text report for the plot.
+            Creates a text report for the plot model.
             </summary>
-            <returns>The create text report.</returns>
+            <returns>A text report that contains information about the contents of the plot model.</returns>
         </member>
         <member name="M:OxyPlot.PlotModel.InvalidatePlot(System.Boolean)">
             <summary>
@@ -15104,6 +15132,12 @@
             </summary>
             <returns>An enumerator of the elements.</returns>
         </member>
+        <member name="M:OxyPlot.PlotModel.GetLastUpdateException">
+            <summary>
+            Gets any exception thrown during the last <see cref="M:OxyPlot.IPlotModel.Update(System.Boolean)"/> call.
+            </summary>
+            <returns>The exception or <c>null</c> if there was no exception.</returns>
+        </member>
         <member name="M:OxyPlot.PlotModel.OxyPlot#IPlotModel#Update(System.Boolean)">
             <summary>
             Updates all axes and series.
@@ -15118,9 +15152,10 @@
             <summary>
             Gets the axis for the specified key.
             </summary>
-            <param name="key">The key.</param>
+            <param name="key">The axis key.</param>
             <param name="defaultAxis">The default axis.</param>
-            <returns>The axis, or the defaultAxis if the key is not found.</returns>
+            <returns>The axis, or the defaultAxis if the key is not specified.</returns>
+            <exception cref="T:System.InvalidOperationException">Cannot find axis with the specified key.</exception>
         </member>
         <member name="M:OxyPlot.PlotModel.ResetAllAxes">
             <summary>

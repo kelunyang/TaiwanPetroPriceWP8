@@ -67,12 +67,13 @@
   <!ATTLIST stationBehavior behavior (0|1) #REQUIRED> <!-- 點擊加油站行為，0為單點導航，1為單點看加油站位置 -->
   <!ATTLIST product id (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8) #REQUIRED> <!-- 追蹤商品清單 -->
   <!ATTLIST tiles default (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | -1) #REQUIRED> <!-- 預設動態磚 -->
+  <!ATTLIST tiles updateDate CDATA #REQUIRED><!-- 動態磚更新日期 -->
   <!ATTLIST sysinfo upgrade (0|1) #REQUIRED><!-- 是否為升級版 -->
   <!ATTLIST sysinfo firstload (0|1) #REQUIRED><!-- 初次使用 -->
 ]>
-<appconfig version="635434228452128937">
+<appconfig version="635454605016738792">
   <info>
-    <updateDate priceDB="0" stationDB="635434228452128937" sDBnotifyDate="635434228452128937" DBcheckedDate="0" moeaboeDBdate="0"/>
+    <updateDate priceDB="0" stationDB="635454605016738792" sDBnotifyDate="635454605016738792" DBcheckedDate="0" moeaboeDBdate="0"/>
     <notified CPC="0" FPCC="0" checkHour="0"/>
     <sysinfo firstload="1" upgrade="0"/>
   </info>
@@ -101,5 +102,5 @@
     <stationBehavior behavior="1"/>
     <runPredict enable="1"/>
   </settings>
-  <tiles default="-1"></tiles>
+  <tiles default="-1" updateDate="0"></tiles>
 </appconfig>

@@ -47,7 +47,6 @@ C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\obj\ARM\Debug\
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\obj\ARM\Debug\TaiwanPP.Tile.g.resources
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\obj\ARM\Debug\TaiwanPP.Tile.dll
 C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\obj\ARM\Debug\TaiwanPP.Tile.pdb
-C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\PCLWebUtility.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\TaiwanPP.Tile.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\TaiwanPP.Tile.pdb
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\ICSharpCode.SharpZLib.Phone.dll
@@ -68,7 +67,6 @@ D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\SQL
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\SQLite.Net.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\Newtonsoft.Json.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\Portable.Text.Encoding.dll
-D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\PCLWebUtility.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\TaiwanPP.Library.pdb
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\TaiwanPP.Library.pri
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\ICSharpCode.SharpZLib.Phone.pdb
@@ -98,5 +96,6 @@ D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\obj\ARM\Debug\til
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\obj\ARM\Debug\TaiwanPP.Tile.g.resources
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\obj\ARM\Debug\TaiwanPP.Tile.dll
 D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\obj\ARM\Debug\TaiwanPP.Tile.pdb
-C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\TaiwanPP.Tile.dll.CodeAnalysisLog.xml
-C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\TaiwanPP.Tile.dll.lastcodeanalysissucceeded
+D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\OxyPlot.dll
+D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\OxyPlot.pdb
+D:\Documents\Skydrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Tile\Bin\ARM\Debug\OxyPlot.xml
