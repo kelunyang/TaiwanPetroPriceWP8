@@ -1,6 +1,6 @@
 # 台灣油價查詢
 
-**** 這是Windows Phone 版本的台灣油價查詢程式，支援Windows Phone 8.0/8.1 ****
+*** 這是Windows Phone 版本的台灣油價查詢程式，支援Windows Phone 8.0/8.1 ***
 提供以下幾個功能
 
 1. 目前油價查詢（來自能源局資料庫）
