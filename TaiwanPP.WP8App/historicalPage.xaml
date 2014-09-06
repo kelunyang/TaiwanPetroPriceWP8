@@ -81,6 +81,7 @@
             <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
                 <TextBlock Text="油價走勢圖" FontSize="26"/>
             </Border>
+            <TextBlock Text="第三方圖表模組Oxyplot剛脫離測試版，如有不穩定之處，請見諒" FontSize="14" HorizontalAlignment="Center" Foreground="Gray"/>
             <oxy:Plot Model="{Binding DataContext.historicalModel, ElementName=historicalchartPage}" Background="#FFF7F7F7" BorderThickness="0" Width="450" Height="300" Margin="0,0,0,40"/>
             <StackPanel>
                 <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
@@ -163,7 +164,11 @@
                         <TextBlock TextWrapping="Wrap" Text="預測價" Margin="5,7,0,0"/>
                     </Border>
                     <Border Grid.Column="3" Grid.Row="1">
-                        <TextBlock TextWrapping="Wrap" Text="{Binding DataContext.predictPrice, Converter={StaticResource priceConverter}, ElementName=historicalchartPage, StringFormat=\{0:N1\}}" Margin="9,7,10,0"/>
+                        <TextBlock x:Name="predict" TextWrapping="Wrap" Text="{Binding DataContext.predictPrice, Converter={StaticResource priceConverter}, ElementName=historicalchartPage, StringFormat=\{0:N1\}}" Margin="9,7,10,0">
+                            <TextBlock.DataContext>
+                                <libViewModels:ppViewModel/>
+                            </TextBlock.DataContext>
+                        </TextBlock>
                     </Border>
                 </Grid>
             </Border>

@@ -16,16 +16,19 @@ using System.IO;
 using Windows.Storage;
 using Nito.AsyncEx;
 using TaiwanPP.Library.Helpers;
+using System.IO.IsolatedStorage;
 
 namespace TaiwanPP.WP8App
 {
     public partial class historicalPage : PhoneApplicationPage
     {
-        string predictPrice;
-        string predictDate;
         string kind;
         string DB_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, "price.sqlite");
+        string XML_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, "config.xml");
+        IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication();
         infoViewModel ifvm;
+        ppViewModel ppvm;
+
         public historicalPage()
         {
             InitializeComponent();
@@ -34,10 +37,13 @@ namespace TaiwanPP.WP8App
             builder.RegisterInstance<infoModel>(new infoModel());
             builder.RegisterType<cpViewModel>().PropertiesAutowired();
             builder.RegisterType<infoViewModel>().PropertiesAutowired();
+            builder.RegisterType<ppViewModel>().PropertiesAutowired();
             IContainer container = builder.Build();
             historicalchartPage.DataContext = container.Resolve<cpViewModel>();
             titlebar.DataContext = container.Resolve<infoViewModel>();
+            predict.DataContext = container.Resolve<ppViewModel>();
             ifvm = (infoViewModel)titlebar.DataContext;
+            ppvm = (ppViewModel)predict.DataContext;
             ifvm.connectivity = Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
         }
 
@@ -49,17 +55,34 @@ namespace TaiwanPP.WP8App
                 progress.PropertyChanged += progress_PropertyChanged;
                 try
                 {
-                    NavigationContext.QueryString.TryGetValue("predictPrice", out predictPrice);
-                    NavigationContext.QueryString.TryGetValue("predictDate", out predictDate);
+                    title.Visibility = System.Windows.Visibility.Collapsed;
+                    systemtray.IsVisible = true;
+                    systemtray.Text = "載入油價變化資料...";
+                    systemtray.IsIndeterminate = true;
+                    using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+                    {
+                        ifvm.loadConfig(isf);
+                        isf.Close();
+                        isf.Dispose();
+                    }
                     NavigationContext.QueryString.TryGetValue("kind", out kind);
                     cpViewModel cvm = (cpViewModel)historicalchartPage.DataContext;
                     await cvm.loadDB(new SQLitePlatformWP8(), DB_PATH);
                     await cvm.buildDB();
-                    double pp = predictPrice == "" ? double.NaN : Convert.ToDouble(predictPrice);
-                    cvm.historicalPrice(pp, Convert.ToInt64(DateTime.Parse(predictDate).Ticks), kind, progress);
+                    await ppvm.loadDB(new SQLitePlatformWP8(), DB_PATH);
+                    if (double.IsNaN(ppvm.pprice))
+                    {
+                        await cvm.currentPrice(progress, true);
+                        await ppvm.predictedPrice(ifvm.connectivity, true, progress);
+                        ppvm.getPrice(cvm.currentCollections[typeDB.CPC95.key].price, cvm.currentCollections[typeDB.CPCdiesel.key].price);
+                    }
+                    double pp = kind == "4" || kind == "8" ? ppvm.pdprice : ppvm.pprice;
+                    cvm.historicalPrice(pp, ppvm.predictpause, kind, progress);
+                    title.Visibility = System.Windows.Visibility.Visible;
                 }
                 catch (Exception ex)
                 {
+                    title.Visibility = System.Windows.Visibility.Visible;
                     MessageBox.Show(ex.Message, "載入資料發生錯誤", MessageBoxButton.OK);
                 }
             });

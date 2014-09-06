@@ -278,8 +278,7 @@ namespace TaiwanPP.WP8App
         }
 
         private void viewhistorical(priceStorage pi) {
-            string pp = double.IsNaN(ppvm.pprice) ? "" : (ppvm.pprice + cpvm.currentCollections[typeDB.CPC95.key].price).ToString();
-            if(uienable) NavigationService.Navigate(new Uri("/historicalPage.xaml?predictPrice=" + pp + "&predictDate=" + ppvm.pstartdate + "&kind=" + pi.kind, UriKind.Relative));
+            if(uienable) NavigationService.Navigate(new Uri("/historicalPage.xaml?kind=" + pi.kind, UriKind.Relative));
         }
 
         private void App_Loaded(object sender, RoutedEventArgs e)

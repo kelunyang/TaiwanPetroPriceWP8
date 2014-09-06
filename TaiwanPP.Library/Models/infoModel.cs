@@ -86,14 +86,15 @@ namespace TaiwanPP.Library.Models
   <!ATTLIST tiles updateDate CDATA #REQUIRED><!-- 動態磚更新日期 -->
   <!ATTLIST sysinfo upgrade (0|1) #REQUIRED><!-- 是否為升級版 -->
   <!ATTLIST sysinfo firstload (0|1) #REQUIRED><!-- 初次使用 -->
+  <!ATTLIST predictPrice pause (0|1) #REQUIRED><!-- 啟動預測 -->
 ]>
-<appconfig version='635454605016738792'>
+<appconfig version='635456005943385740'>
   <info>
-    <updateDate priceDB='0' stationDB='635436112534590839' sDBnotifyDate='635436112534590839' DBcheckedDate='0' moeaboeDBdate='0'/>
+    <updateDate priceDB='0' stationDB='635456005943385740' sDBnotifyDate='635456005943385740' DBcheckedDate='0' moeaboeDBdate='0'/>
     <notified CPC='0' FPCC='0' checkHour='0'/>
     <sysinfo firstload='1' upgrade='0'/>
   </info>
-  <predictPrice>
+  <predictPrice pause='0'>
     <duration end='0' start='0' runday='0'/>
     <gasprice>0</gasprice>
     <dieselprice>0</dieselprice>
@@ -176,6 +177,17 @@ namespace TaiwanPP.Library.Models
             set
             {
                 config.Element("appconfig").Element("info").Element("sysinfo").Attribute("upgrade").Value = value ? "1" : "0";
+            }
+        }
+        public bool ppause
+        {
+            get
+            {
+                return config.Element("appconfig").Element("predictPrice").Attribute("pause").Value == "1" ? true : false;
+            }
+            set
+            {
+                config.Element("appconfig").Element("predictPrice").Attribute("pause").Value = value ? "1" : "0";
             }
         }
         public DateTime pstartWeek

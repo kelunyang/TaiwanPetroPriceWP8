@@ -50,7 +50,7 @@ namespace TaiwanPP.WP8App.Helpers
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return (bool)value ? "單點顯示加油站位置，雙擊導航到該站，更多功能請長壓" : "單點進入導航，更多功能請長壓";
+            return (bool)value ? "單點顯示位置，雙擊導航，更多功能請長壓" : "單點進入導航，更多功能請長壓";
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

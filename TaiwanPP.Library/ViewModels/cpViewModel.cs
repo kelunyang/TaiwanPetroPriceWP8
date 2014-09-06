@@ -397,7 +397,7 @@ namespace TaiwanPP.Library.ViewModels
             }
             messenger.Report(new ProgressReport() { progress = 100, progressMessage = "擷取目前油價", display = false });
         }
-        public void historicalPrice(double predictPrice, long predictDate, string productid, IProgress<ProgressReport> messenger)
+        public void historicalPrice(double predictPrice, bool predictpause, string productid, IProgress<ProgressReport> messenger)
         {
             messenger.Report(new ProgressReport() { progress = 0, progressMessage = "擷取歷史油價資料庫", display = true });
             int id = Convert.ToInt32(productid);
@@ -409,14 +409,25 @@ namespace TaiwanPP.Library.ViewModels
             messenger.Report(new ProgressReport() { progress = 30, progressMessage = "計算平均價格", display = true });
             maxPrice = historical.Max(x => x.price);
             minPrice = historical.Min(x => x.price);
-            double maxDate = DateTimeAxis.ToDouble(new DateTime(historical.Max(x => x.datetick)).AddDays(7));
+            double maxDate = !predictpause ? DateTimeAxis.ToDouble(new DateTime(historical.Max(x => x.datetick)).AddDays(7)) : DateTimeAxis.ToDouble(new DateTime(historical.Max(x => x.datetick)));
             double minDate = DateTimeAxis.ToDouble(new DateTime(historical.Min(x => x.datetick)));
+            double maxAxis = maxPrice;;
+            double minAxis = minPrice;;
+            if (!predictpause)
+            {
+                if (historical.Any())
+                {
+                    predictPrice += historical.Last().price;
+                    this.predictPrice = predictPrice;
+                    maxAxis = maxPrice > predictPrice ? maxPrice : predictPrice;
+                    minAxis = minPrice < predictPrice ? minPrice : predictPrice;
+                }
+            }
             avgPrice = historical.Average(x => x.price);
-            this.predictPrice = predictPrice;
             messenger.Report(new ProgressReport() { progress = 60, progressMessage = "繪製價格圖表", display = true });
             PlotModel tempModel = new PlotModel();
             tempModel.Axes.Add(new DateTimeAxis() { Position = AxisPosition.Bottom, Angle = 70, MajorStep = 7, Maximum = maxDate, Minimum = minDate });
-            tempModel.Axes.Add(new LinearAxis() { Position = AxisPosition.Left, Maximum = maxPrice, Minimum = minPrice });
+            tempModel.Axes.Add(new LinearAxis() { Position = AxisPosition.Left, Maximum = maxAxis, Minimum = minAxis });
             LineSeries ls = new LineSeries();
             ls.Title = "價格";
             ls.Color = OxyColor.FromRgb(212, 61, 61);
@@ -440,10 +451,13 @@ namespace TaiwanPP.Library.ViewModels
                 ls.Points.Add(new DataPoint(d, ps.price));
                 avgs.Points.Add(new DataPoint(d, avgPrice));
             }
-            ls.Points.Add(DataPoint.Undefined);
-            ls.Points.Add(new DataPoint(maxDate, predictPrice));
-            avgs.Points.Add(DataPoint.Undefined);
-            avgs.Points.Add(new DataPoint(maxDate, avgPrice));
+            if (!predictpause)
+            {
+                ls.Points.Add(DataPoint.Undefined);
+                ls.Points.Add(new DataPoint(maxDate, predictPrice));
+                avgs.Points.Add(DataPoint.Undefined);
+                avgs.Points.Add(new DataPoint(maxDate, avgPrice));
+            }
             tempModel.Series.Add(ls);
             tempModel.Series.Add(avgs);
             historicalModel = tempModel;

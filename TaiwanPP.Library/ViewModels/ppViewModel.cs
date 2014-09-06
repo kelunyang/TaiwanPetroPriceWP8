@@ -31,11 +31,12 @@ namespace TaiwanPP.Library.ViewModels
         {
             get
             {
+                _predictpause = im.ppause;
                 return _predictpause;
             }
             set
             {
-                _predictpause = value;
+                im.ppause = value;
                 NotifyPropertyChanged();
             }
         }

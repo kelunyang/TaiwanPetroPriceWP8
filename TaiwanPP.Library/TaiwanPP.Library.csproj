@@ -71,7 +71,7 @@
       <HintPath>..\packages\Nito.AsyncEx.3.0.0\lib\portable-net45+netcore45+wp8+wpa81+MonoTouch+MonoAndroid\Nito.AsyncEx.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot">
-      <HintPath>..\packages\OxyPlot.Core.2014.1.438\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
+      <HintPath>..\packages\OxyPlot.Core.2014.1.442\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
     </Reference>
     <Reference Include="PCLWebUtility">
       <HintPath>..\packages\PCLWebUtility.1.0.2\Lib\portable-net4+sl4+wp7+win8\PCLWebUtility.dll</HintPath>
