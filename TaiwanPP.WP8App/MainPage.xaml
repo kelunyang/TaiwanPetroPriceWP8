@@ -56,7 +56,7 @@
         <CollectionViewSource Filter="savedFPCCFilter" x:Name="SAVEDFPCCcollection" Source="{Binding DataContext.currentCollections, ElementName=currentpricePage}"/>
         <CollectionViewSource Filter="monitorFilter" x:Name="monitoredCollection" Source="{Binding DataContext.currentCollections, ElementName=currentpricePage}"/>
         <DataTemplate x:Key="bulletinItem">
-            <Border BorderBrush="#FFE4E4E4" BorderThickness="0,1,1,1" HorizontalAlignment="Left" Height="45" VerticalAlignment="Top" Background="#FFEEEEEE" Margin="0,3" Width="410" Tap="Border_Tap">
+            <Border BorderBrush="#FFE4E4E4" BorderThickness="0,1,1,1" HorizontalAlignment="Left" Height="45" VerticalAlignment="Top" Background="#FFEEEEEE" Margin="0,3" Width="410" Tap="Border_Tap" Visibility="{Binding vis, ConverterParameter=1, Converter={StaticResource boolvisConverter}}">
                 <toolkit:GestureService.GestureListener>
                     <toolkit:GestureListener />
                 </toolkit:GestureService.GestureListener>

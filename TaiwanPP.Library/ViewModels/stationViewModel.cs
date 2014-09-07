@@ -19,7 +19,7 @@ namespace TaiwanPP.Library.ViewModels
 {
     public class stationViewModel : viewmodelBase
     {
-        List<string> filtername = new List<string>() {"僅顯示台塑","僅顯示中油","自助服務","直營站","儲存的站台","僅限營業中的站台"};
+        List<string> filtername = new List<string>() { "僅顯示台塑", "僅顯示中油", "自助服務", "直營站", "儲存的站台", "僅限營業中的站台", "提供92無鉛汽油", "提供95無鉛汽油", "提供98無鉛汽油", "提供柴油", "提供酒精汽油" };
         private List<stationStorage> stationDB;
         private phoneQuery phoneDB;
         IEnumerable<stationStorage> queryList;
@@ -179,6 +179,76 @@ namespace TaiwanPP.Library.ViewModels
                 NotifyPropertyChanged();
             }
         }
+        bool _sfilterp92 = false;
+        public bool sfilterp92
+        {
+            get
+            {
+                _sfilterp92 = im.sfilterp92;
+                return _sfilterp92;
+            }
+            set
+            {
+                im.sfilterp92 = value;
+                NotifyPropertyChanged();
+            }
+        }
+        bool _sfilterp95 = false;
+        public bool sfilterp95
+        {
+            get
+            {
+                _sfilterp95 = im.sfilterp95;
+                return _sfilterp95;
+            }
+            set
+            {
+                im.sfilterp95 = value;
+                NotifyPropertyChanged();
+            }
+        }
+        bool _sfilterp98 = false;
+        public bool sfilterp98
+        {
+            get
+            {
+                _sfilterp98 = im.sfilterp98;
+                return _sfilterp98;
+            }
+            set
+            {
+                im.sfilterp98 = value;
+                NotifyPropertyChanged();
+            }
+        }
+        bool _sfilterpdiesel = false;
+        public bool sfilterpdiesel
+        {
+            get
+            {
+                _sfilterpdiesel = im.sfilterpdiesel;
+                return _sfilterpdiesel;
+            }
+            set
+            {
+                im.sfilterpdiesel = value;
+                NotifyPropertyChanged();
+            }
+        }
+        bool _sfilterpgasohol = false;
+        public bool sfilterpgasohol
+        {
+            get
+            {
+                _sfilterpgasohol = im.sfilterpgasohol;
+                return _sfilterpgasohol;
+            }
+            set
+            {
+                im.sfilterpgasohol = value;
+                NotifyPropertyChanged();
+            }
+        }
         int _sfiltercountry = 0;
         public int sfiltercountry
         {
@@ -322,6 +392,11 @@ namespace TaiwanPP.Library.ViewModels
             if (sfilterSelf) filters.Add(filtername[2]);
             if (sfilterFavoirte) filters.Add(filtername[4]);
             if (sfilterInservice) filters.Add(filtername[5]);
+            if (sfilterp92) filters.Add(filtername[6]);
+            if (sfilterp95) filters.Add(filtername[7]);
+            if (sfilterp98) filters.Add(filtername[8]);
+            if (sfilterpdiesel) filters.Add(filtername[9]);
+            if (sfilterpgasohol) filters.Add(filtername[10]);
             filters.Add(sfiltercountryEnable ? countryitems[sfiltercountry] : sfiltercustomLocation ? "指定位置方圓" + sfilterKilonmeter + "公里內" : "目前位置方圓" + sfilterKilonmeter + "公里內");
             filtercount = filters.Count();
         }
@@ -376,6 +451,11 @@ namespace TaiwanPP.Library.ViewModels
             if (sfilterDirect) queryList = queryList.Except(from sta in queryList where !sta.type select sta);
             if (sfilterFPCC) queryList = queryList.Except(from sta in queryList where sta.brand == 1 select sta);
             if (sfilterCPC) queryList = queryList.Except(from sta in queryList where sta.brand == 0 select sta);
+            if (sfilterp92) queryList = queryList.Where(sta => sta.p92);
+            if (sfilterp95) queryList = queryList.Where(sta => sta.p95);
+            if (sfilterp98) queryList = queryList.Where(sta => sta.p98);
+            if (sfilterpdiesel) queryList = queryList.Where(sta => sta.pdiesel);
+            if (sfilterpgasohol) queryList = queryList.Where(sta => sta.pgasohol);
             if (sfilterFavoirte) queryList = queryList.Union(from sta in stationDB where sta.favorite select sta);
             messenger.Report(new ProgressReport() { progress = 50, progressMessage = "查詢鄰近加油站", display = true });
             queryList = from sta in queryList
@@ -475,6 +555,11 @@ namespace TaiwanPP.Library.ViewModels
             if (sfilterDirect) queryList = queryList.Except(from sta in queryList where !sta.type select sta);
             if (sfilterFPCC) queryList = queryList.Except(from sta in queryList where sta.brand == 1 select sta);
             if (sfilterCPC) queryList = queryList.Except(from sta in queryList where sta.brand == 0 select sta);
+            if (sfilterp92) queryList = queryList.Where(sta => sta.p92);
+            if (sfilterp95) queryList = queryList.Where(sta => sta.p95);
+            if (sfilterp98) queryList = queryList.Where(sta => sta.p98);
+            if (sfilterpdiesel) queryList = queryList.Where(sta => sta.pdiesel);
+            if (sfilterpgasohol) queryList = queryList.Where(sta => sta.pgasohol);
             if (sfilterFavoirte) queryList = queryList.Union(from sta in stationDB where sta.favorite select sta);
             messenger.Report(new ProgressReport() { progress = 50, progressMessage = "查詢鄰近加油站", display=true });
             queryList = from sta in queryList
@@ -823,6 +908,11 @@ namespace TaiwanPP.Library.ViewModels
                                       city = station.ChildNodes[3].InnerText,
                                       starttime = GetOpenTime(station.ChildNodes[11].InnerText),
                                       duration = GetDurationTime(station.ChildNodes[11].InnerText),
+                                      p92 = station.ChildNodes[13].HasChildNodes,
+                                      p95 = station.ChildNodes[17].HasChildNodes,
+                                      p98 = station.ChildNodes[21].HasChildNodes,
+                                      pdiesel = station.ChildNodes[25].HasChildNodes,
+                                      pgasohol = false
                                   });
                     return tr.ToList();
                 }

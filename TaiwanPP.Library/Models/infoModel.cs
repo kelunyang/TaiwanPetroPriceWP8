@@ -33,9 +33,10 @@ namespace TaiwanPP.Library.Models
   <!ELEMENT soapUpdate EMPTY><!-- 中油SOAP連接 -->
   <!ELEMENT runPredict EMPTY><!-- 執行預測 -->
   <!ELEMENT stationBehavior EMPTY><!-- 點擊加油站行為 -->
-  <!ELEMENT stationFilters (FPCC ,CPC ,Self ,Direct ,Favorite ,Kilometer ,Country ,Inservice)>
+  <!ELEMENT stationFilters (FPCC ,CPC ,Self ,Direct ,Favorite ,Kilometer ,Country ,Inservice, Product)>
   <!ELEMENT productMonitor (product*)><!-- 追蹤油價清單 -->
   <!ELEMENT product EMPTY>
+  <!ELEMENT Product EMPTY>
   <!ELEMENT gasprice (#PCDATA)> <!-- 預測汽油價格 -->
   <!ELEMENT dieselprice (#PCDATA)> <!-- 預測柴油價格 -->
   <!ELEMENT FPCC EMPTY><!-- 僅顯示台塑加油站 -->
@@ -71,6 +72,11 @@ namespace TaiwanPP.Library.Models
   <!ATTLIST Kilometer long CDATA #REQUIRED><!-- 搜尋地點 -->
   <!ATTLIST Kilometer name CDATA #REQUIRED><!-- 地名 -->
   <!ATTLIST Kilometer filter (0|1) #REQUIRED><!-- 啟動指定位置過濾 -->
+  <!ATTLIST Product p92 (0|1) #REQUIRED>
+  <!ATTLIST Product p95 (0|1) #REQUIRED>
+  <!ATTLIST Product p98 (0|1) #REQUIRED>
+  <!ATTLIST Product pdiesel (0|1) #REQUIRED>
+  <!ATTLIST Product pgasohol (0|1) #REQUIRED>
   <!ATTLIST dailynotify notified (0|1) #REQUIRED><!-- 本日已提醒 -->
   <!ATTLIST dailynotify checkHour CDATA #REQUIRED><!-- 本日已提醒 -->
   <!ATTLIST dailynotify enable (0|1) #REQUIRED><!-- 啟動本日提醒 -->
@@ -88,9 +94,9 @@ namespace TaiwanPP.Library.Models
   <!ATTLIST sysinfo firstload (0|1) #REQUIRED><!-- 初次使用 -->
   <!ATTLIST predictPrice pause (0|1) #REQUIRED><!-- 啟動預測 -->
 ]>
-<appconfig version='635456005943385740'>
+<appconfig version='635456958087482229'>
   <info>
-    <updateDate priceDB='0' stationDB='635456005943385740' sDBnotifyDate='635456005943385740' DBcheckedDate='0' moeaboeDBdate='0'/>
+    <updateDate priceDB='0' stationDB='635456958087482229' sDBnotifyDate='635456958087482229' DBcheckedDate='0' moeaboeDBdate='0'/>
     <notified CPC='0' FPCC='0' checkHour='0'/>
     <sysinfo firstload='1' upgrade='0'/>
   </info>
@@ -111,6 +117,7 @@ namespace TaiwanPP.Library.Models
       <Kilometer lat='0' long='0' name='' filter='0'>3</Kilometer>
       <Country filter='0'>0</Country>
       <Inservice filter='1'/>
+      <Product p92='0' p95='1' p98='0' pdiesel='0' pgasohol='0'/>
     </stationFilters>
     <dailynotify notified='0' checkHour='0' enable='1'>0</dailynotify>
     <defaultPage page='0'/>
@@ -475,6 +482,61 @@ namespace TaiwanPP.Library.Models
             set
             {
                 config.Element("appconfig").Element("settings").Element("stationFilters").Element("Kilometer").Value = value.ToString();
+            }
+        }
+        public bool sfilterp92
+        {
+            get
+            {
+                return config.Element("appconfig").Element("settings").Element("stationFilters").Element("Product").Attribute("p92").Value == "1" ? true : false;
+            }
+            set
+            {
+                config.Element("appconfig").Element("settings").Element("stationFilters").Element("Product").Attribute("p92").Value = value ? "1" : "0";
+            }
+        }
+        public bool sfilterp95
+        {
+            get
+            {
+                return config.Element("appconfig").Element("settings").Element("stationFilters").Element("Product").Attribute("p95").Value == "1" ? true : false;
+            }
+            set
+            {
+                config.Element("appconfig").Element("settings").Element("stationFilters").Element("Product").Attribute("p95").Value = value ? "1" : "0";
+            }
+        }
+        public bool sfilterp98
+        {
+            get
+            {
+                return config.Element("appconfig").Element("settings").Element("stationFilters").Element("Product").Attribute("p98").Value == "1" ? true : false;
+            }
+            set
+            {
+                config.Element("appconfig").Element("settings").Element("stationFilters").Element("Product").Attribute("p98").Value = value ? "1" : "0";
+            }
+        }
+        public bool sfilterpdiesel
+        {
+            get
+            {
+                return config.Element("appconfig").Element("settings").Element("stationFilters").Element("Product").Attribute("pdiesel").Value == "1" ? true : false;
+            }
+            set
+            {
+                config.Element("appconfig").Element("settings").Element("stationFilters").Element("Product").Attribute("pdiesel").Value = value ? "1" : "0";
+            }
+        }
+        public bool sfilterpgasohol
+        {
+            get
+            {
+                return config.Element("appconfig").Element("settings").Element("stationFilters").Element("Product").Attribute("pgasohol").Value == "1" ? true : false;
+            }
+            set
+            {
+                config.Element("appconfig").Element("settings").Element("stationFilters").Element("Product").Attribute("pgasohol").Value = value ? "1" : "0";
             }
         }
         public int defaultTile {

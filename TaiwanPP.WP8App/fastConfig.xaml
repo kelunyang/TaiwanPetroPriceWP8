@@ -207,6 +207,11 @@
                         <StackPanel.DataContext>
                             <libViewModels:stationViewModel/>
                         </StackPanel.DataContext>
+                            <toolkit:ToggleSwitch Foreground="Black" Content="{Binding DataContext.sfilterp95, Converter={StaticResource filterConverter}, ElementName=stationfilters}" Style="{StaticResource FixedToggleSwitchStyle}" IsChecked="{Binding DataContext.sfilterp95, ElementName=stationfilters, Mode=TwoWay}">
+                                <toolkit:ToggleSwitch.Header>
+                                    <TextBlock Text="顯示提供95無鉛汽油的加油站" Foreground="Black"/>
+                                </toolkit:ToggleSwitch.Header>
+                            </toolkit:ToggleSwitch>
                             <toolkit:ToggleSwitch Foreground="Black" Content="{Binding DataContext.sfilterInservice, Converter={StaticResource filterConverter}, ElementName=stationfilters}" Style="{StaticResource FixedToggleSwitchStyle}" IsChecked="{Binding DataContext.sfilterInservice, ElementName=stationfilters, Mode=TwoWay}">
                                 <toolkit:ToggleSwitch.Header>
                                     <TextBlock Text="僅顯示營業中的加油站" Foreground="Black"/>

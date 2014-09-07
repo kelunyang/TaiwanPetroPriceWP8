@@ -26,6 +26,11 @@ namespace TaiwanPP.Library.Models
         public int selftype { get; set; }
         public int brand { get; set; }
         public bool favorite { get; set; }
+        public bool p92 { get; set; }
+        public bool p95 { get; set; }
+        public bool p98 { get; set; }
+        public bool pdiesel { get; set; }
+        public bool pgasohol { get; set; }
         [Ignore]
         public string cpcid { get; set; }  //temp CPC station id
         [Ignore]
@@ -53,6 +58,11 @@ namespace TaiwanPP.Library.Models
             if (this.name != s.name) return false;
             if(this.phone != s.phone) return false;
             if (this.address != s.address) return false;
+            if (this.p92 != s.p92) return false;
+            if (this.p95 != s.p95) return false;
+            if (this.p98 != s.p98) return false;
+            if (this.pdiesel != s.pdiesel) return false;
+            if (this.pgasohol != s.pgasohol) return false;
             return true;
         }
         public override int GetHashCode()
@@ -64,6 +74,11 @@ namespace TaiwanPP.Library.Models
             if (this.name != obj.name) return false;
             if (this.phone != obj.phone) return false;
             if (this.address != obj.address) return false;
+            if (this.p92 != obj.p92) return false;
+            if (this.p95 != obj.p95) return false;
+            if (this.p98 != obj.p98) return false;
+            if (this.pdiesel != obj.pdiesel) return false;
+            if (this.pgasohol != obj.pgasohol) return false;
             return true;
         }
         public bool minimumEquals(stationStorage obj)

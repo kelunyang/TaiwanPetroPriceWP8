@@ -359,7 +359,7 @@ namespace TaiwanPP.Library.ViewModels
                     FPCCsavedDate = new DateTime(fpccsaved[0].datetick);
                 }
                 messenger.Report(new ProgressReport() { progress = 90, progressMessage = "擷取目前油價", display = true });
-                List<int> cpcproductlist = soapUpdate ? new List<int>() { 0, 1, 2, 3, 4 } : new List<int>() { 1, 2, 3, 4 };
+                List<int> cpcproductlist = new List<int>() { 0, 1, 2, 3, 4 };
                 IEnumerable<priceStorage> cpc = (from oil in priceDB
                                                  orderby oil.datetick descending
                                                  where cpcproductlist.Contains(oil.kind)
@@ -382,14 +382,21 @@ namespace TaiwanPP.Library.ViewModels
                 currentCollections.Clear();
                 foreach (priceStorage mo in templist)   //初始化時掃描，一般狀態下資料庫都已記錄monitored狀態
                 {
+                    mo.vis = true;
                     if (!background)
                     {
                         if (productMonitor.Contains(mo.kind)) mo.monitored = true;
                         if (tiles.Contains(mo.kind)) mo.tile = true;    //動態磚就自動加入觀察列表
                         if (tiles.Contains(mo.kind)) mo.monitored = true;
                         if (saved.Contains(mo)) mo.saved = true;
+                        if (!soapUpdate) mo.vis = mo.kind == 0 ? false : true;
                     }
                     currentCollections.Add(mo);
+                }
+                IEnumerable<priceStorage> duplicates = templist.GroupBy(i => i.kind).SelectMany(grp => grp.Skip(1));
+                foreach (priceStorage du in duplicates)
+                {
+                    du.vis = false;
                 }
                 currentcount = currentCollections.Count();
                 monitorcount = (from m in currentCollections where m.monitored select m).Count();
@@ -405,7 +412,7 @@ namespace TaiwanPP.Library.ViewModels
             IEnumerable<priceStorage> tempsaved = from p in priceDB where p.kind == id && p.saved select p;
             historicalSaved = tempsaved.Any() ? tempsaved.First() : new priceStorage() { datetick = 0, price = double.NaN };
             savedchange = tempsaved.Any()  ? historicalCurrent.price - historicalSaved.price : double.NaN;
-            IEnumerable<priceStorage> historical = (from oil in priceDB where oil.kind == id orderby oil.datetick descending select oil).Distinct().Reverse();
+            IEnumerable<priceStorage> historical = (from oil in priceDB where oil.kind == id orderby oil.datetick ascending select oil).Distinct();
             messenger.Report(new ProgressReport() { progress = 30, progressMessage = "計算平均價格", display = true });
             maxPrice = historical.Max(x => x.price);
             minPrice = historical.Min(x => x.price);
@@ -589,7 +596,7 @@ namespace TaiwanPP.Library.ViewModels
         }
         public tileViewModel tileExport(oilType product, DateTime pEndd, DateTime pStartd, double pPrice, double pdPrice)
         {
-            priceStorage item = currentCollections[product.key];
+            priceStorage item = (from p in priceDB where p.kind == product.key orderby p.datetick descending select p).First();
             double changePrice = double.NaN;
             if (product.key == typeDB.CPCdiesel.key || product.key == typeDB.FPCCdiesel.key) changePrice = product.key == typeDB.FPCCdiesel.key ? FPCCdieselChange : CPCdieselChange;
             if (double.IsNaN(changePrice)) changePrice = product.brand == typeDB.CPCgasohol.brand ? CPC95Change : FPCC95Change;

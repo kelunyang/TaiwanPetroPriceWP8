@@ -74,7 +74,15 @@ namespace TaiwanPP.WP8App
                     {
                         await cvm.currentPrice(progress, true);
                         await ppvm.predictedPrice(ifvm.connectivity, true, progress);
-                        ppvm.getPrice(cvm.currentCollections[typeDB.CPC95.key].price, cvm.currentCollections[typeDB.CPCdiesel.key].price);
+                        IEnumerable<double> p95 = from item in cvm.currentCollections where item.kind == typeDB.CPC95.key select item.price;
+                        IEnumerable<double> pdiesel = from item in cvm.currentCollections where item.kind == typeDB.CPCdiesel.key select item.price;
+                        if (p95.Any())
+                        {
+                            if (pdiesel.Any())
+                            {
+                                ppvm.getPrice(p95.First(), pdiesel.First());
+                            }
+                        }
                     }
                     double pp = kind == "4" || kind == "8" ? ppvm.pdprice : ppvm.pprice;
                     cvm.historicalPrice(pp, ppvm.predictpause, kind, progress);

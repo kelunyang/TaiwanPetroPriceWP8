@@ -26,6 +26,8 @@ namespace TaiwanPP.Library.Models
         public bool current { get; set; }
         [Ignore]
         public bool tile { get; set; }
+        [Ignore]
+        public bool vis { get; set; }
         public override int GetHashCode()
         {
             return id;

@@ -243,8 +243,8 @@
                         </toolkit:ListPicker>
                     </StackPanel>
                     <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
-                    <TextBlock Text="過濾選項(6)" FontSize="26"/>
-                </Border>
+                        <TextBlock Text="過濾選項(6)" FontSize="26"/>
+                    </Border>
                     <toolkit:ToggleSwitch Foreground="Black" Content="{Binding DataContext.sfilterInservice, Converter={StaticResource filterConverter}, ElementName=LayoutRoot}" Style="{StaticResource FixedToggleSwitchStyle}" IsChecked="{Binding DataContext.sfilterInservice, ElementName=LayoutRoot, Mode=TwoWay}">
                         <toolkit:ToggleSwitch.Header>
                             <TextBlock Text="僅顯示營業中的加油站" Foreground="Black"/>
@@ -277,7 +277,35 @@
                         <TextBlock Text="儲存的加油站置於另外群組" Foreground="Black"/>
                     </toolkit:ToggleSwitch.Header>
                 </toolkit:ToggleSwitch>
-            </StackPanel>
+                    <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
+                        <TextBlock Text="油品過濾(5)" FontSize="26"/>
+                    </Border>
+                    <toolkit:ToggleSwitch Foreground="Black" Content="{Binding DataContext.sfilterp92, Converter={StaticResource filterConverter}, ElementName=LayoutRoot}" Style="{StaticResource FixedToggleSwitchStyle}" IsChecked="{Binding DataContext.sfilterp92, ElementName=LayoutRoot, Mode=TwoWay}">
+                        <toolkit:ToggleSwitch.Header>
+                            <TextBlock Text="92無鉛汽油" Foreground="Black"/>
+                        </toolkit:ToggleSwitch.Header>
+                    </toolkit:ToggleSwitch>
+                    <toolkit:ToggleSwitch Foreground="Black" Content="{Binding DataContext.sfilterp95, Converter={StaticResource filterConverter}, ElementName=LayoutRoot}" Style="{StaticResource FixedToggleSwitchStyle}" IsChecked="{Binding DataContext.sfilterp95, ElementName=LayoutRoot, Mode=TwoWay}">
+                        <toolkit:ToggleSwitch.Header>
+                            <TextBlock Text="95無鉛汽油" Foreground="Black"/>
+                        </toolkit:ToggleSwitch.Header>
+                    </toolkit:ToggleSwitch>
+                    <toolkit:ToggleSwitch Foreground="Black" Content="{Binding DataContext.sfilterp98, Converter={StaticResource filterConverter}, ElementName=LayoutRoot}" Style="{StaticResource FixedToggleSwitchStyle}" IsChecked="{Binding DataContext.sfilterp98, ElementName=LayoutRoot, Mode=TwoWay}">
+                        <toolkit:ToggleSwitch.Header>
+                            <TextBlock Text="98無鉛汽油" Foreground="Black"/>
+                        </toolkit:ToggleSwitch.Header>
+                    </toolkit:ToggleSwitch>
+                    <toolkit:ToggleSwitch Foreground="Black" Content="{Binding DataContext.sfilterpdiesel, Converter={StaticResource filterConverter}, ElementName=LayoutRoot}" Style="{StaticResource FixedToggleSwitchStyle}" IsChecked="{Binding DataContext.sfilterpdiesel, ElementName=LayoutRoot, Mode=TwoWay}">
+                        <toolkit:ToggleSwitch.Header>
+                            <TextBlock Text="柴油" Foreground="Black"/>
+                        </toolkit:ToggleSwitch.Header>
+                    </toolkit:ToggleSwitch>
+                    <toolkit:ToggleSwitch Foreground="Black" Content="{Binding DataContext.sfilterpgasohol, Converter={StaticResource filterConverter}, ElementName=LayoutRoot}" Style="{StaticResource FixedToggleSwitchStyle}" IsChecked="{Binding DataContext.sfilterpgasohol, ElementName=LayoutRoot, Mode=TwoWay}">
+                        <toolkit:ToggleSwitch.Header>
+                            <TextBlock Text="酒精汽油" Foreground="Black"/>
+                        </toolkit:ToggleSwitch.Header>
+                    </toolkit:ToggleSwitch>
+                </StackPanel>
             </ScrollViewer>
         </Grid>
         <StackPanel HorizontalAlignment="Left" Height="32" Margin="0,-32,0,0" VerticalAlignment="Top" Width="480" Background="{StaticResource PhoneAccentBrush}" Orientation="Horizontal" x:Name="titlebar">

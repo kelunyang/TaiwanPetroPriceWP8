@@ -42,7 +42,12 @@ namespace TaiwanPP.Library.Helpers
                             latitude = station.Descendants("經度").Any() ? Convert.ToDouble(station.Element("經度").Value) : 0,
                             longitude = station.Descendants("緯度").Any() ? Convert.ToDouble(station.Element("緯度").Value) : 0,
                             city = station.Element("縣市").Value,
-                            district = station.Element("鄉鎮區").Value
+                            district = station.Element("鄉鎮區").Value,
+                            p92 = station.Element("無鉛92").Value == "true",
+                            p95 = station.Element("無鉛95").Value == "true",
+                            p98 = station.Element("無鉛98").Value == "true",
+                            pdiesel = station.Element("超柴").Value == "true",
+                            pgasohol = station.Element("酒精汽油").Value == "true"
                         });
             }
             /*foreach (XElement node in datacontainer)

@@ -77,9 +77,9 @@ namespace TaiwanPP.Library.ViewModels
                 try
                 {
                     messenger.Report(new ProgressReport() { progress = 100, progressMessage = "開始擷取開發者公告內容", display = true });
-                    IEnumerable<feedItem> list = fulllog ? (from item in dc.items where item.type == 1 select item).Distinct().Take(2).Concat((from item in dc.items where item.type == 2 select item).Distinct().Take(1))
+                    IEnumerable<feedItem> list = fulllog ? (from item in dc.items where item.type == 1 orderby item.pubDate descending select item).Distinct().Take(2).Concat((from item in dc.items where item.type == 2 select item).Distinct().Take(1))
                         :
-                                                           (from item in dc.items where item.type == 1 select item).Distinct().Take(1);
+                                                           (from item in dc.items where item.type == 1 orderby item.pubDate descending select item).Distinct().Take(1);
                     feedlist.Clear();
                     messenger.Report(new ProgressReport() { progress = 100, progressMessage = "開發者公告內容擷取中", display = true });
                     foreach (feedItem fi in list)
