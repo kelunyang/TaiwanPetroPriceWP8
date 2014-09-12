@@ -5,7 +5,7 @@
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:libViewModels="clr-namespace:TaiwanPP.Library.ViewModels;assembly=TaiwanPP.Library"
     xmlns:libModels="clr-namespace:TaiwanPP.Library.Models;assembly=TaiwanPP.Library"
     xmlns:oxy="clr-namespace:OxyPlot.WP8;assembly=OxyPlot.WP8"
@@ -22,6 +22,7 @@
         <libViewModels:cpViewModel></libViewModels:cpViewModel>
     </phone:PhoneApplicationPage.DataContext>
     <phone:PhoneApplicationPage.Resources>
+        <Helpers:boolvisConverter x:Key="boolvisConverter"/>
         <Helpers:nanvisConverter x:Key="nanvisConverter"/>
         <Helpers:productnameConverter x:Key="productnameConverter"/>
         <Helpers:brandvisconvert x:Key="brandvisconvert"/>
@@ -81,8 +82,12 @@
             <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
                 <TextBlock Text="油價走勢圖" FontSize="26"/>
             </Border>
-            <TextBlock Text="第三方圖表模組Oxyplot剛脫離測試版，如有不穩定之處，請見諒" FontSize="14" HorizontalAlignment="Center" Foreground="Gray"/>
-            <oxy:Plot Model="{Binding DataContext.historicalModel, ElementName=historicalchartPage}" Background="#FFF7F7F7" BorderThickness="0" Width="450" Height="300" Margin="0,0,0,40"/>
+            <toolkit:ListPicker x:Name="peroidSelector" BorderBrush="Black" ItemsSource="{Binding DataContext.historicalPeriod, ElementName=historicalchartPage}" SelectedIndex="{Binding DataContext.defaultPeroid, ElementName=historicalchartPage, Mode=TwoWay}" Foreground="Black" SelectionChanged="peroidSelector_SelectionChanged" Margin="12,0" />
+            <oxy:PlotView x:Name="chart" Background="#FFF7F7F7" BorderThickness="0" Width="450" Height="280" Margin="0,5,0,35" Model="{Binding DataContext.historicalModel, ElementName=historicalchartPage, Mode=OneWay}" Visibility="{Binding chartready, ConverterParameter=1, Converter={StaticResource boolvisConverter}}"/>
+            <StackPanel Height="300" Width="450" Visibility="{Binding chartready, ConverterParameter=0, Converter={StaticResource boolvisConverter}}">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36">載入中...</TextBlock>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="Gray">第三方圖表模組Oxyplot剛脫離測試版，請勿點擊圖表，可能會造成程式崩潰</TextBlock>
+            </StackPanel>
             <StackPanel>
                 <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
                     <TextBlock Text="相關數據" FontSize="26"/>
@@ -174,7 +179,7 @@
             </Border>
         </StackPanel>
         <Grid HorizontalAlignment="Left" Height="32" Margin="0,-32,0,0" VerticalAlignment="Top" Width="480" Background="{StaticResource PhoneAccentBrush}">
-            <StackPanel x:Name="titlebar" Margin="10,0,0,0">
+            <StackPanel x:Name="titlebar" Margin="10,0,0,0" Orientation="Horizontal">
                 <StackPanel.DataContext>
                     <libViewModels:infoViewModel/>
                 </StackPanel.DataContext>

@@ -35,15 +35,40 @@ namespace TaiwanPP.Library.ViewModels
         double _CPCdieselChange = double.NaN;
         double _FPCC95Change = double.NaN;
         double _FPCCdieselChange = double.NaN;
+        int _defaultPeriod = 0;
+        bool _chartready = false;
         public List<priceStorage> save;
         public List<int> tiles;
         public ObservableCollection<priceStorage> currentCollections { set; get; }
+        public ObservableCollection<string> historicalPeriod { set; get; }
         public cpViewModel() {
             currentCollections = new ObservableCollection<priceStorage>();
             save = new List<priceStorage>();
             tiles = new List<int>();
             priceDB = new List<priceStorage>();
             historicalModel = new PlotModel();
+            historicalPeriod = new ObservableCollection<string>();
+            historicalPeriod.Add("最近十次（資料庫存檔）");
+            historicalPeriod.Add("半年");
+            historicalPeriod.Add("一年");
+        }
+        public int defaultPeroid
+        {
+            get { return _defaultPeriod; }
+            set
+            {
+                _defaultPeriod = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public bool chartready
+        {
+            set
+            {
+                _chartready = value;
+                NotifyPropertyChanged();
+            }
+            get { return _chartready; }
         }
         public DateTime CPCsavedDate
         {
@@ -283,6 +308,46 @@ namespace TaiwanPP.Library.ViewModels
                 NotifyPropertyChanged();
             }
         }
+        DateTimeAxis _dtx;
+        public DateTimeAxis dtx
+        {
+            get { return _dtx; }
+            set
+            {
+                _dtx = value;
+                NotifyPropertyChanged();
+            }
+        }
+        LinearAxis _la;
+        public LinearAxis la
+        {
+            get { return _la; }
+            set
+            {
+                _la = value;
+                NotifyPropertyChanged();
+            }
+        }
+        LineSeries _prices;
+        public LineSeries prices
+        {
+            get { return _prices; }
+            set
+            {
+                _prices = value;
+                NotifyPropertyChanged();
+            }
+        }
+        LineSeries _avgs;
+        public LineSeries avgs
+        {
+            get { return _avgs; }
+            set
+            {
+                _avgs = value;
+                NotifyPropertyChanged();
+            }
+        }
         public async Task monitorProduct(priceStorage storage, IProgress<ProgressReport> messenger, bool temp)
         {
             messenger.Report(new ProgressReport() { progress = 0, progressMessage = "將油品加入觀測清單中", display = true });
@@ -404,8 +469,38 @@ namespace TaiwanPP.Library.ViewModels
             }
             messenger.Report(new ProgressReport() { progress = 100, progressMessage = "擷取目前油價", display = false });
         }
+        public void setupHistorical()
+        {
+            historicalModel = new PlotModel();
+            dtx = new DateTimeAxis() { Position = AxisPosition.Bottom, Angle = 70 };
+            la = new LinearAxis() { Position = AxisPosition.Left };
+            prices = new LineSeries();
+            prices.Title = "價格";
+            prices.Color = OxyColor.FromRgb(212, 61, 61);
+            prices.StrokeThickness = 2;
+            prices.MarkerFill = OxyColor.FromRgb(200, 56, 56);
+            prices.MarkerType = MarkerType.Circle;
+            prices.MarkerSize = 5;
+            prices.BrokenLineColor = OxyColor.FromRgb(212, 61, 61);
+            prices.BrokenLineStyle = LineStyle.Dot;
+            prices.BrokenLineThickness = 2;
+            prices.Points.Add(new DataPoint(DateTimeAxis.ToDouble(new DateTime(0)),0));
+            avgs = new LineSeries();
+            avgs.Color = OxyColor.FromRgb(76, 134, 203);
+            avgs.StrokeThickness = 1;
+            avgs.Title = "平均價";
+            avgs.BrokenLineColor = OxyColor.FromRgb(76, 134, 203);
+            avgs.BrokenLineStyle = LineStyle.Dot;
+            avgs.BrokenLineThickness = 1;
+            avgs.Points.Add(new DataPoint(0, 0));
+            historicalModel.Series.Add(prices);
+            historicalModel.Series.Add(avgs);
+            historicalModel.Axes.Add(dtx);
+            historicalModel.Axes.Add(la);
+        }
         public void historicalPrice(double predictPrice, bool predictpause, string productid, IProgress<ProgressReport> messenger)
         {
+            chartready = false;
             messenger.Report(new ProgressReport() { progress = 0, progressMessage = "擷取歷史油價資料庫", display = true });
             int id = Convert.ToInt32(productid);
             historicalCurrent = (from p in priceDB where p.kind == id orderby p.datetick descending select p).First();
@@ -432,43 +527,30 @@ namespace TaiwanPP.Library.ViewModels
             }
             avgPrice = historical.Average(x => x.price);
             messenger.Report(new ProgressReport() { progress = 60, progressMessage = "繪製價格圖表", display = true });
-            PlotModel tempModel = new PlotModel();
-            tempModel.Axes.Add(new DateTimeAxis() { Position = AxisPosition.Bottom, Angle = 70, MajorStep = 7, Maximum = maxDate, Minimum = minDate });
-            tempModel.Axes.Add(new LinearAxis() { Position = AxisPosition.Left, Maximum = maxAxis, Minimum = minAxis });
-            LineSeries ls = new LineSeries();
-            ls.Title = "價格";
-            ls.Color = OxyColor.FromRgb(212, 61, 61);
-            ls.StrokeThickness = 2;
-            ls.MarkerFill = OxyColor.FromRgb(200, 56, 56);
-            ls.MarkerType = MarkerType.Circle;
-            ls.MarkerSize = 5;
-            ls.BrokenLineColor = OxyColor.FromRgb(212, 61, 61);
-            ls.BrokenLineStyle = LineStyle.Dot;
-            ls.BrokenLineThickness = 2;
-            LineSeries avgs = new LineSeries();
-            avgs.Color = OxyColor.FromRgb(76, 134, 203);
-            avgs.StrokeThickness = 1;
-            avgs.Title = "平均價";
-            avgs.BrokenLineColor = OxyColor.FromRgb(76, 134, 203);
-            avgs.BrokenLineStyle = LineStyle.Dot;
-            avgs.BrokenLineThickness = 1;
+            /*PlotModel tempModel = new PlotModel();
+            tempModel.Axes.Add(new DateTimeAxis() { Position = AxisPosition.Bottom, Angle = 70, MajorStep = defaultPeroid == 0 ? 7 : 28, Maximum = maxDate, Minimum = minDate });
+            tempModel.Axes.Add(new LinearAxis() { Position = AxisPosition.Left, Maximum = maxAxis, Minimum = minAxis });*/
+            la.Maximum = maxAxis;
+            la.Minimum = minAxis;
+            dtx.Maximum = maxDate;
+            dtx.Minimum = minDate;
+            prices.Points.Clear();
+            avgs.Points.Clear();
             foreach (priceStorage ps in historical)
             {
                 double d = DateTimeAxis.ToDouble(new DateTime(ps.datetick));
-                ls.Points.Add(new DataPoint(d, ps.price));
+                prices.Points.Add(new DataPoint(d, ps.price));
                 avgs.Points.Add(new DataPoint(d, avgPrice));
             }
             if (!predictpause)
             {
-                ls.Points.Add(DataPoint.Undefined);
-                ls.Points.Add(new DataPoint(maxDate, predictPrice));
+                prices.Points.Add(DataPoint.Undefined);
+                prices.Points.Add(new DataPoint(maxDate, predictPrice));
                 avgs.Points.Add(DataPoint.Undefined);
                 avgs.Points.Add(new DataPoint(maxDate, avgPrice));
             }
-            tempModel.Series.Add(ls);
-            tempModel.Series.Add(avgs);
-            historicalModel = tempModel;
             messenger.Report(new ProgressReport() { progress = 100, progressMessage = "歷史資料庫計算完成！", display = false });
+            chartready = true;
         }
         public async Task buildDB()
         {
@@ -500,6 +582,7 @@ namespace TaiwanPP.Library.ViewModels
             {
                 try
                 {
+                    int fetchnumber = defaultPeroid == 0 ? 10 : defaultPeroid == 1 ? 25 : 50;
                     List<HtmlNode> tAllNodes = new List<HtmlNode>();
                     var handler = new HttpClientHandler();
                     if (handler.SupportsAutomaticDecompression)
@@ -518,8 +601,8 @@ namespace TaiwanPP.Library.ViewModels
                         HtmlDocument tHtmlDoc = new HtmlDocument();
                         tHtmlDoc.LoadHtml(data);
                         var allnode = (from node in tHtmlDoc.DocumentNode.Descendants("tr") where node.HasAttributes select node).ToList();
-                        tAllNodes = tAllNodes.Concat((from node in allnode where node.Attributes["bgColor"].Value.Equals("#ffffcc") select node).Take(10).ToList()).ToList();
-                        tAllNodes = tAllNodes.Concat((from node in allnode where node.Attributes["bgColor"].Value.Equals("#E6FFE6") select node).Take(10).ToList()).ToList();
+                        tAllNodes = tAllNodes.Concat((from node in allnode where node.Attributes["bgColor"].Value.Equals("#ffffcc") select node).Take(fetchnumber).ToList()).ToList();
+                        tAllNodes = tAllNodes.Concat((from node in allnode where node.Attributes["bgColor"].Value.Equals("#E6FFE6") select node).Take(fetchnumber).ToList()).ToList();
                         List<oildata> oilarr = new List<oildata>();
                         tempDB.Clear();
                         messenger.Report(new ProgressReport() { progress = 60, progressMessage = "更新中油油價SOAP Service", display = true });
@@ -568,10 +651,14 @@ namespace TaiwanPP.Library.ViewModels
                         messenger.Report(new ProgressReport() { progress = 80, progressMessage = "更新本機資料庫", display = true });
                         List<priceStorage> saved = (from item in priceDB where item.saved select item).ToList();
                         tempDB = saved.Union(tempDB).ToList();
-                        foreach(priceStorage ps in remove) {
-                           await dbConn.DeleteAsync(ps);
+                        if (defaultPeroid == 0)
+                        {
+                            foreach (priceStorage ps in remove)
+                            {
+                                await dbConn.DeleteAsync(ps);
+                            }
+                            await dbConn.InsertAllAsync(save);  //錯在此
                         }
-                        await dbConn.InsertAllAsync(save);
                         priceDB.Clear();
                         foreach (priceStorage ps in tempDB)
                         {
