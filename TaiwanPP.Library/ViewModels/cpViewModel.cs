@@ -348,6 +348,16 @@ namespace TaiwanPP.Library.ViewModels
                 NotifyPropertyChanged();
             }
         }
+        LineSeries _saveds;
+        public LineSeries saveds
+        {
+            get { return _saveds; }
+            set
+            {
+                _saveds = value;
+                NotifyPropertyChanged();
+            }
+        }
         public async Task monitorProduct(priceStorage storage, IProgress<ProgressReport> messenger, bool temp)
         {
             messenger.Report(new ProgressReport() { progress = 0, progressMessage = "將油品加入觀測清單中", display = true });
@@ -474,6 +484,9 @@ namespace TaiwanPP.Library.ViewModels
             historicalModel = new PlotModel();
             dtx = new DateTimeAxis() { Position = AxisPosition.Bottom, Angle = 70 };
             la = new LinearAxis() { Position = AxisPosition.Left };
+            saveds = new LineSeries();
+            saveds.Title = "儲存的價格";
+            saveds.Color = OxyColor.FromRgb(200, 200, 200);
             prices = new LineSeries();
             prices.Title = "價格";
             prices.Color = OxyColor.FromRgb(212, 61, 61);
@@ -495,6 +508,7 @@ namespace TaiwanPP.Library.ViewModels
             avgs.Points.Add(new DataPoint(0, 0));
             historicalModel.Series.Add(prices);
             historicalModel.Series.Add(avgs);
+            historicalModel.Series.Add(saveds);
             historicalModel.Axes.Add(dtx);
             historicalModel.Axes.Add(la);
         }
@@ -540,14 +554,24 @@ namespace TaiwanPP.Library.ViewModels
             {
                 double d = DateTimeAxis.ToDouble(new DateTime(ps.datetick));
                 prices.Points.Add(new DataPoint(d, ps.price));
-                avgs.Points.Add(new DataPoint(d, avgPrice));
             }
+            avgs.Points.Add(new DataPoint(DateTimeAxis.ToDouble(new DateTime(historical.Min(x => x.datetick))), avgPrice));
+            avgs.Points.Add(new DataPoint(DateTimeAxis.ToDouble(new DateTime(historical.Max(x => x.datetick))), avgPrice));
             if (!predictpause)
             {
                 prices.Points.Add(DataPoint.Undefined);
                 prices.Points.Add(new DataPoint(maxDate, predictPrice));
                 avgs.Points.Add(DataPoint.Undefined);
                 avgs.Points.Add(new DataPoint(maxDate, avgPrice));
+            }
+            if (tempsaved.Any())
+            {
+                saveds.Points.Add(new DataPoint(DateTimeAxis.ToDouble(new DateTime(tempsaved.First().datetick)), prices.Points.Select(x => x.Y).Max()));
+                saveds.Points.Add(new DataPoint(DateTimeAxis.ToDouble(new DateTime(tempsaved.First().datetick)), prices.Points.Where(x=> !double.IsNaN(x.Y)).Select(x => x.Y).Min()));
+            }
+            else
+            {
+                historicalModel.Series.Remove(saveds);
             }
             messenger.Report(new ProgressReport() { progress = 100, progressMessage = "歷史資料庫計算完成！", display = false });
             chartready = true;

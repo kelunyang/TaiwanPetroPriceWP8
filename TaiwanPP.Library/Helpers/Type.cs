@@ -17,7 +17,7 @@ namespace TaiwanPP.Library.Helpers
         static public oilType FPCC92 = new oilType() { key = 5, name = "92無鉛汽油", brand = 1 };
         static public oilType FPCC95 = new oilType() { key = 6, name = "95無鉛汽油", brand = 1 };
         static public oilType FPCC98 = new oilType() { key = 7, name = "98無鉛汽油", brand = 1 };
-        static public oilType FPCCdiesel = new oilType() { key = 8, name = "普通柴油", brand = 1 };
+        static public oilType FPCCdiesel = new oilType() { key = 8, name = "超級柴油", brand = 1 };
         static public oilType[] productnameDB = { CPCgasohol, CPC92, CPC95, CPC98, CPCdiesel, FPCC92, FPCC95, FPCC98, FPCCdiesel };
     }
     public class oilType : INotifyPropertyChanged

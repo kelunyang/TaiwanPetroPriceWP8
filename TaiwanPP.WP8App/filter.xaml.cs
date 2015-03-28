@@ -31,6 +31,7 @@ namespace TaiwanPP.WP8App
         int selectionlock = 0;
         PropertyProgress<ProgressReport> progress;
         ApplicationBarIconButton savebutton;
+        bool loaded = false;
 
         public filter()
         {
@@ -89,11 +90,15 @@ namespace TaiwanPP.WP8App
 
         private void App_Loaded(object sender, RoutedEventArgs e)
         {
-            Deployment.Current.Dispatcher.BeginInvoke(async () =>
+            if (!loaded)
             {
-                await stvm.loadDB(sqliteplaform, DB_PATH);
-                countrySelector.SelectedIndex = stvm.sfiltercountry;
-            });
+                Deployment.Current.Dispatcher.BeginInvoke(async () =>
+                {
+                    await stvm.loadDB(sqliteplaform, DB_PATH);
+                    countrySelector.SelectedIndex = stvm.sfiltercountry;
+                    loaded = true;
+                });
+            }
         }
 
         private void countrySelector_SelectionChanged(object sender, SelectionChangedEventArgs e)

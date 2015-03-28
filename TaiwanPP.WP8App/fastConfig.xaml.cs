@@ -29,6 +29,8 @@ namespace TaiwanPP.WP8App
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication();
         ApplicationBarIconButton savebutton;
         PropertyProgress<ProgressReport> progress;
+        bool loaded = false;
+
         public fastConfig()
         {
             InitializeComponent();
@@ -98,30 +100,34 @@ namespace TaiwanPP.WP8App
 
         private void LayoutRoot_Loaded(object sender, RoutedEventArgs e)
         {
-            Deployment.Current.Dispatcher.BeginInvoke(async () =>
+            if (!loaded)
             {
-                try
+                Deployment.Current.Dispatcher.BeginInvoke(async () =>
                 {
-                    titlebar.Visibility = System.Windows.Visibility.Collapsed;
-                    ifvm.connectivity = Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
-                    await dcvm.load(ifvm.connectivity, progress);
-                    await dcvm.buildList(false, progress);
-                    titlebar.Visibility = System.Windows.Visibility.Visible;
-                }
-                catch (Exception ex)
-                {
-                    titlebar.Visibility = System.Windows.Visibility.Visible;
-                    systemtray.IsVisible = false;
-                    if (MessageBox.Show(ex.Message + "，如果您希望將此錯誤回報給開發者，請按確定，按取消關閉訊息", "發生錯誤", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                    try
                     {
-                        Microsoft.Phone.Tasks.EmailComposeTask emailComposeTask = new Microsoft.Phone.Tasks.EmailComposeTask();
-                        emailComposeTask.Subject = "Windows Phone油價查詢聯絡信";
-                        emailComposeTask.To = "kelunyang@outlook.com";
-                        emailComposeTask.Body = "錯誤訊息如下：" + ex.Message + "，錯誤追蹤：" + ex.StackTrace;
-                        emailComposeTask.Show();
+                        titlebar.Visibility = System.Windows.Visibility.Collapsed;
+                        ifvm.connectivity = Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
+                        await dcvm.load(ifvm.connectivity, progress);
+                        await dcvm.buildList(false, progress);
+                        titlebar.Visibility = System.Windows.Visibility.Visible;
+                        loaded = true;
                     }
-                }
-            });
+                    catch (Exception ex)
+                    {
+                        titlebar.Visibility = System.Windows.Visibility.Visible;
+                        systemtray.IsVisible = false;
+                        if (MessageBox.Show(ex.Message + "，如果您希望將此錯誤回報給開發者，請按確定，按取消關閉訊息", "發生錯誤", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                        {
+                            Microsoft.Phone.Tasks.EmailComposeTask emailComposeTask = new Microsoft.Phone.Tasks.EmailComposeTask();
+                            emailComposeTask.Subject = "Windows Phone油價查詢聯絡信";
+                            emailComposeTask.To = "kelunyang@outlook.com";
+                            emailComposeTask.Body = "錯誤訊息如下：" + ex.Message + "，錯誤追蹤：" + ex.StackTrace;
+                            emailComposeTask.Show();
+                        }
+                    }
+                });
+            }
         }
 
         void progress_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

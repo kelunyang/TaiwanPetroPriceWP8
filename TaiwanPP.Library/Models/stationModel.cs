@@ -67,7 +67,8 @@ namespace TaiwanPP.Library.Models
         }
         public override int GetHashCode()
         {
-            return Convert.ToInt32(phone.Replace("-",""));
+
+            return Convert.ToInt32(phone.Replace("-","").Replace("(","").Replace(")",""));
         }
         public bool Equals(stationStorage obj)
         {

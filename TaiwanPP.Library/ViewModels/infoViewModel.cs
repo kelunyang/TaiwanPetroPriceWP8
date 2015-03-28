@@ -20,6 +20,7 @@ namespace TaiwanPP.Library.ViewModels
             pagename.Add("油價預測");
             pagename.Add("目前價格");
             pagename.Add("加油站查詢");
+            pagename.Add("折扣查詢");
         }
         public void loadConfig(Stream str)
         {

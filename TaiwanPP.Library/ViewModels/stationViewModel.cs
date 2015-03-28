@@ -95,6 +95,20 @@ namespace TaiwanPP.Library.ViewModels
                 NotifyPropertyChanged();
             }
         }
+        List<string> _sfilterSubbrand = new List<string>();
+        public List<string> sfilterSubbrand
+        {
+            get
+            {
+                _sfilterSubbrand = im.sfilterSubBrands;
+                return _sfilterSubbrand;
+            }
+            set
+            {
+                im.sfilterSubBrands = value;
+                NotifyPropertyChanged();
+            }
+        }
         bool _sfilterCPC = false;
         public bool sfilterCPC
         {

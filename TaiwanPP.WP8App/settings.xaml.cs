@@ -21,6 +21,7 @@ namespace TaiwanPP.WP8App
     public partial class settings : PhoneApplicationPage
     {
         string XML_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, "config.xml");
+        string discount_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, "creditDiscount.xml");
         infoViewModel ifvm;
         ppViewModel ppvm;
         stationViewModel stvm;
@@ -38,6 +39,7 @@ namespace TaiwanPP.WP8App
             builder.RegisterType<ppViewModel>().PropertiesAutowired();
             builder.RegisterType<stationViewModel>().PropertiesAutowired();
             builder.RegisterType<cpViewModel>().PropertiesAutowired();
+            builder.RegisterType<discountViewModel>().PropertiesAutowired();
             IContainer container = builder.Build();
             LayoutRoot.DataContext = container.Resolve<infoViewModel>();
             predictcontrol.DataContext = container.Resolve<ppViewModel>();

@@ -57,6 +57,13 @@
                     <TextBlock Text="能源局油價資料庫："/>
                     <TextBlock Text="{Binding DataContext.moeaboeDBdate, Converter={StaticResource dateConverter}, ElementName=pricedb, StringFormat=\{0:g\}}"/>
                 </StackPanel>
+                <StackPanel x:Name="discount" Orientation="Horizontal">
+                    <StackPanel.DataContext>
+                        <libViewModels:discountViewModel/>
+                    </StackPanel.DataContext>
+                    <TextBlock Text="折扣資料庫檢查時間："/>
+                    <TextBlock Text="{Binding DataContext.dDBcheckedDate, Converter={StaticResource dateConverter}, ElementName=discount, StringFormat=\{0:g\}}"/>
+                </StackPanel>
                 <StackPanel x:Name="info" Orientation="Horizontal">
                     <StackPanel.DataContext>
                         <libViewModels:infoViewModel/>

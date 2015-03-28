@@ -50,6 +50,26 @@ namespace TaiwanPP.Library.Helpers
             }
             get { return _currentloc; }
         }
+        long _startTime = 0;
+        public long startTime
+        {
+            set
+            {
+                _startTime = value;
+                NotifyPropertyChanged();
+            }
+            get { return _startTime; }
+        }
+        long _endTime = 0;
+        public long endTime
+        {
+            set
+            {
+                _endTime = value;
+                NotifyPropertyChanged();
+            }
+            get { return _endTime; }
+        }
         protected override event PropertyChangedEventHandler PropertyChanged;
         protected void NotifyPropertyChanged(string caller = "")
         {

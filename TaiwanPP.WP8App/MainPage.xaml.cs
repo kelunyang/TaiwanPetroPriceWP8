@@ -34,18 +34,21 @@ namespace TaiwanPP.WP8App
         SQLitePlatformWP8 sqliteplaform = new SQLitePlatformWP8();
         string DB_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, "price.sqlite");
         string XML_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, "config.xml");
+        string discount_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, "creditDiscount.xml");
         infoViewModel ifvm;
         ppViewModel ppvm;
         cpViewModel cpvm;
         stationViewModel stvm;
         dcViewModel dcvm;
+        discountViewModel dtvm;
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication();
         PropertyProgress<ProgressReport> progress;
         ApplicationBarIconButton filterButton;
         ApplicationBarIconButton nozzleButton;
         ApplicationBarIconButton settingButton;
         ApplicationBarIconButton updateButton;
-        ApplicationBarIconButton nearbysBtn;
+        ApplicationBarIconButton searchButton;
+        ApplicationBarIconButton mailButton;
         ApplicationBarMenuItem contactButton;
         ApplicationBarMenuItem aboutButton;
         string tilemonitor;
@@ -57,6 +60,7 @@ namespace TaiwanPP.WP8App
         Binding connectivitybind;
         bool executeStationQ = false;
         bool forcenavi = false;
+        bool loaded = false;
 
         // 建構函式
         public MainPage()
@@ -74,18 +78,21 @@ namespace TaiwanPP.WP8App
             builder.RegisterType<cpViewModel>().PropertiesAutowired();
             builder.RegisterType<ppViewModel>().PropertiesAutowired();
             builder.RegisterType<dcViewModel>().PropertiesAutowired();
+            builder.RegisterType<discountViewModel>().PropertiesAutowired();
             IContainer container = builder.Build();
             locationPage.DataContext = container.Resolve<stationViewModel>();
             predictPage.DataContext = container.Resolve<ppViewModel>();
             currentpricePage.DataContext = container.Resolve<cpViewModel>();
             DCBulletin.DataContext = container.Resolve<dcViewModel>();
             titlebar.DataContext = container.Resolve<infoViewModel>();
+            discountPage.DataContext = container.Resolve<discountViewModel>();
             //build context
             ppvm = (ppViewModel)predictPage.DataContext;
             cpvm = (cpViewModel)currentpricePage.DataContext;
             stvm = (stationViewModel)locationPage.DataContext;
             dcvm = (dcViewModel)DCBulletin.DataContext;
             ifvm = (infoViewModel)titlebar.DataContext;
+            dtvm = (discountViewModel)discountPage.DataContext;
             progress = new PropertyProgress<ProgressReport>();
             progress.PropertyChanged += progress_PropertyChanged;
             ApplicationBar = new ApplicationBar();
@@ -93,10 +100,10 @@ namespace TaiwanPP.WP8App
             ApplicationBar.Opacity = 1.0;
             ApplicationBar.IsVisible = true;
             ApplicationBar.IsMenuEnabled = true;
-            nearbysBtn = new ApplicationBarIconButton();
-            nearbysBtn.IconUri = new Uri(@"Assets\AppBar\search.png", UriKind.Relative);
-            nearbysBtn.Text = "搜尋站台";
-            nearbysBtn.Click += nearbysBtn_Click;
+            searchButton = new ApplicationBarIconButton();
+            searchButton.IconUri = new Uri(@"Assets\AppBar\search.png", UriKind.Relative);
+            searchButton.Text = "搜尋";
+            searchButton.Click += searchButton_Click;
             updateButton = new ApplicationBarIconButton();
             updateButton.IconUri = new Uri(@"Assets\AppBar\refresh.png", UriKind.Relative);
             updateButton.Text = "更新資料";
@@ -128,6 +135,11 @@ namespace TaiwanPP.WP8App
             nozzleButton.IsEnabled = true;
             nozzleButton.Text = "儲存價格";
             nozzleButton.Click += nozzleButton_Click;
+            mailButton = new ApplicationBarIconButton();
+            mailButton.IconUri = new Uri(@"Assets\AppBar\mail.png", UriKind.Relative);
+            mailButton.IsEnabled = true;
+            mailButton.Text = "通報優惠";
+            mailButton.Click += mailButton_Click;
             connectivity();
             connectivitybind = new Binding();
             connectivitybind.Source = ifvm.connectivity;
@@ -154,6 +166,18 @@ namespace TaiwanPP.WP8App
             ((viewmodelBase)aboutPage.DataContext).ivm = ((viewmodelBase)locationPage.DataContext).ivm;
             */
             // 將清單方塊控制項的資料內容設為範例資料
+        }
+
+        void mailButton_Click(object sender, EventArgs e)
+        {
+            if (System.Windows.MessageBox.Show("歡迎提供作者關於油價折扣的資訊，可以的話請您附上網址！", "提供油價折扣資訊", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
+            {
+                Microsoft.Phone.Tasks.EmailComposeTask emailComposeTask = new Microsoft.Phone.Tasks.EmailComposeTask();
+                emailComposeTask.Subject = "Windows Phone油價查詢聯絡信（油價折扣）";
+                emailComposeTask.To = "kelunyang@outlook.com";
+                emailComposeTask.Body = "以下是範本，不一定要完整填寫\n加油站品牌：\n銀行名稱：\n信用卡卡種：\n折扣內容：\n折扣期間：\n";
+                emailComposeTask.Show();
+            }
         }
 
         void aboutButton_Click(object sender, EventArgs e)
@@ -283,66 +307,82 @@ namespace TaiwanPP.WP8App
 
         private void App_Loaded(object sender, RoutedEventArgs e)
         {
-            Deployment.Current.Dispatcher.BeginInvoke(async () =>
+            if (!loaded)
             {
-                if (uienable)
+                Deployment.Current.Dispatcher.BeginInvoke(async () =>
                 {
-                    try
+                    if (uienable)
                     {
-                        uiLock(false);
-                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+                        try
                         {
-                            ifvm.loadConfig(isf);
-                            isf.Close();
-                            isf.Dispose();
+                            uiLock(false);
+                            using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+                            {
+                                ifvm.loadConfig(isf);
+                                isf.Close();
+                                isf.Dispose();
+                            }
+                            using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+                            {
+                                stvm.loadConfig(isf);
+                                isf.Close();
+                                isf.Dispose();
+                            }
+                            using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+                            {
+                                dtvm.loadConfig(isf);
+                                isf.Close();
+                                isf.Dispose();
+                            }
+                            using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(discount_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+                            {
+                                await dtvm.loadXML(isf);
+                                isf.Close();
+                                isf.Dispose();
+                            }
+                            if (ifvm.firstLoad) NavigationService.Navigate(new Uri("/fastConfig.xaml", UriKind.Relative));
+                            //頁面控制
+                            PanoramaRoot.DefaultItem = switchpage ? PanoramaRoot.Items[previouspage] : PanoramaRoot.Items[ifvm.defaultPage];
+                            if (ifvm.upgrade)
+                            {
+                                MessageBox.Show("系統設定檔升級，以強制更新您的設定檔，請重新復原您的設定（包括動態磚）", "升級提醒", MessageBoxButton.OK);
+                                ifvm.upgrade = false;
+                            }
+                            tilescan();
+                            await cpvm.loadDB(sqliteplaform, DB_PATH);
+                            await cpvm.buildDB();
+                            //await cpvm.fetchPrice(connectivity, progress);
+                            //await cpvm.currentPrice(progress);
+                            await ppvm.loadDB(sqliteplaform, DB_PATH);
+                            //await ppvm.predictedPrice(connectivity, cpvm.currentCollections[typeDB.CPC95.key].currentPrice, progress);
+                            uienable = true;
+                            await stvm.loadDB(sqliteplaform, DB_PATH);
+                            autoupdate = switchpage ? autoupdate : (int)DateTime.Now.DayOfWeek == 0 ? true : ifvm.autoUpdate;
+                            if (autoupdate) await updateOnline(ppvm.runPredict);    //跳頁時不用重跑
+                            //await dcvm.load(progress);
+                            using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+                            {
+                                ifvm.saveConfig(isf);
+                                isf.Close();
+                                isf.Dispose();
+                            }
+                            backgroundInjector();
+                            if (executeStationQ) queryStation(false, false);
+                            loaded = true;
+                            uiLock(true);
                         }
-                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+                        catch (Exception ex)
                         {
-                            stvm.loadConfig(isf);
-                            isf.Close();
-                            isf.Dispose();
+                            uiLock(true);
+                            systemtray.IsVisible = false;
+                            if (MessageBox.Show(ex.Message + "，如果您希望將此錯誤回報給開發者，請按確定，按取消關閉訊息", "發生錯誤", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                            {
+                                contactMail("錯誤訊息如下：" + ex.Message + "，錯誤追蹤：" + ex.StackTrace);
+                            }
                         }
-                        if (ifvm.firstLoad) NavigationService.Navigate(new Uri("/fastConfig.xaml", UriKind.Relative));
-                        //頁面控制
-                        PanoramaRoot.DefaultItem = switchpage ? PanoramaRoot.Items[previouspage] : PanoramaRoot.Items[ifvm.defaultPage];
-                        if (ifvm.upgrade)
-                        {
-                            MessageBox.Show("系統設定檔升級，以強制更新您的設定檔，請重新復原您的設定（包括動態磚）", "升級提醒", MessageBoxButton.OK);
-                            ifvm.upgrade = false;
-                        }
-                        tilescan();
-                        await cpvm.loadDB(sqliteplaform, DB_PATH);
-                        await cpvm.buildDB();
-                        //await cpvm.fetchPrice(connectivity, progress);
-                        //await cpvm.currentPrice(progress);
-                        await ppvm.loadDB(sqliteplaform, DB_PATH);
-                        //await ppvm.predictedPrice(connectivity, cpvm.currentCollections[typeDB.CPC95.key].currentPrice, progress);
-                        uienable = true;
-                        await stvm.loadDB(sqliteplaform, DB_PATH);
-                        autoupdate = switchpage ? autoupdate : (int)DateTime.Now.DayOfWeek == 0 ? true : ifvm.autoUpdate;
-                        if(autoupdate) await updateOnline(ppvm.runPredict);    //跳頁時不用重跑
-                        //await dcvm.load(progress);
-                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
-                        {
-                            ifvm.saveConfig(isf);
-                            isf.Close();
-                            isf.Dispose();
-                        }
-                        backgroundInjector();
-                        if (executeStationQ) queryStation(false, false);
-                        uiLock(true);
                     }
-                    catch (Exception ex)
-                    {
-                        uiLock(true);
-                        systemtray.IsVisible = false;
-                        if (MessageBox.Show(ex.Message+"，如果您希望將此錯誤回報給開發者，請按確定，按取消關閉訊息", "發生錯誤", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-                        {
-                            contactMail("錯誤訊息如下："+ex.Message+"，錯誤追蹤："+ex.StackTrace);
-                        }
-                    }
-                }
-            });
+                });
+            }
         }
 
         private void tilescan()
@@ -358,6 +398,7 @@ namespace TaiwanPP.WP8App
                 {
                     uiLock(false);
                     connectivity();
+                    ifvm.firstLoad = false;
                     ifvm.connectivity = ifvm.dbcheckedDate.AddMinutes(5) < DateTime.Now ? ifvm.connectivity : false;
                     await cpvm.fetchPrice(ifvm.connectivity, progress);
                     await cpvm.currentPrice(progress, false);
@@ -378,9 +419,11 @@ namespace TaiwanPP.WP8App
                     }
                     await dcvm.load(ifvm.connectivity, progress);
                     await dcvm.buildList(true, progress);
-                    if (stvm.stationDBnotifyDate.Month + 3 < DateTime.Now.Month)
+                    TimeSpan sdb = new TimeSpan(stvm.stationDBnotifyDate.Ticks);
+                    TimeSpan now = new TimeSpan(DateTime.Now.Ticks);
+                    if (now.Subtract(sdb).Days > 30)
                     {
-                        if (System.Windows.MessageBox.Show("加油站資料庫已有約" + (DateTime.Now.Month - stvm.stationDBnotifyDate.Month) + "個月未更新，請確定網路穩定下按是進行更新，按否將展延三個月更新（手動更新請按下方更新按鈕）", "更新加油站資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
+                        if (System.Windows.MessageBox.Show("加油站資料庫已有約" + now.Subtract(sdb).Days + "日未更新，請確定網路穩定下按是進行更新，按否將展延一個月更新（（若太久不更新，會因為Google API限制無法查詢加油站經緯度）", "更新加油站資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
                         {
                             await stvm.updateCPC(progress);
                             await stvm.updateFPCC(progress);
@@ -391,6 +434,20 @@ namespace TaiwanPP.WP8App
                         }
                     }
                     if (ifvm.dbcheckedDate.AddMinutes(5) < DateTime.Now) ifvm.dbcheckedDate = DateTime.Now;
+                    TimeSpan dupdate = new TimeSpan(dtvm.dDBcheckedDate.Ticks);
+                    if (now.Subtract(dupdate).Days > 15)
+                    {
+                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(discount_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+                        {
+                            await dtvm.updateXML(progress, isf);
+                        }
+                    }
+                    using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+                    {
+                        ifvm.saveConfig(isf);
+                        isf.Close();
+                        isf.Dispose();
+                    }
                     uiLock(true);
                 }
                 catch (Exception ex)
@@ -514,10 +571,20 @@ namespace TaiwanPP.WP8App
             }
         }
 
-        private void nearbysBtn_Click(object sender, EventArgs e)
+        private void searchButton_Click(object sender, EventArgs e)
         {
-
-            queryStation(stvm.sfiltercustomLocation, stvm.sfiltercountryEnable);
+            Deployment.Current.Dispatcher.BeginInvoke(async () =>
+            {
+                switch (PanoramaRoot.SelectedIndex)
+                {
+                    case 3:
+                        queryStation(stvm.sfiltercustomLocation, stvm.sfiltercountryEnable);
+                        break;
+                    case 4:
+                        await dtvm.queryDiscount(progress);
+                        break;
+                }
+            });
         }
         private void queryStation(bool custom, bool country)
         {
@@ -708,12 +775,6 @@ namespace TaiwanPP.WP8App
                     if (uienable)
                     {
                         await updateOnline(true);
-                        if (System.Windows.MessageBox.Show("請問是否要更新加油站資料庫（檔案較大，請在確認網路連線穩定的情況下更新）", "更新加油站資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
-                        {
-                            uiLock(false);
-                            await stvm.updateCPC(progress);
-                            await stvm.updateFPCC(progress);
-                        }
                         uiLock(true);
                     }
                 }
@@ -790,10 +851,11 @@ namespace TaiwanPP.WP8App
         private void Panorama_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Dictionary<int, ApplicationBarIconButton[]> buttonlist = new Dictionary<int, ApplicationBarIconButton[]>();
-            buttonlist.Add(3, new ApplicationBarIconButton[] {nearbysBtn,filterButton});
+            buttonlist.Add(4, new ApplicationBarIconButton[] { searchButton, mailButton, settingButton });
+            buttonlist.Add(3, new ApplicationBarIconButton[] { searchButton, filterButton });
             buttonlist.Add(1, new ApplicationBarIconButton[] { settingButton });
             buttonlist.Add(2, new ApplicationBarIconButton[] { nozzleButton });
-            buttonlist.Add(0, new ApplicationBarIconButton[] {});
+            buttonlist.Add(0, new ApplicationBarIconButton[] { settingButton });
             foreach (KeyValuePair<int, ApplicationBarIconButton[]> kp in buttonlist)
             {
                 if (kp.Key == ((Panorama)sender).SelectedIndex) continue;
@@ -813,7 +875,7 @@ namespace TaiwanPP.WP8App
             titlebar.Visibility = flag ? Visibility.Visible : Visibility.Collapsed;
             uienable = flag;
             updateButton.IsEnabled = flag;
-            nearbysBtn.IsEnabled = flag;
+            searchButton.IsEnabled = flag;
             settingButton.IsEnabled = flag;
             filterButton.IsEnabled = flag;
             nozzleButton.IsEnabled = flag;

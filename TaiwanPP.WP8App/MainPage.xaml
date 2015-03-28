@@ -21,6 +21,8 @@
     shell:SystemTray.Opacity="0"
     shell:SystemTray.BackgroundColor="Transparent">
     <phone:PhoneApplicationPage.Resources>
+        <Helpers:discountcountConverter x:Key="discountcountConverter"/>
+        <Helpers:exceldateConverter x:Key="exceldateConverter"/>
         <Helpers:durationConverter x:Key="durationConverter"/>
         <Helpers:stationopencolorConverter x:Key="stationopencolorConverter"/>
         <Helpers:puredateConverter x:Key="puredateConverter"/>
@@ -124,7 +126,7 @@
     				HorizontalAlignment="Left" Padding="5" Margin="5">
                     <TextBlock Foreground="#FF222222" Text="{Binding header}" 
     					FontSize="25"
-    					FontFamily="{StaticResource PhoneFontFamilyBold}"
+    					FontFamily="Portable User Interface"
     					HorizontalAlignment="Left"
     					VerticalAlignment="Center" Margin="0,0,10,0"/>
                 </Border>
@@ -178,19 +180,19 @@
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
                             <StackPanel Margin="3,0">
                                 <TextBlock Margin="0,-3,0,0" Text="{Binding distance, Converter={StaticResource priceConverter}, StringFormat=\{0:N1\}}" FontSize="{Binding distance, Converter={StaticResource distancefontsizeConverter}}" FontFamily="Consolas" FontWeight="Bold"/>
-                            <TextBlock Text="km" Margin="0,-16,0,0" HorizontalAlignment="Right" FontFamily="Portable User Interface"/>
+                                <TextBlock Text="km" Margin="0,-16,0,0" HorizontalAlignment="Right" FontFamily="Portable User Interface"/>
                             </StackPanel>
                             <Border Margin="0,-2,0,0" Background="{Binding open, Converter={StaticResource stationopencolorConverter}}" Padding="1">
-                            <StackPanel Height="16" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock Text="24小時" Foreground="White" Visibility="{Binding duration, ConverterParameter=1, Converter={StaticResource durationConverter}}" FontSize="14" FontFamily="Portable User Interface"/>
+                                <StackPanel Height="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="24小時" Foreground="White" Visibility="{Binding duration, ConverterParameter=1, Converter={StaticResource durationConverter}}" FontSize="14" FontFamily="Portable User Interface"/>
                                     <TextBlock Text="流動站" Foreground="White" Visibility="{Binding duration, ConverterParameter=3, Converter={StaticResource durationConverter}}" FontSize="14" FontFamily="Portable User Interface"/>
                                     <TextBlock Text="整修或停業" Foreground="White" Visibility="{Binding duration, ConverterParameter=0, Converter={StaticResource durationConverter}}" FontSize="14" FontFamily="Portable User Interface"/>
-                                <StackPanel Orientation="Horizontal" Visibility="{Binding duration, ConverterParameter=2, Converter={StaticResource durationConverter}}">
-                                    <TextBlock Text="{Binding starttime, Converter={StaticResource puredateConverter}, StringFormat=HH:mm}" Foreground="White" FontSize="14"/>
-                                    <TextBlock Text="-" Foreground="White" FontFamily="Portable User Interface" FontSize="14"/>
-                                    <TextBlock Text="{Binding endtime, StringFormat=HH:mm}" Foreground="White" FontSize="14"/>
+                                    <StackPanel Orientation="Horizontal" Visibility="{Binding duration, ConverterParameter=2, Converter={StaticResource durationConverter}}">
+                                        <TextBlock Text="{Binding starttime, Converter={StaticResource puredateConverter}, StringFormat=HH:mm}" Foreground="White" FontSize="14"/>
+                                        <TextBlock Text="-" Foreground="White" FontFamily="Portable User Interface" FontSize="14"/>
+                                        <TextBlock Text="{Binding endtime, StringFormat=HH:mm}" Foreground="White" FontSize="14"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
                             </Border>
                         </StackPanel>
                     </Grid>
@@ -391,23 +393,23 @@
                             </StackPanel>
                         </Border>
                     <TextBlock Text="載入中" HorizontalAlignment="Center" TextWrapping="Wrap" Foreground="Gray" FontSize="36" Margin="10" Visibility="{Binding DataContext.loaded, ConverterParameter=0, Converter={StaticResource boolvisConverter}, ElementName=predictPage}"/>
-                    <StackPanel Visibility="{Binding DataContext.loaded, ConverterParameter=1, Converter={StaticResource boolvisConverter}, ElementName=predictPage}">
-                        <TextBlock Text="週日、周一能源局不更新國際油價資訊，預測暫停" HorizontalAlignment="Center" TextWrapping="Wrap" Foreground="Gray" FontSize="36" Margin="10" Visibility="{Binding DataContext.predictpause, ConverterParameter=1, Converter={StaticResource boolvisConverter}, ElementName=predictPage}"/>
-                        <StackPanel Orientation="Horizontal" Visibility="{Binding DataContext.predictpause, ConverterParameter=0, Converter={StaticResource boolvisConverter}, ElementName=predictPage}" HorizontalAlignment="Left" VerticalAlignment="Center">
-                            <StackPanel Margin="10,10,50,10">
-                                <TextBlock Text="汽油價格預測" FontSize="28"/>
+                        <StackPanel Visibility="{Binding DataContext.loaded, ConverterParameter=1, Converter={StaticResource boolvisConverter}, ElementName=predictPage}">
+                            <TextBlock Text="週日、周一能源局不更新國際油價資訊，預測暫停" HorizontalAlignment="Center" TextWrapping="Wrap" Foreground="Gray" FontSize="36" Margin="10" Visibility="{Binding DataContext.predictpause, ConverterParameter=1, Converter={StaticResource boolvisConverter}, ElementName=predictPage}"/>
+                            <StackPanel Orientation="Horizontal" Visibility="{Binding DataContext.predictpause, ConverterParameter=0, Converter={StaticResource boolvisConverter}, ElementName=predictPage}" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <StackPanel Margin="10,10,50,10">
+                                    <TextBlock Text="汽油價格預測" FontSize="28"/>
+                                </StackPanel>
+                                <Grid Width="10" Height="10" Margin="5,5,5,30" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Path Data="F1M0,0L22.357,38.725 44.717,0z" Visibility="{Binding DataContext.pprice, ConverterParameter=1, Converter={StaticResource signConverter}, ElementName=predictPage}" Fill="#FF46DE46" UseLayoutRounding="False" RenderTransformOrigin="0.5,0.5" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Path Data="F1M0,0L22.357,38.725 44.717,0z" Visibility="{Binding DataContext.pprice, ConverterParameter=2, Converter={StaticResource signConverter}, ElementName=predictPage}" Fill="Red" UseLayoutRounding="False" RenderTransformOrigin="0.5,0.5" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Path.RenderTransform>
+                                            <RotateTransform Angle="180"/>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                    <Rectangle Fill="LightGray" Visibility="{Binding DataContext.pprice, ConverterParameter=0, Converter={StaticResource signConverter}, ElementName=predictPage}" HorizontalAlignment="Center" Height="7" Margin="179,36,0,0" VerticalAlignment="Center" Width="7"/>
+                                </Grid>
+                                <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" Text="{Binding DataContext.pprice, Converter={StaticResource priceConverter}, ElementName=predictPage, StringFormat=\{0:N1\}}" FontSize="45" Foreground="{Binding DataContext.pprice, Converter={StaticResource colorConverter}, ElementName=predictPage}" TextAlignment="Right" />
                             </StackPanel>
-                            <Grid Width="10" Height="10" Margin="5,5,5,30" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Path Data="F1M0,0L22.357,38.725 44.717,0z" Visibility="{Binding DataContext.pprice, ConverterParameter=1, Converter={StaticResource signConverter}, ElementName=predictPage}" Fill="#FF46DE46" UseLayoutRounding="False" RenderTransformOrigin="0.5,0.5" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <Path Data="F1M0,0L22.357,38.725 44.717,0z" Visibility="{Binding DataContext.pprice, ConverterParameter=2, Converter={StaticResource signConverter}, ElementName=predictPage}" Fill="Red" UseLayoutRounding="False" RenderTransformOrigin="0.5,0.5" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <Path.RenderTransform>
-                                        <RotateTransform Angle="180"/>
-                                    </Path.RenderTransform>
-                                </Path>
-                                <Rectangle Fill="LightGray" Visibility="{Binding DataContext.pprice, ConverterParameter=0, Converter={StaticResource signConverter}, ElementName=predictPage}" HorizontalAlignment="Center" Height="7" Margin="179,36,0,0" VerticalAlignment="Center" Width="7"/>
-                            </Grid>
-                            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" Text="{Binding DataContext.pprice, Converter={StaticResource priceConverter}, ElementName=predictPage, StringFormat=\{0:N1\}}" FontSize="45" Foreground="{Binding DataContext.pprice, Converter={StaticResource colorConverter}, ElementName=predictPage}" TextAlignment="Right" />
-                        </StackPanel>
                             <StackPanel Orientation="Horizontal" Visibility="{Binding DataContext.predictpause, ConverterParameter=0, Converter={StaticResource boolvisConverter}, ElementName=predictPage}" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <StackPanel Margin="10,10,50,10">
                                     <TextBlock Text="柴油價格預測" FontSize="28"/>
@@ -424,9 +426,9 @@
                                 <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" Text="{Binding DataContext.pdprice, Converter={StaticResource priceConverter}, ElementName=predictPage, StringFormat=\{0:N1\}}" FontSize="45" Foreground="{Binding DataContext.pdprice, Converter={StaticResource colorConverter}, ElementName=predictPage}" TextAlignment="Right" />
                             </StackPanel>
                         </StackPanel>
-                    <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
+                        <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
                         <TextBlock Text="開發者公告" FontSize="26"/>
-                    </Border>
+                        </Border>
                     <ItemsControl x:Name="DCBulletin" ItemsSource="{Binding DataContext.feedlist, ElementName=DCBulletin}" ItemTemplate="{Binding Source={StaticResource DCitem}}" ItemsPanel="{Binding Source={StaticResource bulletinHolder}}">
                         <ItemsControl.DataContext>
                             <libViewModels:dcViewModel/>
@@ -447,8 +449,10 @@
                         <TextBlock Text="載入中" HorizontalAlignment="Center" TextWrapping="Wrap" Foreground="Gray" FontSize="36" Margin="10" Visibility="{Binding DataContext.loaded, ConverterParameter=0, Converter={StaticResource boolvisConverter}, ElementName=predictPage}"/>
                         <ScrollViewer Visibility="{Binding DataContext.loaded, ConverterParameter=1, Converter={StaticResource boolvisConverter}, ElementName=predictPage}">
                             <StackPanel>
-                            <TextBlock TextWrapping="Wrap" Text="計算週期" FontSize="24" Margin="5,10,0,0"/>
-                            <StackPanel Orientation="Horizontal" Margin="100,0,0,0" Visibility="{Binding DataContext.predictpause, ConverterParameter=0, Converter={StaticResource boolvisConverter}, ElementName=predictPage}" >
+                                <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
+                                    <TextBlock Text="計算週期" FontSize="26"/>
+                                </Border>
+                                <StackPanel Orientation="Horizontal" Margin="100,0,0,0" Visibility="{Binding DataContext.predictpause, ConverterParameter=0, Converter={StaticResource boolvisConverter}, ElementName=predictPage}" >
                                 <TextBlock Text="{Binding DataContext.pstartdate, Converter={StaticResource dateConverter}, ElementName=predictPage, StringFormat=\{0:d\}}" FontSize="21.333"/>
                                 <TextBlock Text="至" Margin="5,0"/>
                                 <TextBlock Text="{Binding DataContext.penddate, Converter={StaticResource dateConverter}, ElementName=predictPage, StringFormat=\{0:d\}}" FontSize="21.333"/>
@@ -934,6 +938,78 @@
 							GridCellSize="380,120"
 							Height="380"/>
                         </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </phone:PanoramaItem>
+            <phone:PanoramaItem x:Name="discountPage" Background="#4CFFFFFF">
+                <phone:PanoramaItem.Header>
+                    <TextBlock Text="加油優惠" FontSize="45" Margin="0,5,0,0"/>
+                </phone:PanoramaItem.Header>
+                <phone:PanoramaItem.DataContext>
+                    <libViewModels:discountViewModel/>
+                </phone:PanoramaItem.DataContext>
+                <Grid Margin="0,-40,0,0">
+                    <StackPanel Margin="0,10,0,0">
+                        <TextBlock Text="加油站品牌與加油方式" FontSize="24" FontWeight="Bold"/>
+                        <StackPanel Orientation="Horizontal">
+                            <toolkit:ListPicker Width="270" x:Name="brandSelector" BorderBrush="Black" ItemsSource="{Binding DataContext.brandList, ElementName=discountPage}" Foreground="Black" FontFamily="Portable User Interface" SelectedIndex="{Binding DataContext.indexBrand, ElementName=discountPage, Mode=TwoWay}" Margin="12,0,12,5">
+                                <toolkit:ListPicker.FullModeItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" FontSize="35" FontFamily="Portable User Interface" Margin="0,7"/>
+                                    </DataTemplate>
+                                </toolkit:ListPicker.FullModeItemTemplate>
+                            </toolkit:ListPicker>
+                            <toolkit:ListPicker Width="100" x:Name="servetypeSelector" BorderBrush="Black" ItemsSource="{Binding DataContext.servetypeList, ElementName=discountPage}" Foreground="Black" FontFamily="Portable User Interface" SelectedIndex="{Binding DataContext.indexServetype, ElementName=discountPage, Mode=TwoWay}" Margin="12,0,12,5">
+                                <toolkit:ListPicker.FullModeItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" FontSize="35" FontFamily="Portable User Interface" Margin="0,7"/>
+                                    </DataTemplate>
+                                </toolkit:ListPicker.FullModeItemTemplate>
+                            </toolkit:ListPicker>
+                        </StackPanel>
+                        <TextBlock Text="發卡銀行" FontSize="24" FontWeight="Bold"/>
+                        <toolkit:ListPicker x:Name="bankSelector" BorderBrush="Black" ItemsSource="{Binding DataContext.bankList, ElementName=discountPage}" Foreground="Black" SelectedIndex="{Binding DataContext.indexBank, ElementName=discountPage, Mode=TwoWay}" BorderThickness="3" Margin="12,0,12,5">
+                            <toolkit:ListPicker.FullModeItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" FontSize="35" FontFamily="Portable User Interface" Margin="0,7"/>
+                                </DataTemplate>
+                            </toolkit:ListPicker.FullModeItemTemplate>
+                        </toolkit:ListPicker>
+                        <TextBlock Text="提示：此為作者整理，歡迎由下方Email按鈕提供更多優惠" TextWrapping="Wrap" FontSize="16" Visibility="{Binding DataContext.initial, ConverterParameter=0, Converter={StaticResource boolvisConverter}, ElementName=discountPage}"/>
+                        <TextBlock Text="{Binding DataContext.foundcount, Converter={StaticResource discountcountConverter}, ElementName=discountPage}" TextWrapping="Wrap" FontSize="16" Visibility="{Binding DataContext.initial, ConverterParameter=1, Converter={StaticResource boolvisConverter}, ElementName=discountPage}"/>
+                        <TextBlock Text="點下方放大鏡開始搜尋" HorizontalAlignment="Center" TextWrapping="Wrap" Foreground="Gray" FontSize="36" Margin="10,50,10,10" Visibility="{Binding DataContext.foundcount, ConverterParameter=0, Converter={StaticResource countvisConverter}, ElementName=discountPage}"/>
+                        <ScrollViewer Height="400" Visibility="{Binding DataContext.foundcount, ConverterParameter=1, Converter={StaticResource countvisConverter}, ElementName=discountPage}">
+                            <ItemsControl ItemsSource="{Binding DataContext.queryDiscounts, ElementName=discountPage}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#FFE4E4E4" BorderThickness="0,1" HorizontalAlignment="Left" Height="130" VerticalAlignment="Top" Width="415" Background="#B2FDFDFD" Grid.Row="1" Margin="0,5">
+                                            <Border.Clip>
+                                                <RectangleGeometry Rect="0, 0, 415, 130"/>
+                                            </Border.Clip>
+                                            <Grid>
+                                                <TextBlock HorizontalAlignment="Left" Height="118" Margin="340,38,-27,-28" TextWrapping="Wrap" Text="@" VerticalAlignment="Top" Width="100" FontSize="96" FontFamily="Segoe WP Black" Foreground="#FFEAEAEA"/>
+                                                <StackPanel HorizontalAlignment="Left" Height="125" Margin="0,0,-1,0" VerticalAlignment="Top" Width="416">
+                                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Width="416" Background="#FFE0E0E0">
+                                                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding bank}" VerticalAlignment="Bottom" Foreground="Black" FontWeight="Bold" FontSize="33.333" FontFamily="Portable User Interface" Margin="5,0"/>
+                                                        <TextBlock Margin="0,0,0,5" TextWrapping="Wrap" Text="{Binding card}" VerticalAlignment="Bottom" Foreground="Black" FontSize="18.667" FontFamily="Portable User Interface"/>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+                                                        <TextBlock Text="{Binding startdate, Converter={StaticResource exceldateConverter}, StringFormat=\{0:d\}}" FontFamily="Portable User Interface"/>
+                                                        <TextBlock Text="-"/>
+                                                        <TextBlock Text="{Binding enddate, Converter={StaticResource exceldateConverter}, StringFormat=\{0:d\}}" FontFamily="Portable User Interface"/>
+                                                    </StackPanel>
+                                                    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding content}" Foreground="Black" Margin="10,3,0,3" Width="394" FontSize="18.667"/>
+                                                </StackPanel>
+                                                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0,0,3,10">
+                                                    <TextBlock Text="{Binding brand}" Foreground="#FF5F5F5F" FontSize="18.667" HorizontalAlignment="Right" FontWeight="Bold" Padding="0"/>
+                                                    <TextBlock Text="{Binding servetype}" Foreground="#FF5F5F5F" FontSize="18.667" HorizontalAlignment="Right" Padding="0"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
                     </StackPanel>
                 </Grid>
             </phone:PanoramaItem>

@@ -91,7 +91,8 @@ namespace TaiwanPP.WP8App
             {
                 moveDB("price.sqlite");
                 moveXML("config.xml");
-                moveTextStream("config.xml");
+                //moveTextStream("config.xml"); //不需要這一段，XML還得修改其設定才能存檔
+                moveTextStream("creditDiscount.xml");
             }
         }
 

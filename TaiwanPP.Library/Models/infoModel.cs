@@ -19,7 +19,7 @@ namespace TaiwanPP.Library.Models
   <!ELEMENT appconfig (info ,predictPrice ,settings, tiles)>
   <!ELEMENT info (updateDate ,notified ,sysinfo)>
   <!ELEMENT predictPrice (duration ,gasprice ,dieselprice)>
-  <!ELEMENT settings (timing ,productMonitor ,stationFilters, dailynotify, defaultPage, autoUpdate, soapUpdate, stationBehavior, runPredict)>
+  <!ELEMENT settings (timing , productMonitor ,stationFilters, dailynotify, defaultPage, autoUpdate, soapUpdate, stationBehavior, runPredict)>
   <!ELEMENT tiles (tile*)>
   <!ELEMENT tile (#PCDATA)> <!-- 動態磚 -->
   <!ELEMENT updateDate EMPTY>
@@ -33,7 +33,9 @@ namespace TaiwanPP.Library.Models
   <!ELEMENT soapUpdate EMPTY><!-- 中油SOAP連接 -->
   <!ELEMENT runPredict EMPTY><!-- 執行預測 -->
   <!ELEMENT stationBehavior EMPTY><!-- 點擊加油站行為 -->
-  <!ELEMENT stationFilters (FPCC ,CPC ,Self ,Direct ,Favorite ,Kilometer ,Country ,Inservice, Product)>
+  <!ELEMENT stationFilters (FPCC ,CPC ,Self ,Direct ,Favorite ,Kilometer ,Country ,Inservice, Product, Subbrand)>
+  <!ELEMENT Subbrand (term*)><!-- 子品牌名稱 -->
+  <!ELEMENT term (#PCDATA)><!-- 搜尋關鍵字 -->
   <!ELEMENT productMonitor (product*)><!-- 追蹤油價清單 -->
   <!ELEMENT product EMPTY>
   <!ELEMENT Product EMPTY>
@@ -65,6 +67,8 @@ namespace TaiwanPP.Library.Models
   <!ATTLIST updateDate DBcheckedDate CDATA #REQUIRED><!-- 資料庫檢查時間 -->
   <!ATTLIST updateDate priceDB CDATA #REQUIRED> <!-- 價格資料庫更新時間 -->
   <!ATTLIST updateDate moeaboeDBdate CDATA #REQUIRED><!-- 能源局油價資料庫 -->
+  <!ATTLIST updateDate discountRev CDATA #REQUIRED><!-- 折扣頁面版本 -->
+  <!ATTLIST updateDate dDBcheckedDate CDATA #REQUIRED><!-- 折扣資料庫檢查時間 -->
   <!ATTLIST notified CPC (0|1) #REQUIRED> <!-- 背景程式已通知中油更新日期 -->
   <!ATTLIST notified FPCC (0|1) #REQUIRED> <!-- 背景程式已通知台塑更新日期 -->
   <!ATTLIST notified checkHour CDATA #REQUIRED> <!-- 背景程式已通知台塑更新日期 -->
@@ -96,7 +100,7 @@ namespace TaiwanPP.Library.Models
 ]>
 <appconfig version='635456958087482229'>
   <info>
-    <updateDate priceDB='0' stationDB='635456958087482229' sDBnotifyDate='635456958087482229' DBcheckedDate='0' moeaboeDBdate='0'/>
+    <updateDate priceDB='0' stationDB='635456958087482229' sDBnotifyDate='635456958087482229' DBcheckedDate='0' moeaboeDBdate='0' discountRev='3f94badb0df2ffe8d47ffc7362e9adb6840e6e3c' dDBcheckedDate='0'/>
     <notified CPC='0' FPCC='0' checkHour='0'/>
     <sysinfo firstload='1' upgrade='0'/>
   </info>
@@ -118,6 +122,7 @@ namespace TaiwanPP.Library.Models
       <Country filter='0'>0</Country>
       <Inservice filter='1'/>
       <Product p92='0' p95='1' p98='0' pdiesel='0' pgasohol='0'/>
+      <Subbrand></Subbrand>
     </stationFilters>
     <dailynotify notified='0' checkHour='0' enable='1'>0</dailynotify>
     <defaultPage page='0'/>
@@ -720,12 +725,44 @@ namespace TaiwanPP.Library.Models
                 }
             }
         }
+        public List<string> sfilterSubBrands
+        {
+            get
+            {
+                return (from node in config.Element("appconfig").Element("settings").Element("stationFilters").Element("Subbrand").Descendants("term") select node.Attribute("id").Value).ToList();
+            }
+            set
+            {
+                IEnumerable<XElement> nlist = from v in value select new XElement("term", new XCData(v));
+                config.Element("appconfig").Element("settings").Element("stationFilters").Element("Subbrand").RemoveAll();
+                foreach (XElement n in nlist)
+                {
+                    config.Element("appconfig").Element("settings").Element("stationFilters").Element("Subbrand").Add(n);
+                }
+            }
+        }
         public DateTime moeaboeDBdate
         {
             get { return new DateTime(Convert.ToInt64(config.Element("appconfig").Element("info").Element("updateDate").Attribute("moeaboeDBdate").Value)); }
             set
             {
                 config.Element("appconfig").Element("info").Element("updateDate").Attribute("moeaboeDBdate").Value = value.Ticks.ToString();
+            }
+        }
+        public string discountRev
+        {
+            get { return config.Element("appconfig").Element("info").Element("updateDate").Attribute("discountRev").Value; }
+            set
+            {
+                config.Element("appconfig").Element("info").Element("updateDate").Attribute("discountRev").Value = value;
+            }
+        }
+        public DateTime dDBupdateDate
+        {
+            get { return new DateTime(Convert.ToInt64(config.Element("appconfig").Element("info").Element("updateDate").Attribute("dDBcheckedDate").Value)); }
+            set
+            {
+                config.Element("appconfig").Element("info").Element("updateDate").Attribute("dDBcheckedDate").Value = value.Ticks.ToString();
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;
