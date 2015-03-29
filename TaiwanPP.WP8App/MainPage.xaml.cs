@@ -423,7 +423,7 @@ namespace TaiwanPP.WP8App
                     TimeSpan now = new TimeSpan(DateTime.Now.Ticks);
                     if (now.Subtract(sdb).Days > 30)
                     {
-                        if (System.Windows.MessageBox.Show("加油站資料庫已有約" + now.Subtract(sdb).Days + "日未更新，請確定網路穩定下按是進行更新，按否將展延一個月更新（（若太久不更新，會因為Google API限制無法查詢加油站經緯度）", "更新加油站資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
+                        if (System.Windows.MessageBox.Show("加油站資料庫已有約" + now.Subtract(sdb).Days + "日未更新，請確定網路穩定下按是進行更新，按否將展延一個月更新（（若太久不更新，會因為Google API數量而限制無法查詢加油站經緯度）", "更新加油站資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
                         {
                             await stvm.updateCPC(progress);
                             await stvm.updateFPCC(progress);
@@ -435,7 +435,7 @@ namespace TaiwanPP.WP8App
                     }
                     if (ifvm.dbcheckedDate.AddMinutes(5) < DateTime.Now) ifvm.dbcheckedDate = DateTime.Now;
                     TimeSpan dupdate = new TimeSpan(dtvm.dDBcheckedDate.Ticks);
-                    if (now.Subtract(dupdate).Days > 15)
+                    if (now.Subtract(dupdate).Days > 10)
                     {
                         using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(discount_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
                         {

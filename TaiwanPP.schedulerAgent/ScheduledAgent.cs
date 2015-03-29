@@ -57,6 +57,7 @@ namespace TaiwanPP.schedulerAgent
             builder.RegisterType<stationViewModel>().PropertiesAutowired();
             builder.RegisterType<cpViewModel>().PropertiesAutowired();
             builder.RegisterType<ppViewModel>().PropertiesAutowired();
+            builder.RegisterType<discountViewModel>().PropertiesAutowired();
             IContainer container = builder.Build();
             ppvm = container.Resolve<ppViewModel>();
             cpvm = container.Resolve<cpViewModel>();
