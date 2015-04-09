@@ -135,52 +135,60 @@ namespace TaiwanPP.Library.ViewModels
 
         public async Task loadXML(Stream xml)
         {
-            using (StreamReader sr = new StreamReader(xml))
+            try
             {
-                XMLcontent = await sr.ReadToEndAsync();
-                XDocument xd = XDocument.Parse(XMLcontent.Replace("\t", ""));
-                discountDB = (from node in xd.Root.Descendants("discount")
-                              select new discountStorage()
-                              {
-                                  bank = node.Element("bank").Value,
-                                  card = node.Element("card").Value,
-                                  brand = node.Element("brand").Value,
-                                  content = node.Element("content").Value,
-                                  servetype = node.Element("servetype").Value,
-                                  startdate = Convert.ToInt64(node.Element("startdate").Value),
-                                  enddate = Convert.ToInt64(node.Element("enddate").Value)
-                              }).ToList();
-                discountDBcount = discountDB.Count();
-                IEnumerable<string> sources = (from source in discountDB orderby source.source select source.source).Distinct();
-                sourceList.Clear();
-                foreach (string s in sources)
+                using (StreamReader sr = new StreamReader(xml))
                 {
-                    sourceList.Add(s);
+                    XMLcontent = await sr.ReadToEndAsync();
+                    XDocument xd = XDocument.Parse(XMLcontent.Replace("\t", ""));
+                    discountDB = (from node in xd.Root.Descendants("discount")
+                                  select new discountStorage()
+                                  {
+                                      bank = node.Element("bank").Value,
+                                      card = node.Element("card").Value,
+                                      brand = node.Element("brand").Value,
+                                      content = node.Element("content").Value,
+                                      servetype = node.Element("servetype").Value,
+                                      startdate = Convert.ToInt64(node.Element("startdate").Value),
+                                      enddate = Convert.ToInt64(node.Element("enddate").Value)
+                                  }).ToList();
+                    discountDBcount = discountDB.Count();
+                    IEnumerable<string> sources = (from source in discountDB orderby source.source select source.source).Distinct();
+                    sourceList.Clear();
+                    foreach (string s in sources)
+                    {
+                        sourceList.Add(s);
+                    }
+                    IEnumerable<string> brands = (from brand in discountDB orderby brand.brand select brand.brand).Distinct();
+                    brandList.Clear();
+                    brandList.Add("不指定");
+                    foreach (string b in brands)
+                    {
+                        if (b == "不指定") continue;
+                        brandList.Add(b);
+                    }
+                    IEnumerable<string> servetypes = (from servetype in discountDB orderby servetype.servetype select servetype.servetype).Distinct();
+                    servetypeList.Clear();
+                    servetypeList.Add("不指定");
+                    foreach (string s in servetypes)
+                    {
+                        if (s == "不指定") continue;
+                        servetypeList.Add(s);
+                    }
+                    IEnumerable<string> banks = (from bank in discountDB orderby bank.bank select bank.bank).Distinct();
+                    bankList.Clear();
+                    bankList.Add("不指定");
+                    foreach (string s in banks)
+                    {
+                        if (s == "不指定") continue;
+                        bankList.Add(s);
+                    }
                 }
-                IEnumerable<string> brands = (from brand in discountDB orderby brand.brand select brand.brand).Distinct();
-                brandList.Clear();
-                brandList.Add("不指定");
-                foreach (string b in brands)
-                {
-                    if (b == "不指定") continue;
-                    brandList.Add(b);
-                }
-                IEnumerable<string> servetypes = (from servetype in discountDB orderby servetype.servetype select servetype.servetype).Distinct();
-                servetypeList.Clear();
-                servetypeList.Add("不指定");
-                foreach (string s in servetypes)
-                {
-                    if (s == "不指定") continue;
-                    servetypeList.Add(s);
-                }
-                IEnumerable<string> banks = (from bank in discountDB orderby bank.bank select bank.bank).Distinct();
-                bankList.Clear();
-                bankList.Add("不指定");
-                foreach (string s in banks)
-                {
-                    if (s == "不指定") continue;
-                    bankList.Add(s);
-                }
+            }
+            catch (XmlException)
+            {
+                dbRev = "";
+                throw new Exception("折扣資料庫剖析失敗，請連上網路並更新資料庫！");
             }
         }
 

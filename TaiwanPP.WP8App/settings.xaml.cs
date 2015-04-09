@@ -114,6 +114,23 @@ namespace TaiwanPP.WP8App
                             fileStream.Close();
                         }
                     }
+                    filename = "creditDiscount.xml";
+                    assetfilename = @"Assets\" + filename;
+                    streamInfo = Application.GetResourceStream(new Uri(assetfilename, UriKind.Relative));
+                    using (IsolatedStorageFile isFile = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filename, FileMode.Create, isFile))
+                        {
+                            using (StreamWriter writer = new StreamWriter(fileStream))
+                            {
+                                using (StreamReader reader = new StreamReader(streamInfo.Stream))
+                                {
+                                    writer.WriteLine(reader.ReadToEnd());
+                                    writer.Close();
+                                }
+                            }
+                        }
+                    }
                     filename = "price.sqlite";
                     assetfilename = @"Assets\" + filename;
                     streamInfo = Application.GetResourceStream(new Uri(assetfilename, UriKind.Relative));

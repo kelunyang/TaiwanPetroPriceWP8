@@ -26,6 +26,7 @@ using Nito.AsyncEx;
 using System.Device.Location;
 using System.Windows.Resources;
 using System.Xml.Linq;
+using System.ComponentModel;
 
 namespace TaiwanPP.WP8App
 {
@@ -54,13 +55,13 @@ namespace TaiwanPP.WP8App
         string tilemonitor;
         private object lockobj = new object();
         bool uienable = true;
-        int previouspage = -1;
         bool autoupdate = true;
-        bool switchpage = false;
         Binding connectivitybind;
         bool executeStationQ = false;
         bool forcenavi = false;
         bool loaded = false;
+        bool resetconfig = false;
+        int leave = 0;
 
         // 建構函式
         public MainPage()
@@ -79,7 +80,7 @@ namespace TaiwanPP.WP8App
             builder.RegisterType<ppViewModel>().PropertiesAutowired();
             builder.RegisterType<dcViewModel>().PropertiesAutowired();
             builder.RegisterType<discountViewModel>().PropertiesAutowired();
-            IContainer container = builder.Build();
+            Autofac.IContainer container = builder.Build();
             locationPage.DataContext = container.Resolve<stationViewModel>();
             predictPage.DataContext = container.Resolve<ppViewModel>();
             currentpricePage.DataContext = container.Resolve<cpViewModel>();
@@ -198,12 +199,20 @@ namespace TaiwanPP.WP8App
 
         void filterButton_Click(object sender, EventArgs e)
         {
-            if(uienable) NavigationService.Navigate(new Uri("/filter.xaml", UriKind.Relative));
+            if (uienable)
+            {
+                resetconfig = true;
+                NavigationService.Navigate(new Uri("/filter.xaml", UriKind.Relative));
+            }
         }
 
         void settingButton_Click(object sender, EventArgs e)
         {
-            if(uienable) NavigationService.Navigate(new Uri("/settings.xaml", UriKind.Relative));
+            if (uienable)
+            {
+                resetconfig = true;
+                NavigationService.Navigate(new Uri("/settings.xaml", UriKind.Relative));
+            }
         }
         private void CPCFilter(object sender, FilterEventArgs e)
         {
@@ -341,8 +350,7 @@ namespace TaiwanPP.WP8App
                                 isf.Dispose();
                             }
                             if (ifvm.firstLoad) NavigationService.Navigate(new Uri("/fastConfig.xaml", UriKind.Relative));
-                            //頁面控制
-                            PanoramaRoot.DefaultItem = switchpage ? PanoramaRoot.Items[previouspage] : PanoramaRoot.Items[ifvm.defaultPage];
+                            PanoramaRoot.DefaultItem = State.Keys.Contains("defaultpage") ? PanoramaRoot.Items[(int)State["defaultpage"]] : PanoramaRoot.Items[ifvm.defaultPage]; //頁面控制
                             if (ifvm.upgrade)
                             {
                                 MessageBox.Show("系統設定檔升級，以強制更新您的設定檔，請重新復原您的設定（包括動態磚）", "升級提醒", MessageBoxButton.OK);
@@ -357,7 +365,6 @@ namespace TaiwanPP.WP8App
                             //await ppvm.predictedPrice(connectivity, cpvm.currentCollections[typeDB.CPC95.key].currentPrice, progress);
                             uienable = true;
                             await stvm.loadDB(sqliteplaform, DB_PATH);
-                            autoupdate = switchpage ? autoupdate : (int)DateTime.Now.DayOfWeek == 0 ? true : ifvm.autoUpdate;
                             if (autoupdate) await updateOnline(ppvm.runPredict);    //跳頁時不用重跑
                             //await dcvm.load(progress);
                             using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
@@ -382,6 +389,37 @@ namespace TaiwanPP.WP8App
                         }
                     }
                 });
+            }
+            else
+            {
+                if (resetconfig)
+                {
+                    uiLock(false);
+                    Deployment.Current.Dispatcher.BeginInvoke(async () =>
+                    {
+                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+                        {
+                            ifvm.loadConfig(isf);
+                            isf.Close();
+                            isf.Dispose();
+                        }
+                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+                        {
+                            stvm.loadConfig(isf);
+                            isf.Close();
+                            isf.Dispose();
+                        }
+                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+                        {
+                            dtvm.loadConfig(isf);
+                            isf.Close();
+                            isf.Dispose();
+                        }
+                        await stvm.loadDB(sqliteplaform, DB_PATH);
+                        resetconfig = false;
+                    });
+                    uiLock(true);
+                }
             }
         }
 
@@ -674,32 +712,10 @@ namespace TaiwanPP.WP8App
                 mapcontrol.ZoomLevel = 13.5;
             });
         }
-        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        /*protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
         {
-            if (!State.Keys.Contains("defaultpage"))
-            {
-                State.Add("defaultpage", PanoramaRoot.SelectedIndex);
-            }
-            else
-            {
-                State["defaultpage"] = PanoramaRoot.SelectedIndex;
-            }
-            if (!State.Keys.Contains("autoupdate"))
-            {
-                State.Add("autoupdate", false);
-            }
-            else
-            {
-                State["autoupdate"] = false;
-            }
-            using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
-            {
-                ifvm.saveConfig(isf);
-                isf.Close();
-                isf.Dispose();
-            }
             base.OnNavigatedFrom(e);
-        }
+        }*/
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
 
@@ -709,7 +725,6 @@ namespace TaiwanPP.WP8App
                 {
                     defaultpage = 3;
                     autoupdate = false;
-                    switchpage = true;
                     executeStationQ = true;
                     forcenavi = true;
                 }
@@ -731,7 +746,6 @@ namespace TaiwanPP.WP8App
                             break;
                         case "附近的加油站":
                             autoupdate = false;
-                            switchpage = true;
                             defaultpage = 3;
                             executeStationQ = true;
                             break;
@@ -749,20 +763,6 @@ namespace TaiwanPP.WP8App
             if (!State.Keys.Contains("defaultpage"))
             {
                 State.Add("defaultpage", ifvm.defaultPage);
-            }
-            else
-            {
-                previouspage = (int)State["defaultpage"];
-                switchpage = true;
-            }
-            if (!State.Keys.Contains("autoupdate"))
-            {
-                State.Add("autoupdate", ifvm.autoUpdate);
-            }
-            else
-            {
-                autoupdate = (bool)State["autoupdate"];
-                switchpage = true;
             }
             base.OnNavigatedTo(e);
         }
@@ -903,6 +903,27 @@ namespace TaiwanPP.WP8App
         {
             Microsoft.Phone.Maps.MapsSettings.ApplicationContext.ApplicationId = "e0ec2f02-94d1-46a1-9286-1207dffe0db9";
             Microsoft.Phone.Maps.MapsSettings.ApplicationContext.AuthenticationToken = "wc8L6ouFdDXsLyIjkoVoew";
+        }
+
+        protected override void OnBackKeyPress(CancelEventArgs e)
+        {
+            using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+            {
+                ifvm.saveConfig(isf);
+                isf.Close();
+                isf.Dispose();
+            }
+            e.Cancel = true;
+            leave++;
+            if (leave == 2)
+            {
+                e.Cancel = false;
+            }
+            else
+            {
+                exitanimation.Stop();
+                exitanimation.Begin();
+            }
         }
 
     }
