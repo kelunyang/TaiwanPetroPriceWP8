@@ -8,6 +8,7 @@ using System.Windows;
 using TaiwanPP.Library.Helpers;
 using System.Device.Location;
 using System.Windows.Media;
+using System.Text.RegularExpressions;
 
 namespace TaiwanPP.WP8App.Helpers
 {
@@ -40,6 +41,18 @@ namespace TaiwanPP.WP8App.Helpers
                     break;
             }
             return System.Windows.Visibility.Collapsed;
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class sourceConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            Match mc = Regex.Match((string)value, @"https?:\/\/.*tw\/");
+            return mc.Value;
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

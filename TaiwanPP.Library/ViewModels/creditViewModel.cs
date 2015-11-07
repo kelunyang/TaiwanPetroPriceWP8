@@ -149,6 +149,7 @@ namespace TaiwanPP.Library.ViewModels
                                       brand = node.Element("brand").Value,
                                       content = node.Element("content").Value,
                                       servetype = node.Element("servetype").Value,
+                                      source = node.Element("source").Value,
                                       startdate = Convert.ToInt64(node.Element("startdate").Value),
                                       enddate = Convert.ToInt64(node.Element("enddate").Value)
                                   }).ToList();
@@ -247,9 +248,9 @@ namespace TaiwanPP.Library.ViewModels
                     return false;
                 }
             }
-            catch
+            catch (Exception e)
             {
-                throw new htmlException("取得折扣內容");
+                throw e;
             }
         }
     }

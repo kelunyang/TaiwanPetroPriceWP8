@@ -28,7 +28,6 @@ namespace TaiwanPP.WP8App
         stationViewModel stvm;
         discountViewModel dtvm;
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication();
-        bool loaded = false;
 
         public about()
         {
@@ -53,32 +52,29 @@ namespace TaiwanPP.WP8App
             stvm = (stationViewModel)station.DataContext;
             dtvm = (discountViewModel)discount.DataContext;
             ifvm.connectivity = Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
+            using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+            {
+                ifvm.loadConfig(isf);
+                isf.Close();
+                isf.Dispose();
+            }
+            using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+            {
+                stvm.loadConfig(isf);
+                isf.Close();
+                isf.Dispose();
+            }
+            using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+            {
+                dtvm.loadConfig(isf);
+                isf.Close();
+                isf.Dispose();
+            }
         }
 
         private void LayoutRoot_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!loaded)
-            {
-                using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
-                {
-                    ifvm.loadConfig(isf);
-                    isf.Close();
-                    isf.Dispose();
-                }
-                using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
-                {
-                    stvm.loadConfig(isf);
-                    isf.Close();
-                    isf.Dispose();
-                }
-                using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
-                {
-                    dtvm.loadConfig(isf);
-                    isf.Close();
-                    isf.Dispose();
-                }
-                loaded = true;
-            }
+
         }
 
         private void Email_Click(object sender, EventArgs e)

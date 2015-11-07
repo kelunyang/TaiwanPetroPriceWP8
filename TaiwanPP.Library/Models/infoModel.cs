@@ -98,7 +98,7 @@ namespace TaiwanPP.Library.Models
   <!ATTLIST sysinfo firstload (0|1) #REQUIRED><!-- 初次使用 -->
   <!ATTLIST predictPrice pause (0|1) #REQUIRED><!-- 啟動預測 -->
 ]>
-<appconfig version='635456958087482229'>
+<appconfig version='635688129238671020'>
   <info>
     <updateDate priceDB='0' stationDB='635456958087482229' sDBnotifyDate='635456958087482229' DBcheckedDate='0' moeaboeDBdate='0' discountRev='3f94badb0df2ffe8d47ffc7362e9adb6840e6e3c' dDBcheckedDate='0'/>
     <notified CPC='0' FPCC='0' checkHour='0'/>

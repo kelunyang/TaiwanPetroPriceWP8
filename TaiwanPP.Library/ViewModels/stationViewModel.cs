@@ -3,6 +3,7 @@ using SQLite.Net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -902,6 +903,7 @@ namespace TaiwanPP.Library.ViewModels
                     httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
                     HtmlDocument tHtmlDoc = new HtmlDocument();
                     string url = page != 0 ? "http://www.fpcc.com.tw/tc/station_full.php?region=" + region + "&county=" + county + "&page=" + page : "http://www.fpcc.com.tw/tc/station_full.php?region=" + region + "&county=" + county;
+                    //Debug.WriteLine(url);
                     tHtmlDoc.LoadHtml(await httpClient.GetStringAsync(new Uri(Uri.EscapeUriString(url))));
                     var trAttr = from node in tHtmlDoc.DocumentNode.Descendants("tr") where node.HasAttributes select node;
                     var aligntr = from node in trAttr where node.Attributes["align"] != null select node;
@@ -931,9 +933,9 @@ namespace TaiwanPP.Library.ViewModels
                     return tr.ToList();
                 }
             }
-            catch
+            catch (Exception e)
             {
-                throw new htmlException("擷取台塑加油站所在縣市");
+                throw e;
             }
         }
 
@@ -942,7 +944,7 @@ namespace TaiwanPP.Library.ViewModels
             if (time == "24小時")
             {
                 return 0;
-            } else if (time == "暫停營業" || time == "整修中")
+            } else if (time.Contains("暫停營業") || time.Contains("整修中"))
             {
                 return 0;
             }
@@ -962,7 +964,7 @@ namespace TaiwanPP.Library.ViewModels
             if (time == "24小時")
             {
                 return 864000000000;
-            } else if (time == "暫停營業" || time == "整修中")
+            } else if (time.Contains("暫停營業") || time.Contains("整修中"))
             {
                 return 0;
             }

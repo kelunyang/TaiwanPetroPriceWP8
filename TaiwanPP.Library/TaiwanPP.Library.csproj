@@ -68,26 +68,32 @@
     <Reference Include="HtmlAgilityPack-PCL">
       <HintPath>..\packages\HtmlAgilityPack-PCL.1.4.6\lib\HtmlAgilityPack-PCL.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net45+wp80+win8+wpa81+aspnetcore50\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Nito.AsyncEx">
-      <HintPath>..\packages\Nito.AsyncEx.3.0.0\lib\portable-net45+netcore45+wp8+wpa81+MonoTouch+MonoAndroid\Nito.AsyncEx.dll</HintPath>
+    <Reference Include="Nito.AsyncEx, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\lib\portable-net45+netcore45+wp8+wpa81\Nito.AsyncEx.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="OxyPlot">
       <HintPath>..\packages\OxyPlot.Core.2014.1.546\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
     </Reference>
-    <Reference Include="PCLWebUtility">
-      <HintPath>..\packages\PCLWebUtility.1.0.2\Lib\portable-net4+sl4+wp7+win8\PCLWebUtility.dll</HintPath>
+    <Reference Include="PCLWebUtility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PCLWebUtility.1.0.3\lib\portable-net4+sl4+wp7+win8\PCLWebUtility.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Portable.Text.Encoding">
-      <HintPath>..\packages\Portable.Text.Encoding.0.7.0.0\lib\portable-net45+wp8+win8\Portable.Text.Encoding.dll</HintPath>
+    <Reference Include="Portable.Text.Encoding, Version=0.8.3.0, Culture=neutral, PublicKeyToken=96f7b8f9dde885b2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.Text.Encoding.0.8.3.0\lib\portable-net45+win+wp80+MonoAndroid10+xamarinios10+MonoTouch10\Portable.Text.Encoding.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SQLite.Net">
-      <HintPath>..\packages\SQLite.Net-PCL.2.5.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
+    <Reference Include="SQLite.Net, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SQLite.Net.Async">
-      <HintPath>..\packages\SQLite.Net.Async-PCL.2.5.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.Async.dll</HintPath>
+    <Reference Include="SQLite.Net.Async, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLite.Net.Async-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.Async.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.dll</HintPath>

@@ -473,11 +473,21 @@ namespace TaiwanPP.WP8App
                     }
                     if (ifvm.dbcheckedDate.AddMinutes(5) < DateTime.Now) ifvm.dbcheckedDate = DateTime.Now;
                     TimeSpan dupdate = new TimeSpan(dtvm.dDBcheckedDate.Ticks);
+                    bool updatedtXML = false;
                     if (now.Subtract(dupdate).Days > 10)
                     {
                         using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(discount_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
                         {
-                            await dtvm.updateXML(progress, isf);
+                            updatedtXML = await dtvm.updateXML(progress, isf);
+                        }
+                    }
+                    if (updatedtXML)
+                    {
+                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(discount_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+                        {
+                            await dtvm.loadXML(isf);
+                            isf.Close();
+                            isf.Dispose();
                         }
                     }
                     using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))

@@ -21,6 +21,7 @@
     shell:SystemTray.Opacity="0"
     shell:SystemTray.BackgroundColor="Transparent">
     <phone:PhoneApplicationPage.Resources>
+        <Helpers:sourceConverter x:Key="sourceConverter"/>
         <Helpers:discountcountConverter x:Key="discountcountConverter"/>
         <Helpers:exceldateConverter x:Key="exceldateConverter"/>
         <Helpers:durationConverter x:Key="durationConverter"/>
@@ -1000,9 +1001,12 @@
                                                     </StackPanel>
                                                     <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding content}" Foreground="Black" Margin="10,3,0,3" Width="394" FontSize="18.667"/>
                                                 </StackPanel>
-                                                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0,0,3,10">
-                                                    <TextBlock Text="{Binding brand}" Foreground="#FF5F5F5F" FontSize="18.667" HorizontalAlignment="Right" FontWeight="Bold" Padding="0"/>
-                                                    <TextBlock Text="{Binding servetype}" Foreground="#FF5F5F5F" FontSize="18.667" HorizontalAlignment="Right" Padding="0"/>
+                                                <StackPanel Margin="0,95,3,-5">
+                                                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0,0,0,-5">
+                                                    <TextBlock Text="{Binding brand}" Foreground="#FF5F5F5F" FontSize="17" HorizontalAlignment="Right" FontWeight="Bold" Padding="0"/>
+                                                    <TextBlock Text="{Binding servetype}" Foreground="#FF5F5F5F" FontSize="17" HorizontalAlignment="Right" Padding="0"/>
+                                                </StackPanel>
+                                                    <TextBlock Text="{Binding source, Converter={StaticResource sourceConverter}}" Foreground="#FFBDBDBD" FontSize="14" FontFamily="Portable User Interface" HorizontalAlignment="Right"/>
                                                 </StackPanel>
                                             </Grid>
                                         </Border>

@@ -700,8 +700,10 @@ namespace TaiwanPP.Library.ViewModels
                 catch (dbException e)
                 {
                     throw e;
+                } catch(HttpRequestException e) {
+                    throw e;
                 } catch(Exception) {
-                    throw new htmlException("擷取當期油價");
+                    throw new systemException("擷取當期油價");
                 }
             }
         }
