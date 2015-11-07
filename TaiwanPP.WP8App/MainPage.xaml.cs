@@ -459,9 +459,9 @@ namespace TaiwanPP.WP8App
                     await dcvm.buildList(true, progress);
                     TimeSpan sdb = new TimeSpan(stvm.stationDBnotifyDate.Ticks);
                     TimeSpan now = new TimeSpan(DateTime.Now.Ticks);
-                    if (now.Subtract(sdb).Days > 30)
+                    if (now.Subtract(sdb).Days > 30)    //每一個月發動一次更新
                     {
-                        if (System.Windows.MessageBox.Show("加油站資料庫已有約" + now.Subtract(sdb).Days + "日未更新，請確定網路穩定下按是進行更新，按否將展延一個月更新（（若太久不更新，會因為Google API數量而限制無法查詢加油站經緯度）", "更新加油站資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
+                        if (System.Windows.MessageBox.Show("加油站資料庫已有約" + now.Subtract(sdb).Days + "日未更新，請確定網路穩定下按是進行更新，按否將展延一個月更新（若太久不更新，會因為Google API數量而限制無法查詢加油站經緯度）", "更新加油站資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
                         {
                             await stvm.updateCPC(progress);
                             await stvm.updateFPCC(progress);
@@ -474,11 +474,14 @@ namespace TaiwanPP.WP8App
                     if (ifvm.dbcheckedDate.AddMinutes(5) < DateTime.Now) ifvm.dbcheckedDate = DateTime.Now;
                     TimeSpan dupdate = new TimeSpan(dtvm.dDBcheckedDate.Ticks);
                     bool updatedtXML = false;
-                    if (now.Subtract(dupdate).Days > 10)
+                    if (now.Subtract(dupdate).Days > 30)    //每一個月發動一次更新
                     {
-                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(discount_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+                        if (System.Windows.MessageBox.Show("折扣資料庫已有約" + now.Subtract(dupdate).Days + "日未更新，請確定網路穩定下按是進行更新，按否將展延一個月更新（作者每季會整理各信用卡折扣，但並不固定於哪一天上傳折扣訊息，請見諒）", "更新折扣資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
                         {
-                            updatedtXML = await dtvm.updateXML(progress, isf);
+                            using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(discount_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+                            {
+                                updatedtXML = await dtvm.updateXML(progress, isf);
+                            }
                         }
                     }
                     if (updatedtXML)

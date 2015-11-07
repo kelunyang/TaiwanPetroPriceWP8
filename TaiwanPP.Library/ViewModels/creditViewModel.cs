@@ -223,7 +223,7 @@ namespace TaiwanPP.Library.ViewModels
                 if (handler.SupportsAutomaticDecompression)
                 {
                     handler.AutomaticDecompression = DecompressionMethods.GZip |
-                                                        DecompressionMethods.Deflate;
+                                                     DecompressionMethods.Deflate;
                 }
                 var httpClient = new HttpClient(handler);
                 httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
@@ -231,7 +231,7 @@ namespace TaiwanPP.Library.ViewModels
                 httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
                 bitbucketPage obj = JsonConvert.DeserializeObject<bitbucketPage>(await httpClient.GetStringAsync(new Uri(urlstr)));
                 if(obj.rev != dbRev) {
-                    messenger.Report(new ProgressReport() { progress = 80, progressMessage = "開始更新本機折扣資料...", display = true });
+                    messenger.Report(new ProgressReport() { progress = 80, progressMessage = "發現更新！開始更新本機折扣資料...", display = true });
                     using(StreamWriter sw = new StreamWriter(xml)) {
                         await sw.WriteAsync(obj.data);
                     }

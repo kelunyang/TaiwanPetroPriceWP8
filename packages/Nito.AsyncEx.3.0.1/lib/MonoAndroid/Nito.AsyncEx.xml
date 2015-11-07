@@ -1609,6 +1609,11 @@
             Gets a semi-unique identifier for this asynchronous lazy instance.
             </summary>
         </member>
+        <member name="P:Nito.AsyncEx.AsyncLazy`1.IsStarted">
+            <summary>
+            Whether the asynchronous factory method has started. This is initially <c>false</c> and becomes <c>true</c> when this instance is awaited or after <see cref="M:Nito.AsyncEx.AsyncLazy`1.Start"/> is called.
+            </summary>
+        </member>
         <member name="T:Nito.AsyncEx.AsyncLock">
             <summary>
             A mutual exclusion lock that is compatible with async. Note that this lock is <b>not</b> recursive!
@@ -2678,6 +2683,15 @@
             Creates a new entry and queues it to this wait queue. If the cancellation token is already canceled, this method immediately returns a canceled task without modifying the wait queue.
             </summary>
             <param name="this">The wait queue.</param>
+            <param name="token">The token used to cancel the wait.</param>
+            <returns>The queued task.</returns>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncWaitQueueExtensions.Enqueue``1(Nito.AsyncEx.IAsyncWaitQueue{``0},System.Object,System.Threading.CancellationToken)">
+            <summary>
+            Creates a new entry and queues it to this wait queue. If the cancellation token is already canceled, this method immediately returns a canceled task without modifying the wait queue.
+            </summary>
+            <param name="this">The wait queue.</param>
+            <param name="syncObject">A synchronization object taken while cancelling the entry.</param>
             <param name="token">The token used to cancel the wait.</param>
             <returns>The queued task.</returns>
         </member>

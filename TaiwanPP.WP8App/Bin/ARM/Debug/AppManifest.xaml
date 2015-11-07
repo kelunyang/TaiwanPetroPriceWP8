@@ -21,9 +21,9 @@
     <AssemblyPart x:Name="HtmlAgilityPack-PCL" Source="HtmlAgilityPack-PCL.dll" />
     <AssemblyPart x:Name="Newtonsoft.Json" Source="Newtonsoft.Json.dll" />
     <AssemblyPart x:Name="Portable.Text.Encoding" Source="Portable.Text.Encoding.dll" />
-    <AssemblyPart x:Name="ImageTools.Utils" Source="ImageTools.Utils.dll" />
     <AssemblyPart x:Name="ImageTools" Source="ImageTools.dll" />
     <AssemblyPart x:Name="ImageTools.IO.Png" Source="ImageTools.IO.Png.dll" />
+    <AssemblyPart x:Name="ImageTools.Utils" Source="ImageTools.Utils.dll" />
     <AssemblyPart x:Name="PhoneCodeContractsAssemblies" Source="PhoneCodeContractsAssemblies.dll" />
     <AssemblyPart x:Name="ICSharpCode.SharpZLib.Phone" Source="ICSharpCode.SharpZLib.Phone.dll" />
     <AssemblyPart x:Name="Sqlite" Source="Sqlite.dll" />
