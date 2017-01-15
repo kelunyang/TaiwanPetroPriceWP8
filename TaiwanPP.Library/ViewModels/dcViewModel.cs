@@ -49,8 +49,7 @@ namespace TaiwanPP.Library.ViewModels
                     httpClient.MaxResponseContentBufferSize = 256000;
                     httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
                     Uri url = new Uri(Uri.EscapeUriString(urlstr));
-                    string test = await httpClient.GetStringAsync(url);
-                    bitbucketPage obj = JsonConvert.DeserializeObject<bitbucketPage>(test);
+                    bitbucketPage obj = JsonConvert.DeserializeObject<bitbucketPage>(await httpClient.GetStringAsync(url));
                     IEnumerable<string> data = from s in obj.data.Split('\n') where s.Contains("1.") || s.Contains("2.") select s;
                     foreach (string s in data)
                     {

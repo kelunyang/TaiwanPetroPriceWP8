@@ -16,6 +16,7 @@ using Windows.Storage;
 using Nito.AsyncEx;
 using TaiwanPP.Library.Helpers;
 using Windows.Phone.Speech.VoiceCommands;
+using Microsoft.Phone.Tasks;
 
 namespace TaiwanPP.WP8App
 {
@@ -138,6 +139,12 @@ namespace TaiwanPP.WP8App
             systemtray.IsIndeterminate = pr.display;
             systemtray.Text = pr.progressMessage;
             systemtray.Value = pr.progress;
+        }
+        private void facebook_Click(object sender, RoutedEventArgs e)
+        {
+            WebBrowserTask webBrowserTask = new WebBrowserTask();
+            webBrowserTask.Uri = new Uri(@"https://www.facebook.com/TaiwanPetrolPriceWinApp/", UriKind.Absolute);
+            webBrowserTask.Show();
         }
     }
 }

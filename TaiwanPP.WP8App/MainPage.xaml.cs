@@ -12,8 +12,8 @@ using TaiwanPP.Library.Models;
 using Microsoft.Phone.Tasks;
 using Autofac;
 using TaiwanPP.Library.ViewModels;
-using SQLite.Net.Platform.WindowsPhone8;
-using SQLite.Net.Interop;
+using SQLite;
+using SQLitePCL;
 using System.Threading.Tasks;
 using System.IO;
 using Windows.Storage;
@@ -32,7 +32,6 @@ namespace TaiwanPP.WP8App
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        SQLitePlatformWP8 sqliteplaform = new SQLitePlatformWP8();
         string DB_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, "price.sqlite");
         string XML_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, "config.xml");
         string discount_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, "creditDiscount.xml");
@@ -357,14 +356,14 @@ namespace TaiwanPP.WP8App
                                 ifvm.upgrade = false;
                             }
                             tilescan();
-                            await cpvm.loadDB(sqliteplaform, DB_PATH);
+                            await cpvm.loadDB(DB_PATH);
                             await cpvm.buildDB();
                             //await cpvm.fetchPrice(connectivity, progress);
                             //await cpvm.currentPrice(progress);
-                            await ppvm.loadDB(sqliteplaform, DB_PATH);
+                            await ppvm.loadDB(DB_PATH);
                             //await ppvm.predictedPrice(connectivity, cpvm.currentCollections[typeDB.CPC95.key].currentPrice, progress);
                             uienable = true;
-                            await stvm.loadDB(sqliteplaform, DB_PATH);
+                            await stvm.loadDB(DB_PATH);
                             if (autoupdate) await updateOnline(ppvm.runPredict);    //跳頁時不用重跑
                             //await dcvm.load(progress);
                             using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
@@ -415,7 +414,7 @@ namespace TaiwanPP.WP8App
                             isf.Close();
                             isf.Dispose();
                         }
-                        await stvm.loadDB(sqliteplaform, DB_PATH);
+                        await stvm.loadDB(DB_PATH);
                         resetconfig = false;
                     });
                     uiLock(true);
@@ -459,9 +458,9 @@ namespace TaiwanPP.WP8App
                     await dcvm.buildList(true, progress);
                     TimeSpan sdb = new TimeSpan(stvm.stationDBnotifyDate.Ticks);
                     TimeSpan now = new TimeSpan(DateTime.Now.Ticks);
-                    if (now.Subtract(sdb).Days > 30)    //每一個月發動一次更新
+                    if (now.Subtract(sdb).Days > 30)
                     {
-                        if (System.Windows.MessageBox.Show("加油站資料庫已有約" + now.Subtract(sdb).Days + "日未更新，請確定網路穩定下按是進行更新，按否將展延一個月更新（若太久不更新，會因為Google API數量而限制無法查詢加油站經緯度）", "更新加油站資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
+                        if (System.Windows.MessageBox.Show("加油站資料庫已有約" + now.Subtract(sdb).Days + "日未更新，請確定網路穩定下按是進行更新，按否將展延一個月更新（（若太久不更新，會因為Google API數量而限制無法查詢加油站經緯度）", "更新加油站資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
                         {
                             await stvm.updateCPC(progress);
                             await stvm.updateFPCC(progress);
@@ -474,14 +473,11 @@ namespace TaiwanPP.WP8App
                     if (ifvm.dbcheckedDate.AddMinutes(5) < DateTime.Now) ifvm.dbcheckedDate = DateTime.Now;
                     TimeSpan dupdate = new TimeSpan(dtvm.dDBcheckedDate.Ticks);
                     bool updatedtXML = false;
-                    if (now.Subtract(dupdate).Days > 30)    //每一個月發動一次更新
+                    if (now.Subtract(dupdate).Days > 10)
                     {
-                        if (System.Windows.MessageBox.Show("折扣資料庫已有約" + now.Subtract(dupdate).Days + "日未更新，請確定網路穩定下按是進行更新，按否將展延一個月更新（作者每季會整理各信用卡折扣，但並不固定於哪一天上傳折扣訊息，請見諒）", "更新折扣資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
+                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(discount_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
                         {
-                            using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(discount_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
-                            {
-                                updatedtXML = await dtvm.updateXML(progress, isf);
-                            }
+                            updatedtXML = await dtvm.updateXML(progress, isf);
                         }
                     }
                     if (updatedtXML)
@@ -564,7 +560,7 @@ namespace TaiwanPP.WP8App
                     systemtray.IsVisible = true;
                     systemtray.IsIndeterminate = true;
                     systemtray.Text = "開始製作動態磚";
-                    TaiwanPP.Tile.tile Tile = new TaiwanPP.Tile.tile();
+                    TaiwanPP.TileMaker.tile Tile = new TaiwanPP.TileMaker.tile();
                     Tile.DataContext = ((cpViewModel)currentpricePage.DataContext).tileExport(typeDB.productnameDB[ps.kind], pp.penddate, pp.pstartdate, pp.pprice, pp.pdprice);
                     Tile.SavePNGComplete += ((s, Tilearg) =>
                     {

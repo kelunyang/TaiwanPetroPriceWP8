@@ -14,21 +14,19 @@
             Returns a value indicating whether the correct platform enlightenment provider has been loaded.
             </summary>
         </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.EnlightenmentProvider">
+        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.BlockingQueue`1._queue">
             <summary>
-            The platform enlightenment provider for Windows Phone 8 (also supporting .NET 4.5 and Windows 8).
+            The underlying queue.
             </summary>
         </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.EnlightenmentProvider.SynchronizationContextEnlightenment">
+        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.BlockingQueue`1._nonEmpty">
             <summary>
-            This enlightenment will work on all platforms (net4/win8/sl4/wp75).
-            However, it is not supported in portable libraries for: net40/sl5/wp70/wp71.
+            An event that is set whenever the queue is non-empty or if the queue is empty and done.
             </summary>
         </member>
-        <member name="T:Nito.AsyncEx.Internal.PlatformEnlightenment.EnlightenmentProvider.ThreadPoolEnlightenment">
+        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.BlockingQueue`1._done">
             <summary>
-            This enlightenment will work on most platforms (net4/sl4/wp75).
-            However, it is not supported in portable libraries.
+            Whether we are done adding tasks to the queue.
             </summary>
         </member>
     </members>

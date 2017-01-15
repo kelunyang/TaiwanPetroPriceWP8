@@ -9,7 +9,8 @@ using HtmlAgilityPack;
 using TaiwanPP.Library.Helpers;
 using TaiwanPP.Library.Models;
 using TaiwanPP.Library.ViewModels;
-using SQLite.Net;
+using SQLitePCL;
+using SQLite;
 using System.IO;
 using System.Collections.ObjectModel;
 using OxyPlot;
@@ -587,17 +588,17 @@ namespace TaiwanPP.Library.ViewModels
                 throw new dbException("取得最新價格");
             }
         }
-        public async Task clearDB()
+        /*public async Task clearDB()
         {
             try
             {
-                await dbConn.DeleteAllAsync<priceStorage>();
+                await dbConn.DeleteAsync<priceStorage>();
             }
             catch
             {
                 throw new dbException("清理價格資料庫");
             }
-        }
+        }*/
         public async Task fetchPrice(bool connectivity, IProgress<ProgressReport> messenger)
         {
             List<priceStorage> tempDB = new List<priceStorage>();
@@ -611,15 +612,14 @@ namespace TaiwanPP.Library.ViewModels
                     var handler = new HttpClientHandler();
                     if (handler.SupportsAutomaticDecompression)
                     {
-                        handler.AutomaticDecompression = DecompressionMethods.GZip |
-                                                            DecompressionMethods.Deflate;
+                        handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
                     }
                     using (httpClient = new HttpClient(handler))
                     {
                         messenger.Report(new ProgressReport() { progress = 30, progressMessage = "開始下載油價公告", display = true });
                         httpClient.MaxResponseContentBufferSize = Int32.MaxValue;
                         httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
-                        var byteData = await httpClient.GetByteArrayAsync(new Uri("http://web3.moeaboe.gov.tw/oil102/oil1022010/A01/A0108/allprices.asp?nocache=" + DateTime.Now.Ticks));
+                        var byteData = await httpClient.GetByteArrayAsync(new Uri("https://www2.moeaboe.gov.tw/oil102/oil1022010/A01/A0108/allprices.asp?nocache=" + DateTime.Now.Ticks));
                         string data = Portable.Text.Encoding.GetEncoding(950).GetString(byteData);  //big5
                         //string data = await httpClient.GetStringAsync(new Uri("http://www.nyko.com.tw/price.htm?nocache=" + DateTime.Now.Ticks)); test code
                         HtmlDocument tHtmlDoc = new HtmlDocument();

@@ -79,6 +79,15 @@
                     <TextBlock Text="建議&amp;回饋" FontSize="26"/>
                 </Border>
                 <Button Content="請按此進入功能調查"  BorderBrush="Black" Foreground="Black" Click="survey_Click"/>
+                <Button BorderBrush="#FF3C5A99" Click="facebook_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Grid>
+                            <Path Fill="#FF3C5A99" StrokeThickness="0.11640675" Data="m 28.436776 29.986455 c 0.914262 0 1.655652 -0.74139 1.655652 -1.655886 V 1.641993 c 0 -0.914611 -0.741276 -1.655773 -1.655652 -1.655773 H 1.7481978 c -0.91460759 0 -1.65576958 0.741162 -1.65576958 1.655773 v 26.688576 c 0 0.914376 0.74104559 1.655886 1.65576958 1.655886 z"/>
+                            <Path Fill="#FFFFFFFF" StrokeThickness="0.11640675" Data="m 20.791996 29.986455 v -11.61774 h 3.899508 L 25.2754 13.841073 h -4.483404 v -2.890614 c 0 -1.310856 0.364002 -2.204166 2.243742 -2.204166 l 2.39751 -0.0012 V 4.695531 c -0.414642 -0.0552 -1.83783 -0.178452 -3.493602 -0.178452 -3.456696 0 -5.823247 2.10999 -5.823247 5.98482 v 3.339012 h -3.909521 v 4.527642 h 3.909521 v 11.617788 z"/>
+                        </Grid>
+                        <TextBlock VerticalAlignment="Center" TextAlignment="Center" Foreground="#FF3C5A99" Text="歡迎在Facebook上留下您的建議！" Margin="5,0,0,0"/>
+                    </StackPanel>
+                </Button>
                 <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
                     <TextBlock Text="程式資訊" FontSize="26"/>
                 </Border>

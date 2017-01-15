@@ -10,7 +10,8 @@ using Microsoft.Phone.Shell;
 using Autofac;
 using TaiwanPP.Library.Models;
 using TaiwanPP.Library.ViewModels;
-using SQLite.Net.Platform.WindowsPhone8;
+using SQLite;
+using SQLitePCL;
 using Windows.Storage;
 using System.IO;
 using System.IO.IsolatedStorage;
@@ -20,7 +21,6 @@ namespace TaiwanPP.WP8App
 {
     public partial class about : PhoneApplicationPage
     {
-        SQLitePlatformWP8 sqliteplaform = new SQLitePlatformWP8();
         string DB_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, "price.sqlite");
         string XML_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, "config.xml");
         infoViewModel ifvm;
@@ -91,13 +91,20 @@ namespace TaiwanPP.WP8App
         private void survey_Click(object sender, RoutedEventArgs e)
         {
             WebBrowserTask webBrowserTask = new WebBrowserTask();
-            webBrowserTask.Uri = new Uri(@"https://onedrive.live.com/redir?page=survey&resid=C836A59DFA673571!49792&authkey=!APrZLL0aHQkJzvQ&ithint=file%2c.xlsx", UriKind.Absolute);
+            webBrowserTask.Uri = new Uri(@"https://1drv.ms/xs/s!AnE1Z_qdpTbIy8wyhKKpZ4KrLSSkCw", UriKind.Absolute);
             webBrowserTask.Show();
         }
         private void Website_Click(object sender, RoutedEventArgs e)
         {
             WebBrowserTask webBrowserTask = new WebBrowserTask();
             webBrowserTask.Uri = new Uri(@"https://bitbucket.org/kelunyang/taiwan-petrol-price", UriKind.Absolute);
+            webBrowserTask.Show();
+        }
+
+        private void facebook_Click(object sender, RoutedEventArgs e)
+        {
+            WebBrowserTask webBrowserTask = new WebBrowserTask();
+            webBrowserTask.Uri = new Uri(@"https://www.facebook.com/TaiwanPetrolPriceWinApp/", UriKind.Absolute);
             webBrowserTask.Show();
         }
     }

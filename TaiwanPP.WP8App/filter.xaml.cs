@@ -13,7 +13,8 @@ using Windows.Storage;
 using System.IO;
 using TaiwanPP.Library.Models;
 using Autofac;
-using SQLite.Net.Platform.WindowsPhone8;
+using SQLite;
+using SQLitePCL;
 using System.Windows.Data;
 using Nito.AsyncEx;
 using TaiwanPP.Library.Helpers;
@@ -27,7 +28,6 @@ namespace TaiwanPP.WP8App
         stationViewModel stvm;
         infoViewModel ifvm;
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication();
-        SQLitePlatformWP8 sqliteplaform = new SQLitePlatformWP8();
         int selectionlock = 0;
         PropertyProgress<ProgressReport> progress;
         ApplicationBarIconButton savebutton;
@@ -94,7 +94,7 @@ namespace TaiwanPP.WP8App
             {
                 Deployment.Current.Dispatcher.BeginInvoke(async () =>
                 {
-                    await stvm.loadDB(sqliteplaform, DB_PATH);
+                    await stvm.loadDB(DB_PATH);
                     countrySelector.SelectedIndex = stvm.sfiltercountry;
                     loaded = true;
                 });

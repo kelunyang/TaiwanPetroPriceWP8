@@ -17,7 +17,7 @@ namespace TaiwanPP.Library.ViewModels
     {
         HttpClient httpClient;
         HtmlDocument tHtmlDoc = new HtmlDocument();
-        Uri URI = new Uri("http://web3.moeaboe.gov.tw/oil102/oil1022010/A00/Oil_Price2.asp");
+        Uri URI = new Uri("https://www2.moeaboe.gov.tw/oil102/oil1022010/A00/Oil_Price2.asp");
         List<internationalModel> lio = new List<internationalModel>();
         DateTime cd = DateTime.Now;
         double _pprice = double.NaN;
@@ -206,9 +206,9 @@ namespace TaiwanPP.Library.ViewModels
         public ppViewModel() {
             wp = new weekpriceModel[] { new weekpriceModel(), new weekpriceModel() };
         }
-        public override async Task loadDB(SQLite.Net.Interop.ISQLitePlatform platform, string dbPath)
+        public override async Task loadDB(string dbPath)
         {
- 	        await base.loadDB(platform, dbPath);
+ 	        await base.loadDB(dbPath);
             if (im.pstartWeek != DateTime.MinValue)
             {
                 pstartdate = im.pstartWeek;
@@ -234,8 +234,7 @@ namespace TaiwanPP.Library.ViewModels
                         var handler = new HttpClientHandler();
                         if (handler.SupportsAutomaticDecompression)
                         {
-                            handler.AutomaticDecompression = DecompressionMethods.GZip |
-                                                             DecompressionMethods.Deflate;
+                            handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
                         }
                         using (httpClient = new HttpClient(handler))
                         {

@@ -23,13 +23,12 @@ namespace TaiwanPP.Library.Helpers
         {
             try
             {
-                string cpcuri = "http://web3.moeaboe.gov.tw/oil102/oil1022010/A04/A0407/report.asp?MarkID=10001";
-                string fpccuri = "http://web3.moeaboe.gov.tw/oil102/oil1022010/A04/A0407/report.asp?MarkID=10002";
+                string cpcuri = "https://www2.moeaboe.gov.tw/oil102/oil1022010/A04/A0407/report.asp?MarkID=10001";
+                string fpccuri = "https://www2.moeaboe.gov.tw/oil102/oil1022010/A04/A0407/report.asp?MarkID=10002";
                 var handler = new HttpClientHandler();
                 if (handler.SupportsAutomaticDecompression)
                 {
-                    handler.AutomaticDecompression = DecompressionMethods.GZip |
-                                                     DecompressionMethods.Deflate;
+                    handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
                 }
                 var httpClient = new HttpClient(handler);
                 httpClient.MaxResponseContentBufferSize = 2147483647;
@@ -78,8 +77,8 @@ namespace TaiwanPP.Library.Helpers
                 }
                 if (phone.Substring(0, 1) != "-") return phone;
             }
-            string test = (from node in CPCstation where node.ChildNodes[5].InnerText == name + "加油站" select node.ChildNodes[11].InnerText).ToList().First();
-            return Regex.Replace(test, @"<[^>]+>|&nbsp;", "").Trim();
+            string test = (from node in CPCstation where node.ChildNodes[5].InnerText == name + "加油站" select node.ChildNodes[11].InnerText).ToList().FirstOrDefault();
+            return test == null ? "0" : Regex.Replace(test, @"<[^>]+>|&nbsp;", "").Trim();
         }
         public string queryFPCCPhone(string phone, string name)
         {
@@ -90,8 +89,8 @@ namespace TaiwanPP.Library.Helpers
             {
                 if (phonearr[1].Length == 10) return phonearr[1];
             }
-            string test = (from node in FPCCstation where node.ChildNodes[5].InnerText == name + "加油站" select node.ChildNodes[11].InnerText).ToList().First();
-            return Regex.Replace(test, @"<[^>]+>|&nbsp;", "").Trim();
+            string test = (from node in FPCCstation where node.ChildNodes[5].InnerText == name + "加油站" select node.ChildNodes[11].InnerText).ToList().FirstOrDefault();
+            return test == null ? "0" : Regex.Replace(test, @"<[^>]+>|&nbsp;", "").Trim();
         }
     }
 }

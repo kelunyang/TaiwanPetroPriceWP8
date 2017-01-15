@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="zh-TW" />
-  <App xmlns="" ProductID="{4e4c5fd3-64e0-42a4-9942-6c504f75dbbd}" Title="台灣油價查詢" RuntimeType="Silverlight" Version="2.14.8.12" Genre="apps.normal" Author="KelunYang" Description="本App可預測、查詢台塑、中油油價，並可以查詢鄰近加油站位置" Publisher="KelunYang" PublisherID="{4f474f6d-fee7-4395-8074-b638b1092c9c}">
+  <App xmlns="" ProductID="{4e4c5fd3-64e0-42a4-9942-6c504f75dbbd}" Title="台灣油價查詢" RuntimeType="Silverlight" Version="2.17.01.16" Genre="apps.normal" Author="KelunYang" Description="本App可預測、查詢台塑、中油油價，並可以查詢鄰近加油站位置" Publisher="KelunYang" PublisherID="{4f474f6d-fee7-4395-8074-b638b1092c9c}">
     <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
@@ -15,7 +15,7 @@
     <Tasks>
       <DefaultTask Name="_default" NavigationPage="MainPage.xaml" ActivationPolicy="Resume" />
       <ExtendedTask Name="BackgroundTask">
-        <BackgroundServiceAgent Specifier="ScheduledTaskAgent" Name="油價預測背景更新" Source="TaiwanPP.schedulerAgent" Type="TaiwanPP.schedulerAgent.ScheduledAgent" />
+        <BackgroundServiceAgent Specifier="ScheduledTaskAgent" Name="油價預測背景更新" Source="TaiwanPP.ScheduleAgent" Type="TaiwanPP.ScheduleAgent.ScheduledAgent" />
       </ExtendedTask>
     </Tasks>
     <Tokens>

@@ -3,7 +3,7 @@
   <!ELEMENT appconfig (info ,predictPrice ,settings, tiles)>
   <!ELEMENT info (updateDate ,notified ,sysinfo)>
   <!ELEMENT predictPrice (duration ,gasprice ,dieselprice)>
-  <!ELEMENT settings (timing ,productMonitor ,stationFilters, dailynotify, defaultPage, autoUpdate, soapUpdate, stationBehavior, runPredict)>
+  <!ELEMENT settings (timing , productMonitor ,stationFilters, dailynotify, defaultPage, autoUpdate, soapUpdate, stationBehavior, runPredict)>
   <!ELEMENT tiles (tile*)>
   <!ELEMENT tile (#PCDATA)> <!-- 動態磚 -->
   <!ELEMENT updateDate EMPTY>
@@ -17,9 +17,12 @@
   <!ELEMENT soapUpdate EMPTY><!-- 中油SOAP連接 -->
   <!ELEMENT runPredict EMPTY><!-- 執行預測 -->
   <!ELEMENT stationBehavior EMPTY><!-- 點擊加油站行為 -->
-  <!ELEMENT stationFilters (FPCC ,CPC ,Self ,Direct ,Favorite ,Kilometer ,Country ,Inservice)>
+  <!ELEMENT stationFilters (FPCC ,CPC ,Self ,Direct ,Favorite ,Kilometer ,Country ,Inservice, Product, Subbrand)>
+  <!ELEMENT Subbrand (term*)><!-- 子品牌名稱 -->
+  <!ELEMENT term (#PCDATA)><!-- 搜尋關鍵字 -->
   <!ELEMENT productMonitor (product*)><!-- 追蹤油價清單 -->
   <!ELEMENT product EMPTY>
+  <!ELEMENT Product EMPTY>
   <!ELEMENT gasprice (#PCDATA)> <!-- 預測汽油價格 -->
   <!ELEMENT dieselprice (#PCDATA)> <!-- 預測柴油價格 -->
   <!ELEMENT FPCC EMPTY><!-- 僅顯示台塑加油站 -->
@@ -48,6 +51,8 @@
   <!ATTLIST updateDate DBcheckedDate CDATA #REQUIRED><!-- 資料庫檢查時間 -->
   <!ATTLIST updateDate priceDB CDATA #REQUIRED> <!-- 價格資料庫更新時間 -->
   <!ATTLIST updateDate moeaboeDBdate CDATA #REQUIRED><!-- 能源局油價資料庫 -->
+  <!ATTLIST updateDate discountRev CDATA #REQUIRED><!-- 折扣頁面版本 -->
+  <!ATTLIST updateDate dDBcheckedDate CDATA #REQUIRED><!-- 折扣資料庫檢查時間 -->
   <!ATTLIST notified CPC (0|1) #REQUIRED> <!-- 背景程式已通知中油更新日期 -->
   <!ATTLIST notified FPCC (0|1) #REQUIRED> <!-- 背景程式已通知台塑更新日期 -->
   <!ATTLIST notified checkHour CDATA #REQUIRED> <!-- 背景程式已通知台塑更新日期 -->
@@ -55,6 +60,11 @@
   <!ATTLIST Kilometer long CDATA #REQUIRED><!-- 搜尋地點 -->
   <!ATTLIST Kilometer name CDATA #REQUIRED><!-- 地名 -->
   <!ATTLIST Kilometer filter (0|1) #REQUIRED><!-- 啟動指定位置過濾 -->
+  <!ATTLIST Product p92 (0|1) #REQUIRED>
+  <!ATTLIST Product p95 (0|1) #REQUIRED>
+  <!ATTLIST Product p98 (0|1) #REQUIRED>
+  <!ATTLIST Product pdiesel (0|1) #REQUIRED>
+  <!ATTLIST Product pgasohol (0|1) #REQUIRED>
   <!ATTLIST dailynotify notified (0|1) #REQUIRED><!-- 本日已提醒 -->
   <!ATTLIST dailynotify checkHour CDATA #REQUIRED><!-- 本日已提醒 -->
   <!ATTLIST dailynotify enable (0|1) #REQUIRED><!-- 啟動本日提醒 -->
@@ -70,14 +80,15 @@
   <!ATTLIST tiles updateDate CDATA #REQUIRED><!-- 動態磚更新日期 -->
   <!ATTLIST sysinfo upgrade (0|1) #REQUIRED><!-- 是否為升級版 -->
   <!ATTLIST sysinfo firstload (0|1) #REQUIRED><!-- 初次使用 -->
+  <!ATTLIST predictPrice pause (0|1) #REQUIRED><!-- 啟動預測 -->
 ]>
-<appconfig version="635454605016738792">
+<appconfig version="636201098085370768">
   <info>
-    <updateDate priceDB="0" stationDB="635454605016738792" sDBnotifyDate="635454605016738792" DBcheckedDate="0" moeaboeDBdate="0"/>
+    <updateDate priceDB="0" stationDB="636201098085370768" sDBnotifyDate="636201098085370768" DBcheckedDate="0" moeaboeDBdate="0" discountRev="3f94badb0df2ffe8d47ffc7362e9adb6840e6e3c" dDBcheckedDate="0"/>
     <notified CPC="0" FPCC="0" checkHour="0"/>
-    <sysinfo firstload="1" upgrade="0"/>
+    <sysinfo firstload="0" upgrade="0"/>
   </info>
-  <predictPrice>
+  <predictPrice pause="0">
     <duration end="0" start="0" runday="0"/>
     <gasprice>0</gasprice>
     <dieselprice>0</dieselprice>
@@ -94,6 +105,8 @@
       <Kilometer lat="0" long="0" name="" filter="0">3</Kilometer>
       <Country filter="0">0</Country>
       <Inservice filter="1"/>
+      <Product p92="0" p95="1" p98="0" pdiesel="0" pgasohol="0"/>
+      <Subbrand></Subbrand>
     </stationFilters>
     <dailynotify notified="0" checkHour="0" enable="1">0</dailynotify>
     <defaultPage page="0"/>

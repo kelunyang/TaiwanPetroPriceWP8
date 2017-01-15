@@ -82,11 +82,11 @@
   <!ATTLIST sysinfo firstload (0|1) #REQUIRED><!-- 初次使用 -->
   <!ATTLIST predictPrice pause (0|1) #REQUIRED><!-- 啟動預測 -->
 ]>
-<appconfig version="635688129238671020">
+<appconfig version="636201098085370768">
   <info>
-    <updateDate priceDB="0" stationDB="635825377136432088" sDBnotifyDate="635825377136432088" DBcheckedDate="0" moeaboeDBdate="0" discountRev="8498910d42bd8d6107706976845fb022f19d1864" dDBcheckedDate="635825377136432088"/>
+    <updateDate priceDB="0" stationDB="636201098085370768" sDBnotifyDate="636201098085370768" DBcheckedDate="0" moeaboeDBdate="0" discountRev="3f94badb0df2ffe8d47ffc7362e9adb6840e6e3c" dDBcheckedDate="0"/>
     <notified CPC="0" FPCC="0" checkHour="0"/>
-    <sysinfo firstload="1" upgrade="0"/>
+    <sysinfo firstload="0" upgrade="0"/>
   </info>
   <predictPrice pause="0">
     <duration end="0" start="0" runday="0"/>

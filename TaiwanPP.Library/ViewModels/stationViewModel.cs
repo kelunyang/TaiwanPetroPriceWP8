@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
-using SQLite.Net;
+using SQLitePCL;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -389,9 +390,9 @@ namespace TaiwanPP.Library.ViewModels
             countryitems.Add("載入中...");
         }
 
-        public override async Task loadDB(SQLite.Net.Interop.ISQLitePlatform platform,string dbPath)
+        public override async Task loadDB(string dbPath)
         {
-            await base.loadDB(platform, dbPath);
+            await base.loadDB(dbPath);
             stationDB = await dbConn.Table<stationStorage>().ToListAsync();
             stationDBcount = stationDB.Count();
             IEnumerable<string> citylist = (from city in stationDB orderby city.city select city.city).Distinct();
@@ -726,7 +727,10 @@ namespace TaiwanPP.Library.ViewModels
                     }
                 }
                 messenger.Report(new ProgressReport() { progress = 100, progressMessage = "更新中油加油站..." + replaced.Count() + "筆", display = true });
-                await dbConn.InsertOrReplaceAllAsync(replaced);
+                foreach(stationStorage ss in replaced)
+                {
+                    await dbConn.InsertOrReplaceAsync(ss);
+                }
                 messenger.Report(new ProgressReport() { progress = 100, progressMessage = "新增中油加油站..."+added.Count()+"筆", display = true });
                 await dbConn.InsertAllAsync(added); 
                 messenger.Report(new ProgressReport() { progress = 100, progressMessage = "中油加油站儲存完成！", display = false });
@@ -814,7 +818,10 @@ namespace TaiwanPP.Library.ViewModels
                     }
                 } 
                 messenger.Report(new ProgressReport() { progress = 80, progressMessage = "更新台塑加油站..." + replaced.Count() + "筆", display = true });
-                await dbConn.InsertOrReplaceAllAsync(replaced);
+                foreach(stationStorage ss in replaced)
+                {
+                    await dbConn.InsertOrReplaceAsync(ss);
+                }
                 messenger.Report(new ProgressReport() { progress = 80, progressMessage = "新增台塑加油站..." + added.Count() + "筆", display = true });
                 await dbConn.InsertAllAsync(added);
                 messenger.Report(new ProgressReport() { progress = 100, progressMessage = "台塑加油站儲存完成！", display = false });
@@ -944,7 +951,7 @@ namespace TaiwanPP.Library.ViewModels
             if (time == "24小時")
             {
                 return 0;
-            } else if (time.Contains("暫停營業") || time.Contains("整修中"))
+            } else if (time.Contains("暫停營業") || time.Contains("整修中") || time.Contains("停業中"))
             {
                 return 0;
             }
@@ -964,7 +971,7 @@ namespace TaiwanPP.Library.ViewModels
             if (time == "24小時")
             {
                 return 864000000000;
-            } else if (time.Contains("暫停營業") || time.Contains("整修中"))
+            } else if (time.Contains("暫停營業") || time.Contains("整修中") || time.Contains("停業中"))
             {
                 return 0;
             }

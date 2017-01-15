@@ -6,8 +6,8 @@ using System.Collections.ObjectModel;
 using TaiwanPP.Library.Helpers;
 using TaiwanPP.Library.Models;
 using System.Threading.Tasks;
-using SQLite.Net.Async;
-using SQLite.Net;
+using SQLitePCL;
+using SQLite;
 using System.IO;
 using System.Windows.Input;
 using System.Xml;
@@ -30,12 +30,12 @@ namespace TaiwanPP.Library.ViewModels
                 return _im;
             }
         }
-        public virtual async Task loadDB(SQLite.Net.Interop.ISQLitePlatform platform,string dbPath)
+        public virtual async Task loadDB(string dbPath)
         {
             try
             {
-                var connectionFactory = new Func<SQLiteConnectionWithLock>(() => new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(dbPath, storeDateTimeAsTicks: false)));
-                dbConn = new SQLiteAsyncConnection(connectionFactory);
+                //var connectionFactory = new Func<SQLiteConnectionWithLock>(() => new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(dbPath, storeDateTimeAsTicks: false)));
+                dbConn = new SQLiteAsyncConnection(dbPath);
             }
             catch
             {
