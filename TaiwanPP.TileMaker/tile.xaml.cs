@@ -10,10 +10,8 @@ using Microsoft.Phone.Shell;
 using TaiwanPP.TileMaker.Helpers;
 using System.IO.IsolatedStorage;
 using System.Windows.Media.Imaging;
-using ImageTools;
-using ImageTools.IO;
-using ImageTools.IO.Png;
 using TaiwanPP.Library.Helpers;
+using System.Threading.Tasks;
 
 namespace TaiwanPP.TileMaker
 {
@@ -24,7 +22,8 @@ namespace TaiwanPP.TileMaker
             InitializeComponent();
         }
         public event EventHandler<savePNGEvent> SavePNGComplete;
-        public void BeginSavePNG(oilType product, bool predict)
+        private WriteableBitmap wbp;
+        public async Task BeginSavePNG(oilType product, bool predict)
         {
             try
             {
@@ -36,10 +35,7 @@ namespace TaiwanPP.TileMaker
                 smalltileGrid.Measure(new Size(336, 336));
                 smalltileGrid.Arrange(new Rect(0, 0, 336, 336));
                 smalltileGrid.UpdateLayout();
-                WriteableBitmap wbp = new WriteableBitmap(100, 100);
-                ExtendedImage tileImaged = smalltileGrid.ToImage();
-                Encoders.AddEncoder<PngEncoder>();
-                var p = new PngEncoder();
+                wbp = new WriteableBitmap(smalltileGrid, null);
                 using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (myIsolatedStorage.FileExists(filename[0]))
@@ -47,15 +43,13 @@ namespace TaiwanPP.TileMaker
                         myIsolatedStorage.DeleteFile(filename[0]);
                     }
                     IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(filename[0]);
-                    p.Encode(tileImaged, fileStream);
+                    await Cimbalino.Phone.Toolkit.Extensions.WriteableBitmapExtensions.SavePngAsync(wbp, fileStream);
                     fileStream.Close();
                 }
                 tinytileGrid.Measure(new Size(159, 159));
                 tinytileGrid.Arrange(new Rect(0, 0, 159, 159));
                 tinytileGrid.UpdateLayout();
-                tileImaged = tinytileGrid.ToImage();
-                Encoders.AddEncoder<PngEncoder>();
-                p = new PngEncoder();
+                wbp = new WriteableBitmap(tinytileGrid, null);
                 using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (myIsolatedStorage.FileExists(filename[1]))
@@ -63,15 +57,13 @@ namespace TaiwanPP.TileMaker
                         myIsolatedStorage.DeleteFile(filename[1]);
                     }
                     IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(filename[1]);
-                    p.Encode(tileImaged, fileStream);
+                    await Cimbalino.Phone.Toolkit.Extensions.WriteableBitmapExtensions.SavePngAsync(wbp, fileStream);
                     fileStream.Close();
                 }
                 widetileGrid.Measure(new Size(691, 336));
                 widetileGrid.Arrange(new Rect(0, 0, 691, 336));
                 widetileGrid.UpdateLayout();
-                tileImaged = widetileGrid.ToImage();
-                Encoders.AddEncoder<PngEncoder>();
-                p = new PngEncoder();
+                wbp = new WriteableBitmap(widetileGrid, null);
                 using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (myIsolatedStorage.FileExists(filename[2]))
@@ -79,7 +71,7 @@ namespace TaiwanPP.TileMaker
                         myIsolatedStorage.DeleteFile(filename[2]);
                     }
                     IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(filename[2]);
-                    p.Encode(tileImaged, fileStream);
+                    await Cimbalino.Phone.Toolkit.Extensions.WriteableBitmapExtensions.SavePngAsync(wbp, fileStream);
                     fileStream.Close();
                 }
                 if (predict)
@@ -87,9 +79,7 @@ namespace TaiwanPP.TileMaker
                     smallbackGrid.Measure(new Size(336, 336));
                     smallbackGrid.Arrange(new Rect(0, 0, 336, 336));
                     smallbackGrid.UpdateLayout();
-                    tileImaged = smallbackGrid.ToImage();
-                    Encoders.AddEncoder<PngEncoder>();
-                    p = new PngEncoder();
+                    wbp = new WriteableBitmap(smallbackGrid, null);
                     using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (myIsolatedStorage.FileExists(filename[3]))
@@ -97,15 +87,13 @@ namespace TaiwanPP.TileMaker
                             myIsolatedStorage.DeleteFile(filename[3]);
                         }
                         IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(filename[3]);
-                        p.Encode(tileImaged, fileStream);
+                        await Cimbalino.Phone.Toolkit.Extensions.WriteableBitmapExtensions.SavePngAsync(wbp, fileStream);
                         fileStream.Close();
                     }
                     widebackGrid.Measure(new Size(691, 336));
                     widebackGrid.Arrange(new Rect(0, 0, 691, 336));
                     widebackGrid.UpdateLayout();
-                    tileImaged = widebackGrid.ToImage();
-                    Encoders.AddEncoder<PngEncoder>();
-                    p = new PngEncoder();
+                    wbp = new WriteableBitmap(widebackGrid, null);
                     using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (myIsolatedStorage.FileExists(filename[4]))
@@ -113,7 +101,7 @@ namespace TaiwanPP.TileMaker
                             myIsolatedStorage.DeleteFile(filename[4]);
                         }
                         IsolatedStorageFileStream fileStream = myIsolatedStorage.CreateFile(filename[4]);
-                        p.Encode(tileImaged, fileStream);
+                        await Cimbalino.Phone.Toolkit.Extensions.WriteableBitmapExtensions.SavePngAsync(wbp, fileStream);
                         fileStream.Close();
                     }
                 }

@@ -55,7 +55,7 @@ namespace TaiwanPP.Library.Models
         public double currency;
         public internationalModel(string dt, string db, string bt, string cr)
         {
-            this.date = DateTime.Parse(dt.Substring(0, 4) + "." + dt.Substring(4));
+            this.date = DateTime.Parse(dt.Substring(0, 4) + "." + dt.Substring(8));
             this.tick = date.Ticks;
             this.dubai = Convert.ToDouble(db);
             this.brent = Convert.ToDouble(bt);

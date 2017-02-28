@@ -32,6 +32,6 @@ using System.Resources;
 //
 // 您可以自行指定所有的值，也可以使用 '*' 將修訂和組建編號指定為
 // 指定為預設值: 
-[assembly: AssemblyVersion("17.01.16")]
-[assembly: AssemblyFileVersion("17.01.16")]
+[assembly: AssemblyVersion("17.02.25")]
+[assembly: AssemblyFileVersion("17.02.25")]
 [assembly: NeutralResourcesLanguageAttribute("zh-TW")]

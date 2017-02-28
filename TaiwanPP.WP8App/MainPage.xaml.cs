@@ -61,6 +61,7 @@ namespace TaiwanPP.WP8App
         bool loaded = false;
         bool resetconfig = false;
         int leave = 0;
+        App appConfig = App.Current as App;
 
         // 建構函式
         public MainPage()
@@ -93,6 +94,7 @@ namespace TaiwanPP.WP8App
             dcvm = (dcViewModel)DCBulletin.DataContext;
             ifvm = (infoViewModel)titlebar.DataContext;
             dtvm = (discountViewModel)discountPage.DataContext;
+            ifvm.firstLoad = appConfig.firstload;
             progress = new PropertyProgress<ProgressReport>();
             progress.PropertyChanged += progress_PropertyChanged;
             ApplicationBar = new ApplicationBar();
@@ -348,8 +350,13 @@ namespace TaiwanPP.WP8App
                                 isf.Close();
                                 isf.Dispose();
                             }
-                            if (ifvm.firstLoad) NavigationService.Navigate(new Uri("/fastConfig.xaml", UriKind.Relative));
-                            PanoramaRoot.DefaultItem = State.Keys.Contains("defaultpage") ? PanoramaRoot.Items[(int)State["defaultpage"]] : PanoramaRoot.Items[ifvm.defaultPage]; //頁面控制
+                            if (ifvm.firstLoad)
+                            {
+                                await Task.Delay(3500); //等動畫跑完再切換頁面
+                                NavigationService.Navigate(new Uri("/fastConfig.xaml", UriKind.Relative));
+                            }
+                            PanoramaRoot.DefaultItem = appConfig.applaunch ? PanoramaRoot.Items[ifvm.defaultPage] : State.Keys.Contains("defaultpages") ? PanoramaRoot.Items[(int)State["defaultpage"]] : PanoramaRoot.Items[ifvm.defaultPage]; //頁面控制
+                            appConfig.applaunch = false;
                             if (ifvm.upgrade)
                             {
                                 MessageBox.Show("系統設定檔升級，以強制更新您的設定檔，請重新復原您的設定（包括動態磚）", "升級提醒", MessageBoxButton.OK);
@@ -373,6 +380,25 @@ namespace TaiwanPP.WP8App
                                 isf.Dispose();
                             }
                             backgroundInjector();
+                            if(ifvm.scheduledTaskErrortime != DateTime.MinValue)
+                            {
+                                string errormsg = String.Copy(ifvm.scheduledTaskErrorcode);
+                                DateTime errordate = new DateTime(ifvm.scheduledTaskErrortime.Ticks);
+                                string errortrace = String.Copy(ifvm.scheduledTaskErrortrace);
+                                ifvm.scheduledTaskErrorcode = "0";
+                                ifvm.scheduledTaskErrortime = DateTime.MinValue;
+                                ifvm.scheduledTaskErrortrace = "0";
+                                using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+                                {
+                                    ifvm.saveConfig(isf);
+                                    isf.Close();
+                                    isf.Dispose();
+                                }
+                                if (MessageBox.Show("背景執行程式似乎發生過錯誤，請問您是否想把錯誤回報給開發者？（回報與否都會自動消除這次的錯誤紀錄）","背景程式發生錯誤",MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                                {
+                                    contactMail("錯誤訊息如下：" + errormsg + "，錯誤追蹤：" + errortrace);
+                                }
+                            }
                             if (executeStationQ) queryStation(false, false);
                             loaded = true;
                             uiLock(true);
@@ -437,7 +463,7 @@ namespace TaiwanPP.WP8App
                     connectivity();
                     ifvm.firstLoad = false;
                     ifvm.connectivity = ifvm.dbcheckedDate.AddMinutes(5) < DateTime.Now ? ifvm.connectivity : false;
-                    await cpvm.fetchPrice(ifvm.connectivity, progress);
+                    await cpvm.fetchPrice(ifvm.connectivity, progress, 6);
                     await cpvm.currentPrice(progress, false);
                     NavigationContext.QueryString.TryGetValue("kind", out tilemonitor);
                     if (tilemonitor != null)
@@ -460,7 +486,7 @@ namespace TaiwanPP.WP8App
                     TimeSpan now = new TimeSpan(DateTime.Now.Ticks);
                     if (now.Subtract(sdb).Days > 30)
                     {
-                        if (System.Windows.MessageBox.Show("加油站資料庫已有約" + now.Subtract(sdb).Days + "日未更新，請確定網路穩定下按是進行更新，按否將展延一個月更新（（若太久不更新，會因為Google API數量而限制無法查詢加油站經緯度）", "更新加油站資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
+                        if (System.Windows.MessageBox.Show("加油站資料庫已有約" + now.Subtract(sdb).Days + "日未更新，請確定網路穩定下按是進行更新，按否將展延一個月更新（若太久不更新，會因為Google API數量而限制無法查詢加油站經緯度）", "更新加油站資料庫", System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK)
                         {
                             await stvm.updateCPC(progress);
                             await stvm.updateFPCC(progress);
@@ -554,7 +580,7 @@ namespace TaiwanPP.WP8App
             try
             {
                 backgroundInjector();
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                Deployment.Current.Dispatcher.BeginInvoke(async () =>
                 {
                     uiLock(false);
                     systemtray.IsVisible = true;
@@ -590,7 +616,7 @@ namespace TaiwanPP.WP8App
                         systemtray.IsVisible = false;
                         uiLock(true);
                     });
-                    Tile.BeginSavePNG(typeDB.productnameDB[ps.kind], true);
+                    await Tile.BeginSavePNG(typeDB.productnameDB[ps.kind], true);
                 });
             }
             catch (systemException)
@@ -610,7 +636,7 @@ namespace TaiwanPP.WP8App
                 tileTask.Description = "定期抓取油價公告，更新動態磚，並在價格調整時發出提醒";
                 //if (ScheduledActionService.Find(tileTask.Name) != null) ScheduledActionService.Remove(tileTask.Name);
                 ScheduledActionService.Add(tileTask);
-                //ScheduledActionService.LaunchForTest(tileTask.Name, TimeSpan.FromSeconds(10));    //test code, must be commented when released
+                ScheduledActionService.LaunchForTest(tileTask.Name, TimeSpan.FromSeconds(10));    //test code, must be commented when released
             }
             catch
             {
@@ -727,7 +753,7 @@ namespace TaiwanPP.WP8App
         }*/
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-
+            var app = App.Current as App;
             if (NavigationContext.QueryString.ContainsKey("voiceCommandName")) {
                 int defaultpage = 0;
                 if (NavigationContext.QueryString["voiceCommandName"] == "navigation")
@@ -769,10 +795,10 @@ namespace TaiwanPP.WP8App
                     State["defaultpage"] = defaultpage;
                 }
             }
-            if (!State.Keys.Contains("defaultpage"))
+            /*if (!State.Keys.Contains("defaultpage"))
             {
                 State.Add("defaultpage", ifvm.defaultPage);
-            }
+            }*/
             base.OnNavigatedTo(e);
         }
         private void refresh_Click(object sender, EventArgs e)

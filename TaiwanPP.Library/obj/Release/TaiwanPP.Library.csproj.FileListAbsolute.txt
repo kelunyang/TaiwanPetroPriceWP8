@@ -53,7 +53,8 @@ C:\Users\可倫\SkyDrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\TaiwanPP.Library.dll.config
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\TaiwanPP.Library.dll
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\TaiwanPP.Library.pdb
-D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\HtmlAgilityPack-PCL.dll
+D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\Microsoft.Threading.Tasks.dll
+D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\Microsoft.Threading.Tasks.Extensions.dll
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\Newtonsoft.Json.dll
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\Nito.AsyncEx.dll
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\OxyPlot.dll
@@ -66,7 +67,8 @@ D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\SQLitePCLRaw
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\System.Net.Http.dll
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\System.Net.Http.Extensions.dll
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\System.Net.Http.Primitives.dll
-D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\HtmlAgilityPack-PCL.xml
+D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\Microsoft.Threading.Tasks.xml
+D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\Microsoft.Threading.Tasks.Extensions.xml
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\Newtonsoft.Json.xml
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\Nito.AsyncEx.xml
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\OxyPlot.pdb
@@ -76,6 +78,5 @@ D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\System.Net.H
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\System.Net.Http.Extensions.xml
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\bin\Release\System.Net.Http.Primitives.xml
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\obj\Release\TaiwanPP.Library.csproj.App.config
-D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\obj\Release\TaiwanPP.Library.csprojResolveAssemblyReference.cache
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\obj\Release\TaiwanPP.Library.dll
 D:\onedrive\文件\TaiwanPetroPriceWP8\TaiwanPP.Library\obj\Release\TaiwanPP.Library.pdb

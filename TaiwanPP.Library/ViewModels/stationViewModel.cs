@@ -1,4 +1,4 @@
-﻿using HtmlAgilityPack;
+﻿//using HtmlAgilityPack;
 using SQLitePCL;
 using SQLite;
 using System;
@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using TaiwanPP.Library.Helpers;
 using TaiwanPP.Library.Models;
+using System.Text.RegularExpressions;
+//using AngleSharp;
 //using Windows.Devices.Geolocation;
 
 namespace TaiwanPP.Library.ViewModels
@@ -22,6 +24,7 @@ namespace TaiwanPP.Library.ViewModels
     public class stationViewModel : viewmodelBase
     {
         List<string> filtername = new List<string>() { "僅顯示台塑", "僅顯示中油", "自助服務", "直營站", "儲存的站台", "僅限營業中的站台", "提供92無鉛汽油", "提供95無鉛汽油", "提供98無鉛汽油", "提供柴油", "提供酒精汽油" };
+        //IConfiguration config = new Configuration().WithDefaultLoader();
         private List<stationStorage> stationDB;
         private phoneQuery phoneDB;
         IEnumerable<stationStorage> queryList;
@@ -687,8 +690,11 @@ namespace TaiwanPP.Library.ViewModels
                 messenger.Report(new ProgressReport() { progress = 50, progressMessage = "查詢營業時間與中油加油站座標中..."+adds.Count+"個", display=true });
                 for (int i = 0; i < adds.Count; i++)
                 {
-                    geoQuery gq = new geoQuery();
-                    adds[i] = await gq.geoCodeStation(adds[i]);
+                    if (adds[i].longitude == 0)
+                    {
+                        geoQuery gq = new geoQuery();
+                        adds[i] = await gq.geoCodeStation(adds[i]);
+                    }
                     stationinfoSoap si = new stationinfoSoap(adds[i]);
                     await si.doWork();
                     adds[i] = si.qstation;
@@ -781,8 +787,11 @@ namespace TaiwanPP.Library.ViewModels
                 messenger.Report(new ProgressReport() { progress = 70, progressMessage = "查詢台塑加油站座標中..."+adds.Count+"個", display = true });
                 for (int i = 0; i < adds.Count; i++)
                 {
-                    geoQuery gq = new geoQuery();
-                    adds[i] = await gq.geoCodeStation(adds[i]);
+                    if (adds[i].longitude == 0)
+                    {
+                        geoQuery gq = new geoQuery();
+                        adds[i] = await gq.geoCodeStation(adds[i]);
+                    }
                 }
                 List<stationStorage> replaced = new List<stationStorage>();
                 List<stationStorage> added = new List<stationStorage>();
@@ -865,12 +874,22 @@ namespace TaiwanPP.Library.ViewModels
                     var httpClient = new HttpClient(handler);
                     httpClient.MaxResponseContentBufferSize = 256000;
                     httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
-                    HtmlDocument tHtmlDoc = new HtmlDocument();
+                    string aRespone = await httpClient.GetStringAsync(new Uri(Uri.EscapeUriString("http://www.fpcc.com.tw/tc/station_full.php?region=" + region + "&county=" + county)));
+                    Regex pagereg = new Regex(@"pages(.+\n)+", RegexOptions.None);
+                    Match pageMatch = pagereg.Match(aRespone);
+                    Regex pagesreeg = new Regex(@"station_full", RegexOptions.None);
+                    MatchCollection pageCollection = pagesreeg.Matches(pageMatch.Value);
+                    /*Uri url = new Uri(Uri.EscapeUriString("http://www.fpcc.com.tw/tc/station_full.php?region=" + region + "&county=" + county + "&nocache=" + DateTime.Now.Ticks));
+                    Url url = new Url(Uri.EscapeUriString("http://www.fpcc.com.tw/tc/station_full.php?region=" + region + "&county=" + county + "&nocache=" + DateTime.Now.Ticks));*/
+                    /*AngleSharp.Parser.Html.HtmlParser parser = new AngleSharp.Parser.Html.HtmlParser(); //非常神奇的錯誤，一定要用parser才能打開網頁
+                    AngleSharp.Dom.IDocument tHtmlDoc = parser.Parse(aRespone);
+                    /*HtmlDocument tHtmlDoc = new HtmlDocument();
                     tHtmlDoc.LoadHtml(await httpClient.GetStringAsync(new Uri(Uri.EscapeUriString("http://www.fpcc.com.tw/tc/station_full.php?region=" + region + "&county=" + county))));
                     var attrSpan = from node in tHtmlDoc.DocumentNode.Descendants("a") where node.HasAttributes select node;
                     var nullSpan = from node in attrSpan where node.Attributes["href"] != null select node;
                     var tAllNodes = (from node in nullSpan where node.Attributes["href"].Value.Contains("station_full.php") select node).ToList();
-                    int pages = tAllNodes.Count();
+                    int pages = tAllNodes.Count();*/
+                    int pages = pageCollection.Count;
                     if (pages == 0)
                     {
                         fpccList = fpccList.Concat(await queryFPCCstation(region, county, 0)).ToList();
@@ -908,10 +927,15 @@ namespace TaiwanPP.Library.ViewModels
                     var httpClient = new HttpClient(handler);
                     httpClient.MaxResponseContentBufferSize = 256000;
                     httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
-                    HtmlDocument tHtmlDoc = new HtmlDocument();
+                    //HtmlDocument tHtmlDoc = new HtmlDocument();
                     string url = page != 0 ? "http://www.fpcc.com.tw/tc/station_full.php?region=" + region + "&county=" + county + "&page=" + page : "http://www.fpcc.com.tw/tc/station_full.php?region=" + region + "&county=" + county;
+                    string aResponse = await httpClient.GetStringAsync(new Uri(Uri.EscapeUriString(url + "&nocache=" + DateTime.Now.Ticks)));
+                    Regex stationreg = new Regex(@"<(tr).+?>.?\n.+站(.+\n?){1,18}", RegexOptions.None);
+                    MatchCollection stationMatch = stationreg.Matches(aResponse);
                     //Debug.WriteLine(url);
-                    tHtmlDoc.LoadHtml(await httpClient.GetStringAsync(new Uri(Uri.EscapeUriString(url))));
+                    /*AngleSharp.Parser.Html.HtmlParser parser = new AngleSharp.Parser.Html.HtmlParser();
+                    AngleSharp.Dom.IDocument tHtmlDoc = parser.Parse(aResponse);
+                    /*tHtmlDoc.LoadHtml(await httpClient.GetStringAsync(new Uri(Uri.EscapeUriString(url))));
                     var trAttr = from node in tHtmlDoc.DocumentNode.Descendants("tr") where node.HasAttributes select node;
                     var aligntr = from node in trAttr where node.Attributes["align"] != null select node;
                     var tr = (from station in aligntr
@@ -936,8 +960,95 @@ namespace TaiwanPP.Library.ViewModels
                                       p98 = station.ChildNodes[21].HasChildNodes,
                                       pdiesel = station.ChildNodes[25].HasChildNodes,
                                       pgasohol = false
-                                  });
-                    return tr.ToList();
+                                  });*/
+                    int count = 0;
+                    foreach(Match m in stationMatch)
+                    {
+                        count++;
+                        if (count == 1) continue;
+                        Regex split = new Regex(@"</td>", RegexOptions.None);
+                        var stationinfo = split.Split(m.Value);
+                        Regex namereg = new Regex(@">.+站", RegexOptions.None);
+                        Match nameMatch = namereg.Match(stationinfo[0]);
+                        Regex mapreg = new Regex(@"maps.+<", RegexOptions.None);
+                        Match mapMatch = mapreg.Match(stationinfo[3]);
+                        string mapinfo = mapMatch.Value;
+                        Regex contryreg = new Regex(@">.+(縣|市)", RegexOptions.None);
+                        Match contryMatch = contryreg.Match(stationinfo[1]);
+                        string contry = contryMatch.Value.Replace(">", "");
+                        string address = Regex.Replace(contry, @">|<", "") + Regex.Replace(mapinfo, @"maps.+"">|<", "");
+                        Regex geoinforeg = new Regex(@"@.+z/", RegexOptions.None);
+                        Match geoinfoMatch = geoinforeg.Match(mapinfo);
+                        var geoinfo = geoinfoMatch.Value.Split(',');
+                        double longitude = geoinfo.Length == 3 ? Convert.ToDouble(geoinfo[1]) : 0.0;
+                        double latitude = geoinfo.Length == 3 ? Convert.ToDouble(geoinfo[0].Replace("@", "")) : 0.0;
+                        Regex phonereg = new Regex(@">\d+-?\d+", RegexOptions.None);
+                        Match phoneMatch = phonereg.Match(stationinfo[4]);
+                        bool gasself = stationinfo[7].IndexOf("img") > -1 || stationinfo[9].IndexOf("img") > -1 || stationinfo[11].IndexOf("img") > -1;
+                        bool diesalself = stationinfo[13].IndexOf("img") > -1;
+                        int selftype = 0;
+                        Regex timereg = new Regex(">.+");
+                        Match timeMatch = timereg.Match(stationinfo[5]);
+                        string time = timeMatch.Value.Replace(">", "");
+                        if (gasself)
+                        {
+                            selftype = 1;
+                        }
+                        if(diesalself)
+                        {
+                            if(selftype == 1)
+                            {
+                                selftype = 3;
+                            } else
+                            {
+                                selftype = 2;
+                            }
+                        }
+                        //System.Diagnostics.Debug.WriteLine("name:"+nameMatch.Value.Replace(">", "") + "/address:"+address+"/phone:"+Regex.Replace(phoneMatch.Value, @">|<", "")+"/latitude:"+latitude+"/longtitude:"+longitude+"/selftype:"+selftype+"/con:"+ contry+ "/time:"+time);
+                        fpccList.Add(new stationStorage()
+                        {
+                            name = nameMatch.Value.Replace(">", ""),
+                            address = address,
+                            brand = 1,
+                            phone = Regex.Replace(phoneMatch.Value, @">|<", ""),
+                            latitude = latitude,
+                            longitude = longitude,
+                            selftype = selftype,
+                            distance = 0,
+                            favorite = false,
+                            type = false,
+                            city = contry,
+                            pgasohol = false,
+                            starttime = GetOpenTime(time),
+                            duration = GetDurationTime(time),
+                            p92 = stationinfo[6].IndexOf("img") > -1 || stationinfo[7].IndexOf("img") > -1,
+                            p95 = stationinfo[8].IndexOf("img") > -1 || stationinfo[9].IndexOf("img") > -1,
+                            p98 = stationinfo[10].IndexOf("img") > -1 || stationinfo[11].IndexOf("img") > -1,
+                            pdiesel = stationinfo[12].IndexOf("img") > -1 || stationinfo[13].IndexOf("img") > -1
+                        });
+                    }
+                    /*var tr = tHtmlDoc.QuerySelectorAll("tr[align='left']").Where(node => node.QuerySelectorAll("td").Count() == 14).Select(station => new stationStorage()
+                        {
+                            address = station.ChildNodes[3].TextContent + station.ChildNodes[7].TextContent.Trim('\n').Trim(' ').Trim('\t').Trim('\n'),
+                            brand = 1,
+                            phone = station.ChildNodes[9].TextContent,
+                            name = station.ChildNodes[1].TextContent,
+                            selftype = station.ChildNodes[15].HasChildNodes ? 1 : station.ChildNodes[27].HasChildNodes ? 3 : 2,
+                            distance = 0,
+                            favorite = false,
+                            latitude = 0.0,
+                            longitude = 0.0,
+                            type = false,
+                            city = station.ChildNodes[3].TextContent,
+                            starttime = GetOpenTime(station.ChildNodes[11].TextContent),
+                            duration = GetDurationTime(station.ChildNodes[11].TextContent),
+                            p92 = station.ChildNodes[13].HasChildNodes,
+                            p95 = station.ChildNodes[17].HasChildNodes,
+                            p98 = station.ChildNodes[21].HasChildNodes,
+                            pdiesel = station.ChildNodes[25].HasChildNodes,
+                            pgasohol = false
+                        });*/
+                    return fpccList;
                 }
             }
             catch (Exception e)

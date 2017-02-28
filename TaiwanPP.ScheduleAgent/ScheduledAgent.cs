@@ -66,6 +66,7 @@ namespace TaiwanPP.ScheduleAgent
             connectivity = Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
             PeriodicTask tileTask = (PeriodicTask)ScheduledActionService.Find("oilTilePeriodicAgent");
             lastevent = tileTask.LastExitReason == AgentExitReason.Completed ? true : false;
+            //System.Diagnostics.Debug.WriteLine("MemoryUsage0:"+(Windows.Phone.System.Memory.MemoryManager.ProcessCommittedBytes/1024f/1024f)+"/"+ (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedLimit/1024f/1024f));
             using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
             {
                 ifvm.loadConfig(isf);
@@ -78,97 +79,49 @@ namespace TaiwanPP.ScheduleAgent
                 isf.Close();
                 isf.Dispose();
             }
-            if (connectivity)
+            try
             {
-                var progress = new PropertyProgress<ProgressReport>();
-                long originalDate = cpvm.moeaboeDBdate.Ticks;
-                await cpvm.loadDB(DB_PATH);
-                await cpvm.buildDB();
-                await ppvm.loadDB(DB_PATH);
-                if ((int)DateTime.Today.DayOfWeek == 0)
+                if (connectivity)
                 {
-                    if (ifvm.notifycheckedHour.Hour != DateTime.Now.Hour)
+                    var progress = new PropertyProgress<ProgressReport>();
+                    long originalDate = cpvm.moeaboeDBdate.Ticks;
+                    await cpvm.loadDB(DB_PATH);
+                    await cpvm.buildDB();
+                    await ppvm.loadDB(DB_PATH);
+                    if ((int)DateTime.Today.DayOfWeek == 0)
                     {
-                        await cpvm.fetchPrice(connectivity, progress);
-                        await cpvm.currentPrice(progress, true);
-                        ifvm.notifycheckedHour = DateTime.Now;
-                        if (originalDate - cpvm.moeaboeDBdate.Ticks != 0)
+                        if (!ifvm.CPCnotified || !ifvm.FPCCnotified)
                         {
-                            insequence = true;
-                            IEnumerable<priceStorage> product95 = from p in cpvm.currentCollections where p.kind == typeDB.CPC95.key select p;
-                            IEnumerable<priceStorage> productdiesel = from p in cpvm.currentCollections where p.kind == typeDB.CPCdiesel.key select p;
-                            if (product95.Any())
-                            {
-                                await ppvm.predictedPrice(ifvm.connectivity, true, progress);
-                                ppvm.getPrice(product95.First().price, productdiesel.First().price);
-                            }
-                            IEnumerable<int> brands = cpvm.save.Select(p => p.brand).Distinct();
-                            foreach (int b in brands)
-                            {
-                                switch (b)
-                                {
-                                    case 0:
-                                        if (!ifvm.CPCnotified) toast(b, cpvm.CPC95Change, cpvm.CPCdieselChange);
-                                        ifvm.CPCnotified = true;
-                                        break;
-                                    case 1:
-                                        if (!ifvm.FPCCnotified) toast(b, cpvm.FPCC95Change, cpvm.FPCCdieselChange);
-                                        ifvm.FPCCnotified = true;
-                                        break;
-                                }
-                            }
-                            using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
-                            {
-                                ifvm.saveConfig(isf);
-                                isf.Close();
-                                isf.Dispose();
-                            }
-                            GC.Collect();
-                            tilescan();
-                            runtile();
-                        }
-                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
-                        {
-                            ifvm.saveConfig(isf);
-                            isf.Close();
-                            isf.Dispose();
-                        }
-                    }
-                }
-                else if ((int)DateTime.Now.DayOfWeek != 1)
-                {
-                    ifvm.notifycheckedHour = DateTime.Now;
-                    ifvm.CPCnotified = false;
-                    ifvm.FPCCnotified = false;
-                    if (DateTime.Now.Day != ifvm.dailynotify.Day)
-                    {
-                        if (DateTime.Now.Hour == ifvm.dailynotifytime.Hour)
-                        {
-                            if (!ifvm.dailynotified)
+                            await cpvm.fetchPrice(connectivity, progress, 6);
+                            await cpvm.currentPrice(progress, true);
+                            ifvm.notifycheckedHour = DateTime.Now;
+                            if (originalDate - cpvm.moeaboeDBdate.Ticks != 0)
                             {
                                 insequence = true;
-                                ifvm.dailynotified = true;
-                                ifvm.dailycheckHour = DateTime.Now;
-                                connectivity = ifvm.dbcheckedDate.AddMinutes(5) < DateTime.Now ? connectivity : false;
-                                await cpvm.fetchPrice(connectivity, progress);
-                                await cpvm.currentPrice(progress, true);
                                 IEnumerable<priceStorage> product95 = from p in cpvm.currentCollections where p.kind == typeDB.CPC95.key select p;
                                 IEnumerable<priceStorage> productdiesel = from p in cpvm.currentCollections where p.kind == typeDB.CPCdiesel.key select p;
+                                //System.Diagnostics.Debug.WriteLine("MemoryUsage1:" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedBytes / 1024f / 1024f) + "/" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedLimit / 1024f / 1024f));
                                 if (product95.Any())
                                 {
                                     await ppvm.predictedPrice(ifvm.connectivity, true, progress);
                                     ppvm.getPrice(product95.First().price, productdiesel.First().price);
                                 }
-                                if (ifvm.dbcheckedDate.AddMinutes(5) < DateTime.Now) ifvm.dbcheckedDate = DateTime.Now;
-                                if (ifvm.dailynotifyEnable)
+                                //System.Diagnostics.Debug.WriteLine("MemoryUsage2:" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedBytes / 1024f / 1024f) + "/" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedLimit / 1024f / 1024f));
+                                IEnumerable<int> brands = cpvm.save.Select(p => p.brand).Distinct();
+                                foreach (int b in brands)
                                 {
-                                    ShellToast toast = new ShellToast();
-                                    toast.Title = "油價預測";
-                                    string pprice = ppvm.pprice > 0 ? "+" + ppvm.pprice.ToString() : ppvm.pprice.ToString();
-                                    toast.Content = ppvm.predictpause ? "能源局尚未更新國際油價" : "下周預測將調整" + pprice + "元";
-                                    toast.Show();
+                                    switch (b)
+                                    {
+                                        case 0:
+                                            if (!ifvm.CPCnotified) toast(b, cpvm.CPC95Change, cpvm.CPCdieselChange);
+                                            ifvm.CPCnotified = true;
+                                            break;
+                                        case 1:
+                                            if (!ifvm.FPCCnotified) toast(b, cpvm.FPCC95Change, cpvm.FPCCdieselChange);
+                                            ifvm.FPCCnotified = true;
+                                            break;
+                                    }
                                 }
-                                ifvm.dailynotify = DateTime.Now;
                                 using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
                                 {
                                     ifvm.saveConfig(isf);
@@ -177,12 +130,8 @@ namespace TaiwanPP.ScheduleAgent
                                 }
                                 GC.Collect();
                                 tilescan();
-                                runtile();
+                                await runtile();
                             }
-                        }
-                        else
-                        {
-                            ifvm.dailynotified = false;
                             using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
                             {
                                 ifvm.saveConfig(isf);
@@ -191,46 +140,110 @@ namespace TaiwanPP.ScheduleAgent
                             }
                         }
                     }
-                }
-                TimeSpan now = new TimeSpan(DateTime.Now.Ticks);
-                TimeSpan dupdate = new TimeSpan(dtvm.dDBcheckedDate.Ticks);
-                if (now.Subtract(dupdate).Days > 15)
-                {
-                    using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(discount_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
+                    else if ((int)DateTime.Now.DayOfWeek != 1)
                     {
-                        await dtvm.loadXML(isf);
-                        isf.Close();
-                        isf.Dispose();
-                    }
-                    using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(discount_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
-                    {
-                        if (await dtvm.updateXML(progress, isf))
+                        ifvm.notifycheckedHour = DateTime.Now;
+                        ifvm.CPCnotified = false;
+                        ifvm.FPCCnotified = false;
+                        if (DateTime.Now.Day != ifvm.dailynotify.Day)
                         {
-                            ShellToast toast = new ShellToast();
-                            toast.Title = "油價預測";
-                            toast.Content = "已更新加油折扣資料庫";
-                            toast.Show();
+                            if (DateTime.Now.Hour >= ifvm.dailynotifytime.Hour)
+                            {
+                                if (!ifvm.dailynotified)
+                                {
+                                    insequence = true;
+                                    ifvm.dailynotified = true;
+                                    ifvm.dailycheckHour = DateTime.Now;
+                                    connectivity = ifvm.dbcheckedDate.AddMinutes(5) < DateTime.Now ? connectivity : false;
+                                    await cpvm.fetchPrice(connectivity, progress, 6);
+                                    await cpvm.currentPrice(progress, true);
+                                    IEnumerable<priceStorage> product95 = from p in cpvm.currentCollections where p.kind == typeDB.CPC95.key select p;
+                                    IEnumerable<priceStorage> productdiesel = from p in cpvm.currentCollections where p.kind == typeDB.CPCdiesel.key select p;
+                                    //System.Diagnostics.Debug.WriteLine("MemoryUsage3:" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedBytes / 1024f / 1024f) + "/" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedLimit / 1024f / 1024f));
+                                    if (product95.Any())
+                                    {
+                                        await ppvm.predictedPrice(ifvm.connectivity, true, progress);
+                                        ppvm.getPrice(product95.First().price, productdiesel.First().price);
+                                        //System.Diagnostics.Debug.WriteLine("MemoryUsage4:" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedBytes / 1024f / 1024f) + "/" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedLimit / 1024f / 1024f));
+                                    }
+                                    if (ifvm.dbcheckedDate.AddMinutes(5) < DateTime.Now) ifvm.dbcheckedDate = DateTime.Now;
+                                    if (ifvm.dailynotifyEnable)
+                                    {
+                                        ShellToast toast = new ShellToast();
+                                        toast.Title = "油價預測";
+                                        string pprice = ppvm.pprice > 0 ? "+" + ppvm.pprice.ToString() : ppvm.pprice.ToString();
+                                        toast.Content = ppvm.predictpause ? "能源局尚未更新國際油價" : "下周預測將調整" + pprice + "元";
+                                        toast.Show();
+                                    }
+                                    ifvm.dailynotify = DateTime.Now;
+                                    using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+                                    {
+                                        ifvm.saveConfig(isf);
+                                        isf.Close();
+                                        isf.Dispose();
+                                    }
+                                    GC.Collect();
+                                    tilescan();
+                                    await runtile();
+                                }
+                            }
                         }
                     }
-                    using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+                    TimeSpan now = new TimeSpan(DateTime.Now.Ticks);
+                    TimeSpan dupdate = new TimeSpan(dtvm.dDBcheckedDate.Ticks);
+                    if (now.Subtract(dupdate).Days > 15)
                     {
-                        ifvm.saveConfig(isf);
-                        isf.Close();
-                        isf.Dispose();
-                    }
-                }
-                if (!insequence)
-                {
-                    if (!lastevent)
-                    {
-                        if (Math.Abs(DateTime.Now.Subtract(ifvm.tileupdateTime).Hours) > 6)
+                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(discount_PATH, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, isoStore))
                         {
-                            await cpvm.currentPrice(progress, true);
-                            tilescan();
-                            runtile();
+                            await dtvm.loadXML(isf);
+                            isf.Close();
+                            isf.Dispose();
+                        }
+                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(discount_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+                        {
+                            if (await dtvm.updateXML(progress, isf))
+                            {
+                                ShellToast toast = new ShellToast();
+                                toast.Title = "油價預測";
+                                toast.Content = "已更新加油折扣資料庫";
+                                toast.Show();
+                            }
+                        }
+                        using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+                        {
+                            ifvm.saveConfig(isf);
+                            isf.Close();
+                            isf.Dispose();
+                        }
+                    }
+                    if (!insequence)
+                    {
+                        if (!lastevent)
+                        {
+                            if (Math.Abs(DateTime.Now.Subtract(ifvm.tileupdateTime).Hours) > 6)
+                            {
+                                await cpvm.currentPrice(progress, true);
+                                tilescan();
+                                await runtile();
+                            }
                         }
                     }
                 }
+            } catch (Exception ex)
+            {
+                ifvm.scheduledTaskErrorcode = ex.Message;
+                ifvm.scheduledTaskErrortime = DateTime.Now;
+                ifvm.scheduledTaskErrortrace = "記憶體用量："+ (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedBytes / 1024f / 1024f) + "/" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedLimit / 1024f / 1024f)+"\r"+ex.StackTrace;
+                using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+                {
+                    ifvm.saveConfig(isf);
+                    isf.Close();
+                    isf.Dispose();
+                }
+                ShellToast toast = new ShellToast();
+                toast.Title = "油價公告";
+                toast.Content = "背景更新油價程式執行失敗，請進入主程式回報錯誤給作者";
+                toast.Show();
             }
             // If debugging is enabled, launch the agent again in one minute.
 #if DEBUG_AGENT
@@ -247,6 +260,7 @@ namespace TaiwanPP.ScheduleAgent
             if (Debugger.IsAttached)
             {
                 // 發生未處理的例外狀況; 切換到偵錯工具
+                //System.Diagnostics.Debug.WriteLine("ScheduledTask Crash:" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedBytes / 1024f / 1024f) + "/" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedLimit / 1024f / 1024f));
                 Debugger.Break();
             }
         }
@@ -280,26 +294,44 @@ namespace TaiwanPP.ScheduleAgent
         }
         private void tilescan() //fire the first tile and prepare prediction for all tiles
         {
-            tileupdateEvents += ScheduledAgent_tileUpdated;
+            tileupdateEvents += new EventHandler<tileUpdated>(async(s,e) => {
+                await ScheduledAgent_tileUpdated(s, e);
+                if(!((tileUpdated)e).Success)
+                {
+                    ifvm.scheduledTaskErrorcode = ((tileUpdated)e).Exception.Message;
+                    ifvm.scheduledTaskErrortime = DateTime.Now;
+                    ifvm.scheduledTaskErrortrace = ((tileUpdated)e).Exception.StackTrace;
+                    using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
+                    {
+                        ifvm.saveConfig(isf);
+                        isf.Close();
+                        isf.Dispose();
+                    }
+                    ShellToast toast = new ShellToast();
+                    toast.Title = "油價公告";
+                    toast.Content = "動態磚更新失敗，請進入主程式將錯誤訊息寄給作者";
+                    toast.Show();
+                }
+            });
             active = (from x in ShellTile.ActiveTiles where x.NavigationUri.OriginalString != "/" select Convert.ToInt32(x.NavigationUri.OriginalString.Substring(x.NavigationUri.OriginalString.IndexOf("kind=") + 5, 1))).ToList();
             if (ifvm.defaultTile != -1) active.Add(ifvm.defaultTile);
         }
-        private void runtile()
+        private async Task runtile()
         {
             if (active.Any())
             {
-                tileChange(active.First(), true, active.First() == ifvm.defaultTile);
+                await tileChange(active.First(), true, active.First() == ifvm.defaultTile);
             }
         }
 
-        void ScheduledAgent_tileUpdated(object sender, tileUpdated e)
+        async Task ScheduledAgent_tileUpdated(object sender, tileUpdated e)
         {
             if (e.Success)
             {
                 active.RemoveAt(0);
                 if (active.Any())
                 {
-                    tileChange(active.First(), false, active.First() == ifvm.defaultTile);
+                    await tileChange(active.First(), false, active.First() == ifvm.defaultTile);
                 }
                 else
                 {
@@ -315,17 +347,19 @@ namespace TaiwanPP.ScheduleAgent
             }
         }
         public event EventHandler<tileUpdated> tileupdateEvents;
-        private void tileChange(int obj, bool prediction, bool defTile)
+        private async Task tileChange(int obj, bool prediction, bool defTile)
         {
             oilType product = typeDB.productnameDB[obj];
             try
             {
                 tile Tile = new tile();
                 Tile.DataContext = cpvm.tileExport(product, ppvm.penddate, ppvm.pstartdate, ppvm.pprice, ppvm.pdprice);
+                //System.Diagnostics.Debug.WriteLine("MemoryUsage5:" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedBytes / 1024f / 1024f) + "/" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedLimit / 1024f / 1024f));
                 Tile.SavePNGComplete += ((s, Tilearg) =>
                 {
                     Tile = null;
                     GC.Collect();
+                    //System.Diagnostics.Debug.WriteLine("MemoryUsage6:" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedBytes / 1024f / 1024f) + "/" + (Windows.Phone.System.Memory.MemoryManager.ProcessCommittedLimit / 1024f / 1024f));
                     FlipTileData tileData = new FlipTileData
                     {
                         Title = "",
@@ -343,12 +377,11 @@ namespace TaiwanPP.ScheduleAgent
                         tileupdateEvents(this, new tileUpdated(true));
                     }
                 });
-                Tile.BeginSavePNG(product, prediction);
+                await Tile.BeginSavePNG(product, prediction);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("Exception in tile update: " + ex.ToString());
-
+                //System.Diagnostics.Debug.WriteLine("Exception in tile update: " + ex.ToString());
                 if (tileupdateEvents != null)
                 {
                     var args1 = new tileUpdated(false);

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Automatically generated-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="InjectReference_5cb75c5b-ec6c-418b-b7bf-2c503b2ea4f4" BeforeTargets="ResolveAssemblyReferences" Condition=" '$(OS)' == 'Windows_NT' ">
+    <ItemGroup Condition=" '$(Platform.ToLower())' == 'arm' ">
+      <Content Include="$(MSBuildThisFileDirectory)..\runtimes\wp80-arm\native\e_sqlite3.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(Platform.ToLower())' == 'x86' ">
+      <Content Include="$(MSBuildThisFileDirectory)..\runtimes\wp80-x86\native\e_sqlite3.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+  </Target>
+</Project>

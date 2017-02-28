@@ -83,10 +83,9 @@
                 <TextBlock Text="油價走勢圖" FontSize="26"/>
             </Border>
             <toolkit:ListPicker x:Name="peroidSelector" BorderBrush="Black" ItemsSource="{Binding DataContext.historicalPeriod, ElementName=historicalchartPage}" SelectedIndex="{Binding DataContext.defaultPeroid, ElementName=historicalchartPage, Mode=TwoWay}" Foreground="Black" SelectionChanged="peroidSelector_SelectionChanged" Margin="12,0" />
-            <oxy:PlotView x:Name="chart" Background="#FFF7F7F7" BorderThickness="0" Width="450" Height="280" Margin="0,5,0,35" Model="{Binding DataContext.historicalModel, ElementName=historicalchartPage, Mode=OneWay}" Visibility="{Binding chartready, ConverterParameter=1, Converter={StaticResource boolvisConverter}}"/>
+            <oxy:PlotView x:Name="chart" Background="#FFF7F7F7" BorderThickness="0" Width="450" Height="280" Margin="0,5,0,35" Model="{Binding DataContext.historicalModel, ElementName=historicalchartPage, Mode=OneWay}" Visibility="{Binding chartready, ConverterParameter=1, Converter={StaticResource boolvisConverter}}" IsMouseWheelEnabled="False" HandleRightClicks="False" IsEnabled="False"/>
             <StackPanel Height="300" Width="450" Visibility="{Binding chartready, ConverterParameter=0, Converter={StaticResource boolvisConverter}}">
-                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36">載入中...</TextBlock>
-                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="Gray">第三方圖表模組Oxyplot剛脫離測試版，請勿點擊圖表，可能會造成程式崩潰</TextBlock>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36" Margin="0,100,0,0">載入中...</TextBlock>
             </StackPanel>
             <StackPanel>
                 <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">

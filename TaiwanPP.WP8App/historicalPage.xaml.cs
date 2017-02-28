@@ -81,7 +81,7 @@ namespace TaiwanPP.WP8App
                 await cpvm.loadDB(DB_PATH);
                 await cpvm.buildDB();
                 await ppvm.loadDB(DB_PATH);
-                await cpvm.fetchPrice(ifvm.connectivity, progress);
+                await cpvm.fetchPrice(ifvm.connectivity, progress, 105);
                 await cpvm.currentPrice(progress, true);
                 await ppvm.predictedPrice(ifvm.connectivity, true, progress);
                 IEnumerable<double> p95 = from item in cpvm.currentCollections where item.kind == typeDB.CPC95.key select item.price;

@@ -5,18 +5,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http;
-using HtmlAgilityPack;
 using TaiwanPP.Library.Helpers;
 using TaiwanPP.Library.Models;
 using System.IO;
 using System.Xml;
+using System.Text.RegularExpressions;
+//using AngleSharp;
 
 namespace TaiwanPP.Library.ViewModels
 {
     public class ppViewModel : viewmodelBase
     {
         HttpClient httpClient;
-        HtmlDocument tHtmlDoc = new HtmlDocument();
+        /*IConfiguration config = new Configuration().WithDefaultLoader();
+        AngleSharp.Dom.IDocument tHtmlDoc;*/
         Uri URI = new Uri("https://www2.moeaboe.gov.tw/oil102/oil1022010/A00/Oil_Price2.asp");
         List<internationalModel> lio = new List<internationalModel>();
         DateTime cd = DateTime.Now;
@@ -230,7 +232,8 @@ namespace TaiwanPP.Library.ViewModels
                     lio = new List<internationalModel>();
                     try
                     {
-                        List<HtmlNode> tAllNodes;
+                        //List<string> tAllNodes;
+                        //List<string> tDateNodes;
                         var handler = new HttpClientHandler();
                         if (handler.SupportsAutomaticDecompression)
                         {
@@ -245,13 +248,41 @@ namespace TaiwanPP.Library.ViewModels
                                 StringContent theContent = new StringContent(body, System.Text.Encoding.UTF8, "application/x-www-form-urlencoded");
                                 messenger.Report(new ProgressReport() { progress = 15 * i, progressMessage = "下載能源局油價資料中", display = true });
                                 HttpResponseMessage aResponse = await httpClient.PostAsync(URI, theContent);
-                                tHtmlDoc.LoadHtml(await aResponse.Content.ReadAsStringAsync());
-                                tAllNodes = tHtmlDoc.DocumentNode.Descendants("td").ToList();
-                                for (int k = 12; k <= 18; k++)
+                                var byteData = await aResponse.Content.ReadAsByteArrayAsync();
+                                string aContent = Portable.Text.Encoding.GetEncoding(950).GetString(byteData);  //big5
+                                //string aContent = await aResponse.Content.ReadAsStringAsync();
+                                //aResponse.Dispose();
+                                RegexOptions opt = RegexOptions.None;
+                                Regex datereg = new Regex(@"位.+?平", opt);
+                                Match dateMatch = datereg.Match(aContent);
+                                Regex detaildate = new Regex(@"\d+<br>\d.\d+", opt);
+                                MatchCollection datedetail = detaildate.Matches(dateMatch.Value);
+                                Regex pricereg = new Regex(@"bgColor=#ffffff>.+?<tr\s{2}", opt);
+                                MatchCollection priceMatch = pricereg.Matches(aContent);
+                                List<MatchCollection> prices = new List<MatchCollection>();
+                                foreach(Match m in priceMatch)
                                 {
-                                    lio.Add(new internationalModel(tAllNodes[k].InnerText, tAllNodes[k + 27].InnerText, tAllNodes[k + 18].InnerText, tAllNodes[k + 37].InnerText));
+                                    Regex p = new Regex(@"\d{2}.\d{2}", opt);
+                                    prices.Add(p.Matches(m.Value));
+                                }
+                                Regex curreg = new Regex(@"美元.+?<\/(tr)>", opt);
+                                Match curMatch = curreg.Match(aContent);
+                                Regex detailcur = new Regex(@"\d{2}.\d{3}", opt);
+                                MatchCollection curdetail = detailcur.Matches(curMatch.Value);
+                                /*AngleSharp.Parser.Html.HtmlParser parser = new AngleSharp.Parser.Html.HtmlParser();
+                                tHtmlDoc = parser.Parse(aContent);
+                                tDateNodes = tHtmlDoc.QuerySelectorAll("td[width='8%']").Select(m => m.TextContent).ToList();
+                                tAllNodes = tHtmlDoc.QuerySelectorAll("td[align='right']").Select(m => m.TextContent).ToList();
+                                tHtmlDoc.Dispose();*/
+                                //GC.Collect();
+                                for (int k = 0; k < 7; k++)
+                                {
+                                    lio.Add(new internationalModel(datedetail[k].Value, prices[2][k].Value, prices[1][k].Value, curdetail[k].Value));
                                 }
                             }
+                            //tDateNodes = null;
+                            //tAllNodes = null;
+                            //GC.Collect();
                             messenger.Report(new ProgressReport() { progress = 50.0, progressMessage = "分析數據中...", display = true });
                             IEnumerable<internationalModel> thisweek = from obj in lio where obj.tick > cd.AddDays((int)cd.DayOfWeek * -1).Ticks select obj;
                             IEnumerable<internationalModel> pastweek = from obj in lio where obj.tick > cd.AddDays(((int)cd.DayOfWeek + 7) * -1).Ticks && obj.tick < cd.AddDays((int)cd.DayOfWeek * -1).Ticks select obj;

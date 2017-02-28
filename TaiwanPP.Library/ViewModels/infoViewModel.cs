@@ -222,6 +222,48 @@ namespace TaiwanPP.Library.ViewModels
                 NotifyPropertyChanged();
             }
         }
+        string _scheduledTaskErrorcode = "0";
+        public string scheduledTaskErrorcode
+        {
+            get
+            {
+                _scheduledTaskErrorcode = im.scheduledTaskErrorcode;
+                return _scheduledTaskErrorcode;
+            }
+            set
+            {
+                im.scheduledTaskErrorcode = value;
+                NotifyPropertyChanged();
+            }
+        }
+        DateTime _scheduledTaskErrortime = DateTime.MinValue;
+        public DateTime scheduledTaskErrortime
+        {
+            get
+            {
+                _scheduledTaskErrortime = im.scheduledTaskErrortime;
+                return _scheduledTaskErrortime;
+            }
+            set
+            {
+                im.scheduledTaskErrortime = value;
+                NotifyPropertyChanged();
+            }
+        }
+        string _scheduledTaskErrortrace = "0";
+        public string scheduledTaskErrortrace
+        {
+            get
+            {
+                _scheduledTaskErrortrace = im.scheduledTaskErrortrace;
+                return _scheduledTaskErrortrace;
+            }
+            set
+            {
+                im.scheduledTaskErrortrace = value;
+                NotifyPropertyChanged();
+            }
+        }
         public ObservableCollection<string> pagename { get; set; }
         int _defaultPage = 0;
         public int defaultPage

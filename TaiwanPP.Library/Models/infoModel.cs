@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using TaiwanPP.Library.Helpers;
+using PCLWebUtility;
 
 namespace TaiwanPP.Library.Models
 {
@@ -17,9 +18,10 @@ namespace TaiwanPP.Library.Models
         string defaultxml = @"<?xml version='1.0' encoding='utf-8' ?>
 <!DOCTYPE appconfig [
   <!ELEMENT appconfig (info ,predictPrice ,settings, tiles)>
-  <!ELEMENT info (updateDate ,notified ,sysinfo)>
+  <!ELEMENT info (updateDate ,notified ,sysinfo, scheduledTaskError)>
   <!ELEMENT predictPrice (duration ,gasprice ,dieselprice)>
   <!ELEMENT settings (timing , productMonitor ,stationFilters, dailynotify, defaultPage, autoUpdate, soapUpdate, stationBehavior, runPredict)>
+  <!ELEMENT scheduledTaskError (#PCDATA)><!-- 背景程式錯誤紀錄，內容是trace -->
   <!ELEMENT tiles (tile*)>
   <!ELEMENT tile (#PCDATA)> <!-- 動態磚 -->
   <!ELEMENT updateDate EMPTY>
@@ -97,12 +99,15 @@ namespace TaiwanPP.Library.Models
   <!ATTLIST sysinfo upgrade (0|1) #REQUIRED><!-- 是否為升級版 -->
   <!ATTLIST sysinfo firstload (0|1) #REQUIRED><!-- 初次使用 -->
   <!ATTLIST predictPrice pause (0|1) #REQUIRED><!-- 啟動預測 -->
+  <!ATTLIST scheduledTaskError lasterror CDATA #REQUIRED><!-- 最後一次錯誤 -->
+  <!ATTLIST scheduledTaskError timestamp CDATA #REQUIRED><!-- 錯誤發生時間 -->
 ]>
-<appconfig version='635688129238671020'>
+<appconfig version='636201098086080768'>
   <info>
-    <updateDate priceDB='0' stationDB='635456958087482229' sDBnotifyDate='635456958087482229' DBcheckedDate='0' moeaboeDBdate='0' discountRev='3f94badb0df2ffe8d47ffc7362e9adb6840e6e3c' dDBcheckedDate='0'/>
+    <updateDate priceDB='0' stationDB='636201098085370768' sDBnotifyDate='636201098085370768' DBcheckedDate='0' moeaboeDBdate='0' discountRev='3f94badb0df2ffe8d47ffc7362e9adb6840e6e3c' dDBcheckedDate='0'/>
     <notified CPC='0' FPCC='0' checkHour='0'/>
-    <sysinfo firstload='1' upgrade='0'/>
+    <sysinfo firstload='0' upgrade='0'/>
+    <scheduledTaskError lasterror='0' timestamp='0'>0</scheduledTaskError>
   </info>
   <predictPrice pause='0'>
     <duration end='0' start='0' runday='0'/>
@@ -189,6 +194,39 @@ namespace TaiwanPP.Library.Models
             set
             {
                 config.Element("appconfig").Element("info").Element("sysinfo").Attribute("upgrade").Value = value ? "1" : "0";
+            }
+        }
+        public string scheduledTaskErrorcode
+        {
+            get
+            {
+                return WebUtility.UrlDecode(config.Element("appconfig").Element("info").Element("scheduledTaskError").Attribute("lasterror").Value);
+            }
+            set
+            {
+                config.Element("appconfig").Element("info").Element("scheduledTaskError").Attribute("lasterror").Value = WebUtility.UrlEncode(value);
+            }
+        }
+        public DateTime scheduledTaskErrortime
+        {
+            get
+            {
+                return new DateTime(Convert.ToInt64(config.Element("appconfig").Element("info").Element("scheduledTaskError").Attribute("timestamp").Value));
+            }
+            set
+            {
+                config.Element("appconfig").Element("info").Element("scheduledTaskError").Attribute("timestamp").Value = value.Ticks.ToString();
+            }
+        }
+        public string scheduledTaskErrortrace   //encoded by urlencode
+        {
+            get
+            {
+                return WebUtility.UrlDecode(config.Element("appconfig").Element("info").Element("scheduledTaskError").Value);
+            }
+            set
+            {
+                config.Element("appconfig").Element("info").Element("scheduledTaskError").Value = WebUtility.UrlEncode(value);
             }
         }
         public bool ppause

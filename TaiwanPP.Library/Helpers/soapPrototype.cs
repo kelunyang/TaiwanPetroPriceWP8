@@ -22,6 +22,7 @@ namespace TaiwanPP.Library.Helpers
             HttpClient httpClient = new HttpClient();
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, queryuri);
             HttpContent hc = new StringContent(envelope);
+            httpClient.Timeout = TimeSpan.FromMinutes(2.0);
             hc.Headers.ContentType = new MediaTypeHeaderValue("text/xml");
             hc.Headers.ContentType.CharSet = "utf-8";
             req.Headers.Add("SOAPAction", SOAPAction);

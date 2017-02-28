@@ -20,6 +20,8 @@ namespace TaiwanPP.WP8App
     public partial class App : Application
     {
         bool upgraded = false;
+        public bool applaunch { set; get; } //這是global變數，跨頁存取
+        public bool firstload { set; get; }
         private static MainViewModel viewModel = null;
 
         /// <summary>
@@ -87,6 +89,7 @@ namespace TaiwanPP.WP8App
         // 重新啟動應用程式時不會執行這段程式碼
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            applaunch = true;
             if (configCheck("config.xml"))
             {
                 moveDB("price.sqlite");
@@ -118,6 +121,7 @@ namespace TaiwanPP.WP8App
         {
             if (!IsolatedStorageFile.GetUserStoreForApplication().FileExists(filename))
             {
+                firstload = true;
                 return true;
             }
             else
@@ -131,6 +135,7 @@ namespace TaiwanPP.WP8App
                     isoxd = XDocument.Load(isost);
                     isost.Close();
                 }
+                firstload = isoxd.Element("appconfig").Element("info").Element("sysinfo").Attribute("firstload").Value == "1" ? true : false;
                 StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(assetfilename, UriKind.Relative));
                 assxd = XDocument.Load(streamInfo.Stream);
                 streamInfo.Stream.Close();

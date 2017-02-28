@@ -260,16 +260,20 @@
                                     <Visibility>Visible</Visibility>
                                 </DiscreteObjectKeyFrame.Value>
                             </DiscreteObjectKeyFrame>
-                            <DiscreteObjectKeyFrame KeyTime="0:0:1.7">
+                            <DiscreteObjectKeyFrame KeyTime="0:0:3">
                                 <DiscreteObjectKeyFrame.Value>
                                     <Visibility>Collapsed</Visibility>
                                 </DiscreteObjectKeyFrame.Value>
                             </DiscreteObjectKeyFrame>
                         </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="OldWP8Alarm">
+                            <DiscreteObjectKeyFrame KeyTime="0:0:0.5" Value="{Binding DataContext.firstLoad, ConverterParameter=1, Converter={StaticResource boolvisConverter}, ElementName=titlebar}">
+                            </DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
                         <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="splash">
                             <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
                             <EasingDoubleKeyFrame KeyTime="0:0:1.2" Value="1"/>
-                            <EasingDoubleKeyFrame KeyTime="0:0:1.7" Value="0"/>
+                            <EasingDoubleKeyFrame KeyTime="0:0:3" Value="0"/>
                         </DoubleAnimationUsingKeyFrames>
                         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
                             <EasingColorKeyFrame KeyTime="0:0:0.7" Value="White"/>
@@ -304,6 +308,10 @@
                             <EasingColorKeyFrame KeyTime="0:0:1.1" Value="Black"/>
                         </ColorAnimationUsingKeyFrames>
                         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path8">
+                            <EasingColorKeyFrame KeyTime="0:0:0.7" Value="White"/>
+                            <EasingColorKeyFrame KeyTime="0:0:1.1" Value="Black"/>
+                        </ColorAnimationUsingKeyFrames>
+                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="OldWP8Alarm">
                             <EasingColorKeyFrame KeyTime="0:0:0.7" Value="White"/>
                             <EasingColorKeyFrame KeyTime="0:0:1.1" Value="Black"/>
                         </ColorAnimationUsingKeyFrames>
@@ -1122,6 +1130,7 @@
                 <Path x:Name="path7" Data="F1M34.924,22.59L44.985,22.59C44.206,22.028 43.362,21.466 42.453,20.903 39.727,18.869 37.216,16.705 34.924,14.411z M44.141,38.429L17.268,38.429 17.268,41.805 44.141,41.805z M17.268,32.327L44.141,32.327 44.141,29.472 17.268,29.472z M15.709,22.59L26.614,22.59 26.614,14.411C23.368,17.441,19.734,20.167,15.709,22.59 M2.597,51.802L58.812,51.802 58.812,58.683 2.597,58.683z M2.337,5.453L26.614,5.453 26.614,0 34.924,0 34.924,5.453 59.07,5.453 59.07,12.334 41.934,12.334C47.473,16.317,54.138,19.345,61.928,21.422L57.383,28.693C55.781,28.173,54.138,27.568,52.45,26.875L52.45,48.686 8.958,48.686 8.958,26.291C7.14,27.069,5.323,27.87,3.505,28.693L0,20.644C7.487,18.61,13.762,15.839,18.825,12.334L2.337,12.334z" Fill="White" Height="58.683" Canvas.Left="264.457" Canvas.Top="179.365" Width="61.928"/>
                 <Path x:Name="path8" Data="F1M39.857,36.871L33.626,36.871 33.626,42.974 39.857,42.974z M33.626,31.159L39.857,31.159 39.857,25.446 33.626,25.446z M10.387,50.374L15.839,50.374 15.839,43.493 10.387,43.493z M23.499,36.612L23.499,59.591 15.839,59.591 15.839,56.736 10.387,56.736 10.387,60.111 2.597,60.111 2.597,36.612z M2.597,26.616L23.241,26.616 23.241,33.237 2.597,33.237z M2.597,16.618L23.241,16.618 23.241,23.499 2.597,23.499z M32.977,0L41.285,1.429C40.506,3.334,39.728,5.152,38.948,6.882L58.812,6.882 58.812,30.186C58.812,43.948 57.815,52.451 55.826,55.697 54.355,58.985 50.654,60.63 44.726,60.63L41.025,60.63 39.338,52.322C42.93,52.408 45.007,52.451 45.57,52.451 47.387,52.451 48.643,51.802 49.335,50.503 50.286,49.076 50.763,43.948 50.763,35.119L50.763,14.022 34.6,14.022C33.431,15.797,32.11,17.485,30.64,19.085L47.258,19.085 47.258,49.465 26.355,49.465 26.355,20.06 22.98,15.191C23.672,14.585,24.256,14.066,24.732,13.633L0,13.633 0,6.492 8.569,6.492C8.222,4.372,7.79,2.468,7.271,0.78L17.008,0C17.397,2.165,17.722,4.329,17.982,6.492L25.836,6.492 25.836,12.4C28.952,8.938,31.331,4.805,32.977,0" Fill="White" Height="60.63" Canvas.Left="331.188" Canvas.Top="179.105" Width="58.812"/>
             </Canvas>
+            <TextBlock Foreground="White" Visibility="Collapsed" x:Name="OldWP8Alarm" HorizontalAlignment="Left" Margin="45,536,0,0" TextWrapping="Wrap" Text="從WP8升級到W10m的用戶請注意，初次啟動時如在下一個畫面閃退，請在進入下一個畫面時快速按下畫面正下方的下一步即可，這個錯誤只會發生一次" VerticalAlignment="Top" Width="390"/>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

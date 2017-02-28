@@ -4,6 +4,9 @@
     <AssemblyPart x:Name="Autofac" Source="Autofac.dll" />
     <AssemblyPart x:Name="Microsoft.Expression.Interactions" Source="Microsoft.Expression.Interactions.dll" />
     <AssemblyPart x:Name="Microsoft.Phone.Controls.Toolkit" Source="Microsoft.Phone.Controls.Toolkit.dll" />
+    <AssemblyPart x:Name="Microsoft.Threading.Tasks" Source="Microsoft.Threading.Tasks.dll" />
+    <AssemblyPart x:Name="Microsoft.Threading.Tasks.Extensions" Source="Microsoft.Threading.Tasks.Extensions.dll" />
+    <AssemblyPart x:Name="Microsoft.Threading.Tasks.Extensions.Phone" Source="Microsoft.Threading.Tasks.Extensions.Phone.dll" />
     <AssemblyPart x:Name="Nito.AsyncEx" Source="Nito.AsyncEx.dll" />
     <AssemblyPart x:Name="Nito.AsyncEx.Enlightenment" Source="Nito.AsyncEx.Enlightenment.dll" />
     <AssemblyPart x:Name="OxyPlot" Source="OxyPlot.dll" />
@@ -20,15 +23,11 @@
     <AssemblyPart x:Name="TaiwanPP.Library" Source="TaiwanPP.Library.dll" />
     <AssemblyPart x:Name="TaiwanPP.ScheduleAgent" Source="TaiwanPP.ScheduleAgent.dll" />
     <AssemblyPart x:Name="TaiwanPP.TileMaker" Source="TaiwanPP.TileMaker.dll" />
-    <AssemblyPart x:Name="HtmlAgilityPack-PCL" Source="HtmlAgilityPack-PCL.dll" />
+    <AssemblyPart x:Name="AngleSharp" Source="AngleSharp.dll" />
+    <AssemblyPart x:Name="PCLWebUtility" Source="PCLWebUtility.dll" />
     <AssemblyPart x:Name="Portable.Text.Encoding" Source="Portable.Text.Encoding.dll" />
     <AssemblyPart x:Name="Newtonsoft.Json" Source="Newtonsoft.Json.dll" />
-    <AssemblyPart x:Name="ImageTools" Source="ImageTools.dll" />
-    <AssemblyPart x:Name="ImageTools.IO.Png" Source="ImageTools.IO.Png.dll" />
-    <AssemblyPart x:Name="ImageTools.Utils" Source="ImageTools.Utils.dll" />
-    <AssemblyPart x:Name="PhoneCodeContractsAssemblies" Source="PhoneCodeContractsAssemblies.dll" />
-    <AssemblyPart x:Name="ICSharpCode.SharpZLib.Phone" Source="ICSharpCode.SharpZLib.Phone.dll" />
-    <AssemblyPart x:Name="Sqlite" Source="Sqlite.dll" />
+    <AssemblyPart x:Name="Cimbalino.Phone.Toolkit.Background" Source="Cimbalino.Phone.Toolkit.Background.dll" />
     <AssemblyPart x:Name="SQLitePCL.cppinterop" Source="SQLitePCL.cppinterop.dll" />
   </Deployment.Parts>
 </Deployment>

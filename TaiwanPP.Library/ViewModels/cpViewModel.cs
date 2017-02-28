@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http;
-using HtmlAgilityPack;
+//using HtmlAgilityPack;
 using TaiwanPP.Library.Helpers;
 using TaiwanPP.Library.Models;
 using TaiwanPP.Library.ViewModels;
@@ -20,12 +20,15 @@ using System.Xml;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using OxyPlot.Annotations;
+using System.Text.RegularExpressions;
+//using AngleSharp;
 
 namespace TaiwanPP.Library.ViewModels
 {
     public class cpViewModel : viewmodelBase
     {
         HttpClient httpClient;
+        //IConfiguration config = new Configuration().WithDefaultLoader();
         priceStorage cp = new priceStorage();
         List<priceStorage> priceDB;
         DateTime _CPCcurrentDate = DateTime.MinValue;
@@ -49,7 +52,7 @@ namespace TaiwanPP.Library.ViewModels
             priceDB = new List<priceStorage>();
             historicalModel = new PlotModel();
             historicalPeriod = new ObservableCollection<string>();
-            historicalPeriod.Add("最近十次（資料庫存檔）");
+            historicalPeriod.Add("最近一個月（資料庫存檔）");
             historicalPeriod.Add("半年");
             historicalPeriod.Add("一年");
         }
@@ -515,6 +518,8 @@ namespace TaiwanPP.Library.ViewModels
         }
         public void historicalPrice(double predictPrice, bool predictpause, string productid, IProgress<ProgressReport> messenger)
         {
+            //System.Diagnostics.Debug.WriteLine(this.defaultPeroid);
+            long datelimit = this.defaultPeroid == 0 ? DateTime.Now.AddDays(-30).Ticks : this.defaultPeroid == 1 ? DateTime.Now.AddDays(-182).Ticks : DateTime.Now.AddDays(-365).Ticks;
             chartready = false;
             messenger.Report(new ProgressReport() { progress = 0, progressMessage = "擷取歷史油價資料庫", display = true });
             int id = Convert.ToInt32(productid);
@@ -522,7 +527,7 @@ namespace TaiwanPP.Library.ViewModels
             IEnumerable<priceStorage> tempsaved = from p in priceDB where p.kind == id && p.saved select p;
             historicalSaved = tempsaved.Any() ? tempsaved.First() : new priceStorage() { datetick = 0, price = double.NaN };
             savedchange = tempsaved.Any()  ? historicalCurrent.price - historicalSaved.price : double.NaN;
-            IEnumerable<priceStorage> historical = (from oil in priceDB where oil.kind == id orderby oil.datetick ascending select oil).Distinct();
+            IEnumerable<priceStorage> historical = (from oil in priceDB where oil.kind == id & oil.datetick > datelimit orderby oil.datetick ascending select oil).Distinct();
             messenger.Report(new ProgressReport() { progress = 30, progressMessage = "計算平均價格", display = true });
             maxPrice = historical.Max(x => x.price);
             minPrice = historical.Min(x => x.price);
@@ -599,7 +604,7 @@ namespace TaiwanPP.Library.ViewModels
                 throw new dbException("清理價格資料庫");
             }
         }*/
-        public async Task fetchPrice(bool connectivity, IProgress<ProgressReport> messenger)
+        public async Task fetchPrice(bool connectivity, IProgress<ProgressReport> messenger, int times)
         {
             List<priceStorage> tempDB = new List<priceStorage>();
             messenger.Report(new ProgressReport() { progress = 0, progressMessage = "擷取能源局油價資料庫", display = true });
@@ -608,7 +613,7 @@ namespace TaiwanPP.Library.ViewModels
                 try
                 {
                     int fetchnumber = defaultPeroid == 0 ? 10 : defaultPeroid == 1 ? 25 : 50;
-                    List<HtmlNode> tAllNodes = new List<HtmlNode>();
+                    //List<AngleSharp.Dom.IElement> tAllNodes = new List<AngleSharp.Dom.IElement>();
                     var handler = new HttpClientHandler();
                     if (handler.SupportsAutomaticDecompression)
                     {
@@ -621,41 +626,61 @@ namespace TaiwanPP.Library.ViewModels
                         httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
                         var byteData = await httpClient.GetByteArrayAsync(new Uri("https://www2.moeaboe.gov.tw/oil102/oil1022010/A01/A0108/allprices.asp?nocache=" + DateTime.Now.Ticks));
                         string data = Portable.Text.Encoding.GetEncoding(950).GetString(byteData);  //big5
-                        //string data = await httpClient.GetStringAsync(new Uri("http://www.nyko.com.tw/price.htm?nocache=" + DateTime.Now.Ticks)); test code
-                        HtmlDocument tHtmlDoc = new HtmlDocument();
+                        //httpClient.Dispose();
+                        RegexOptions opt = new RegexOptions();
+                        opt = RegexOptions.None;
+                        Regex reg = new Regex(@"<(td)>((台塑石化)|(台灣中油))(.+?)\d時<\/(td)>", opt);
+                        MatchCollection match = reg.Matches(data);
+                        /*string data = await httpClient.GetStringAsync(new Uri("http://www.nyko.com.tw/price.htm?nocache=" + DateTime.Now.Ticks)); test code
+                        AngleSharp.Parser.Html.HtmlParser parser = new AngleSharp.Parser.Html.HtmlParser();
+                        AngleSharp.Dom.IDocument tHtmlDoc = parser.Parse(data);
+                        /*HtmlDocument tHtmlDoc = new HtmlDocument();
                         tHtmlDoc.LoadHtml(data);
-                        var allnode = (from node in tHtmlDoc.DocumentNode.Descendants("tr") where node.HasAttributes select node).ToList();
+                        tAllNodes = tHtmlDoc.QuerySelectorAll("tr[bgColor='#ffffcc'], tr[bgColor='#E6FFE6']").Take(fetchnumber).ToList();
+                        tHtmlDoc.Dispose();
+                        GC.Collect();
+                        /*var allnode = (from node in tHtmlDoc.DocumentNode.Descendants("tr") where node.HasAttributes select node).ToList();
                         tAllNodes = tAllNodes.Concat((from node in allnode where node.Attributes["bgColor"].Value.Equals("#ffffcc") select node).Take(fetchnumber).ToList()).ToList();
-                        tAllNodes = tAllNodes.Concat((from node in allnode where node.Attributes["bgColor"].Value.Equals("#E6FFE6") select node).Take(fetchnumber).ToList()).ToList();
-                        List<oildata> oilarr = new List<oildata>();
+                        tAllNodes = tAllNodes.Concat((from node in allnode where node.Attributes["bgColor"].Value.Equals("#E6FFE6") select node).Take(fetchnumber).ToList()).ToList();*/
                         tempDB.Clear();
                         messenger.Report(new ProgressReport() { progress = 60, progressMessage = "更新中油油價SOAP Service", display = true });
                         if (soapUpdate)
                         {
                             priceSoap gassoap = new priceSoap();
                             await gassoap.doWork();
+                            //System.Diagnostics.Debug.WriteLine("Soap Stage 1");
                             if (gassoap.loaded)
                             {
                                 tempDB.Add(new priceStorage() { brand = typeDB.CPCgasohol.brand, price = gassoap.price, datetick = gassoap.date.Ticks, kind = typeDB.CPCgasohol.key, saved = false });
                                 tempDB.First().id = Convert.ToInt32(gassoap.date.ToString("yyMMddHH") + typeDB.CPCgasohol.key);
+                                //System.Diagnostics.Debug.WriteLine("Soap Stage 2");
                             }
                             else
                             {
                                 messenger.Report(new ProgressReport() { progress = 60, progressMessage = "中油SOAP Service服務異常，系統將不抓取酒精汽油油價，請聯絡開發者", display = true });
+                                //System.Diagnostics.Debug.WriteLine("Soap Stage 3");
                             }
                         }
-                        foreach (HtmlNode hn in tAllNodes)
+                        int limit = 0;  //其實不需要全部跑完
+                        foreach (Match hn in match)
                         {
-                            int[] products = { 3, 2, 1, 4 };
+                            if (limit > times) break;
+                            Regex hnreg = new Regex(@"\d\d.\d\d", opt);
+                            string s = hn.Value;
+                            MatchCollection co = hnreg.Matches(s);
+                            int[] products = { 2, 1, 0, 3 };
                             for (int i = 1; i <= products.Length; i++)
                             {
-                                int brand = hn.ChildNodes[0].InnerText == "台塑石化" ? 1 : 0;
-                                int kind = brand == 0 ? i : i+4;
-                                priceStorage ps = new priceStorage() { brand = brand, datetick = (DateTime.Parse(hn.ChildNodes[6].InnerText.Remove(hn.ChildNodes[6].InnerText.IndexOf("日")))).AddHours(Convert.ToDouble(hn.ChildNodes[7].InnerText.Remove(hn.ChildNodes[7].InnerText.IndexOf("時")))).Ticks, kind = kind, price = Convert.ToDouble(hn.ChildNodes[products[i - 1]].InnerText), saved = false };
+                                int brand = s.IndexOf("台塑石化") > -1 ? 1 : 0;
+                                int kind = brand == 0 ? i : i + 4;
+                                priceStorage ps = new priceStorage() { brand = brand, datetick = DateTime.Parse(s.Substring(s.IndexOf("日") - 10, 10)).AddHours(Convert.ToDouble(s.Substring(s.IndexOf("時") - 1, 1))).Ticks, kind = kind, price = Convert.ToDouble(co[products[i - 1]].ToString()), saved = false };
                                 ps.id = Convert.ToInt32((new DateTime(ps.datetick)).ToString("yyMMddHH") + ps.kind);
                                 tempDB.Add(ps);
                             }
+                            limit++;
                         }
+                        //tAllNodes = null;
+                        //GC.Collect();
                     }
                     bool update = false;    //資料重複就不更新
                     IEnumerable<priceStorage> newdb = from ps in tempDB orderby ps.datetick descending select ps;
@@ -693,16 +718,24 @@ namespace TaiwanPP.Library.ViewModels
                     }
                     messenger.Report(new ProgressReport() { progress = 100, progressMessage = "儲存設定中", display = false });
                 }
-                catch(xmlException e)
+                catch (xmlException e)
                 {
                     throw e;
                 }
                 catch (dbException e)
                 {
                     throw e;
-                } catch(HttpRequestException e) {
+                }
+                catch (HttpRequestException e)
+                {
                     throw e;
-                } catch(Exception) {
+                }
+                catch (TaskCanceledException e)
+                {
+                    throw e;
+                }
+                catch (Exception e)
+                {
                     throw new systemException("擷取當期油價");
                 }
             }
