@@ -15,6 +15,7 @@ using System.Xml;
 using System.Xml.Linq;
 using TaiwanPP.Library.Helpers;
 using TaiwanPP.Library.Models;
+using System.Text.RegularExpressions;
 
 namespace TaiwanPP.Library.ViewModels
 {
@@ -218,7 +219,7 @@ namespace TaiwanPP.Library.ViewModels
             {
                 messenger.Report(new ProgressReport() { progress = 0, progressMessage = "開始擷取最新折扣資料", display = true });
                 dDBcheckedDate = DateTime.Now;
-                string urlstr = "https://bitbucket.org/api/1.0/repositories/kelunyang/taiwan-petrol-price/wiki/%E5%90%84%E5%AE%B6%E4%BF%A1%E7%94%A8%E5%8D%A1%E6%B2%B9%E5%83%B9%E5%84%AA%E6%83%A0XML";
+                string urlstr = "https://raw.githubusercontent.com/kelunyang/TaiwanPetroUWP/master/discount.md";
                 HttpClientHandler handler = new HttpClientHandler();
                 if (handler.SupportsAutomaticDecompression)
                 {
@@ -226,16 +227,20 @@ namespace TaiwanPP.Library.ViewModels
                                                         DecompressionMethods.Deflate;
                 }
                 var httpClient = new HttpClient(handler);
-                httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/plain"));
                 httpClient.MaxResponseContentBufferSize = 256000;
-                httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
-                bitbucketPage obj = JsonConvert.DeserializeObject<bitbucketPage>(await httpClient.GetStringAsync(new Uri(urlstr)));
-                if(obj.rev != dbRev) {
+                httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
+                string textcontent = await httpClient.GetStringAsync(new Uri(urlstr));
+                var da = Regex.Match(textcontent, @"\*\d*\*");
+                string rev = da.Value.Replace("*", "");
+                if(rev != dbRev) {
                     messenger.Report(new ProgressReport() { progress = 80, progressMessage = "開始更新本機折扣資料...", display = true });
+                    var reda = Regex.Replace(textcontent, @"\*\d*\*", String.Empty);
+                    var clearxml = Regex.Replace(reda, @"`{3}xml", String.Empty).Replace("\n", "");
                     using(StreamWriter sw = new StreamWriter(xml)) {
-                        await sw.WriteAsync(obj.data);
+                        await sw.WriteAsync(clearxml);
                     }
-                    dbRev = obj.rev;
+                    dbRev = rev;
                     messenger.Report(new ProgressReport() { progress = 100, progressMessage = "折扣資料擷取完成", display = false });
                     return true;
                 } else {

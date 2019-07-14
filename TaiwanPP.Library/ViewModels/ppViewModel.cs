@@ -19,7 +19,7 @@ namespace TaiwanPP.Library.ViewModels
         HttpClient httpClient;
         /*IConfiguration config = new Configuration().WithDefaultLoader();
         AngleSharp.Dom.IDocument tHtmlDoc;*/
-        Uri URI = new Uri("https://www2.moeaboe.gov.tw/oil102/oil1022010/A00/Oil_Price2.asp");
+        Uri URI = new Uri("https://www2.moeaboe.gov.tw/oil102/oil2017/A00/Oil_Price2.asp");
         List<internationalModel> lio = new List<internationalModel>();
         DateTime cd = DateTime.Now;
         double _pprice = double.NaN;
@@ -249,18 +249,18 @@ namespace TaiwanPP.Library.ViewModels
                                 messenger.Report(new ProgressReport() { progress = 15 * i, progressMessage = "下載能源局油價資料中", display = true });
                                 HttpResponseMessage aResponse = await httpClient.PostAsync(URI, theContent);
                                 var byteData = await aResponse.Content.ReadAsByteArrayAsync();
-                                string aContent = Portable.Text.Encoding.GetEncoding(950).GetString(byteData);  //big5
+                                string aContent = Portable.Text.Encoding.GetEncoding(950).GetString(byteData, 0, byteData.Length);
                                 //string aContent = await aResponse.Content.ReadAsStringAsync();
                                 //aResponse.Dispose();
                                 RegexOptions opt = RegexOptions.None;
                                 Regex datereg = new Regex(@"位.+?平", opt);
                                 Match dateMatch = datereg.Match(aContent);
-                                Regex detaildate = new Regex(@"\d+<br>\d.\d+", opt);
+                                Regex detaildate = new Regex(@"\d+<br>\d+.\d+", opt);
                                 MatchCollection datedetail = detaildate.Matches(dateMatch.Value);
                                 Regex pricereg = new Regex(@"bgColor=#ffffff>.+?<tr\s{2}", opt);
                                 MatchCollection priceMatch = pricereg.Matches(aContent);
                                 List<MatchCollection> prices = new List<MatchCollection>();
-                                foreach(Match m in priceMatch)
+                                foreach (Match m in priceMatch)
                                 {
                                     Regex p = new Regex(@"\d{2}.\d{2}", opt);
                                     prices.Add(p.Matches(m.Value));

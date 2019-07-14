@@ -454,114 +454,117 @@
                     <libViewModels:ppViewModel/>
                 </phone:PanoramaItem.DataContext>
                 <Grid HorizontalAlignment="Left" Height="849" Margin="0,-40,0,-19" VerticalAlignment="Top" Width="413">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ScrollViewer Visibility="{Binding DataContext.loaded, ConverterParameter=1, Converter={StaticResource boolvisConverter}, ElementName=predictPage}">
                     <StackPanel x:Name="forcastbulletin" HorizontalAlignment="Left" VerticalAlignment="Top" Width="403">
                         <TextBlock Text="載入中" HorizontalAlignment="Center" TextWrapping="Wrap" Foreground="Gray" FontSize="36" Margin="10" Visibility="{Binding DataContext.loaded, ConverterParameter=0, Converter={StaticResource boolvisConverter}, ElementName=predictPage}"/>
-                        <ScrollViewer Visibility="{Binding DataContext.loaded, ConverterParameter=1, Converter={StaticResource boolvisConverter}, ElementName=predictPage}">
                             <StackPanel>
                                 <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
                                     <TextBlock Text="計算週期" FontSize="26"/>
                                 </Border>
                                 <StackPanel Orientation="Horizontal" Margin="100,0,0,0" Visibility="{Binding DataContext.predictpause, ConverterParameter=0, Converter={StaticResource boolvisConverter}, ElementName=predictPage}" >
-                                <TextBlock Text="{Binding DataContext.pstartdate, Converter={StaticResource dateConverter}, ElementName=predictPage, StringFormat=\{0:d\}}" FontSize="21.333"/>
-                                <TextBlock Text="至" Margin="5,0"/>
-                                <TextBlock Text="{Binding DataContext.penddate, Converter={StaticResource dateConverter}, ElementName=predictPage, StringFormat=\{0:d\}}" FontSize="21.333"/>
-                            </StackPanel>
-                            <TextBlock  Foreground="#FFE40000" Text="{Binding DataContext.predictpause, Converter={StaticResource predictpausetextConverter}, ElementName=predictPage}" Visibility="{Binding DataContext.predictpause, ConverterParameter=1, Converter={StaticResource boolvisConverter}, ElementName=predictPage}" Margin="0"/>
-                            <StackPanel>
+                                    <TextBlock Text="{Binding DataContext.pstartdate, Converter={StaticResource dateConverter}, ElementName=predictPage, StringFormat=\{0:d\}}" FontSize="21.333"/>
+                                    <TextBlock Text="至" Margin="5,0"/>
+                                    <TextBlock Text="{Binding DataContext.penddate, Converter={StaticResource dateConverter}, ElementName=predictPage, StringFormat=\{0:d\}}" FontSize="21.333"/>
+                                </StackPanel>
+                                <TextBlock  Foreground="#FFE40000" Text="{Binding DataContext.predictpause, Converter={StaticResource predictpausetextConverter}, ElementName=predictPage}" Visibility="{Binding DataContext.predictpause, ConverterParameter=1, Converter={StaticResource boolvisConverter}, ElementName=predictPage}" Margin="0"/>
+                                <StackPanel>
                                     <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
                                         <TextBlock Text="汽油價格預測" FontSize="26"/>
                                     </Border>
                                     <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Grid Height="40" Width="40" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <Path Data="F1M0,29.898L34.523,29.898 17.262,0z" Fill="Red" UseLayoutRounding="False" Visibility="{Binding DataContext.pprice, ConverterParameter=2, Converter={StaticResource signConverter}, ElementName=predictPage}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    <Path Data="F1M0,29.898L34.523,29.898 17.262,0z" Fill="#FF46DE46" UseLayoutRounding="False" Visibility="{Binding DataContext.pprice, ConverterParameter=1, Converter={StaticResource signConverter}, ElementName=predictPage}" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Path.RenderTransform>
-                                            <CompositeTransform ScaleY="-1"/>
-                                        </Path.RenderTransform>
-                                    </Path>
-                                    <Rectangle Fill="#FFD1D1D1" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24" Visibility="{Binding DataContext.pprice, ConverterParameter=0, Converter={StaticResource signConverter}, ElementName=predictPage}"/>
-                                </Grid>
-                                <TextBlock FontSize="120"  Text="{Binding DataContext.pprice, Converter={StaticResource priceConverter}, ElementName=predictPage, StringFormat=\{0:N1\}}" TextAlignment="Center" Foreground="{Binding DataContext.pprice, Converter={StaticResource colorConverter}, ElementName=predictPage}"/>
-                            </StackPanel>
+                                        <Grid Height="40" Width="40" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Path Data="F1M0,29.898L34.523,29.898 17.262,0z" Fill="Red" UseLayoutRounding="False" Visibility="{Binding DataContext.pprice, ConverterParameter=2, Converter={StaticResource signConverter}, ElementName=predictPage}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Path Data="F1M0,29.898L34.523,29.898 17.262,0z" Fill="#FF46DE46" UseLayoutRounding="False" Visibility="{Binding DataContext.pprice, ConverterParameter=1, Converter={StaticResource signConverter}, ElementName=predictPage}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <Path.RenderTransform>
+                                                    <CompositeTransform ScaleY="-1"/>
+                                                </Path.RenderTransform>
+                                            </Path>
+                                            <Rectangle Fill="#FFD1D1D1" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24" Visibility="{Binding DataContext.pprice, ConverterParameter=0, Converter={StaticResource signConverter}, ElementName=predictPage}"/>
+                                        </Grid>
+                                        <TextBlock FontSize="120"  Text="{Binding DataContext.pprice, Converter={StaticResource priceConverter}, ElementName=predictPage, StringFormat=\{0:N1\}}" TextAlignment="Center" Foreground="{Binding DataContext.pprice, Converter={StaticResource colorConverter}, ElementName=predictPage}"/>
+                                    </StackPanel>
                                     <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0,3">
                                         <TextBlock Text="柴油價格預測" FontSize="26"/>
                                     </Border>
                                     <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Grid Height="40" Width="40" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <Path Data="F1M0,29.898L34.523,29.898 17.262,0z" Fill="Red" UseLayoutRounding="False" Visibility="{Binding DataContext.pdprice, ConverterParameter=2, Converter={StaticResource signConverter}, ElementName=predictPage}"/>
-                                    <Path Data="F1M0,29.898L34.523,29.898 17.262,0z" Fill="#FF46DE46" UseLayoutRounding="False" Visibility="{Binding DataContext.pdprice, ConverterParameter=1, Converter={StaticResource signConverter}, ElementName=predictPage}">
-                                        <Path.RenderTransform>
-                                            <CompositeTransform ScaleY="-1"/>
-                                        </Path.RenderTransform>
-                                    </Path>
-                                    <Rectangle Fill="#FFD1D1D1" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="24" Visibility="{Binding DataContext.pdprice, ConverterParameter=0, Converter={StaticResource signConverter}, ElementName=predictPage}"/>
-                                </Grid>
-                                <TextBlock FontSize="120"  Text="{Binding DataContext.pdprice, Converter={StaticResource priceConverter}, ElementName=predictPage, StringFormat=\{0:N1\}}" TextAlignment="Center" Foreground="{Binding DataContext.pdprice, Converter={StaticResource colorConverter}, ElementName=predictPage}"/>
-                            </StackPanel>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <StackPanel Margin="5">
-                                    <Border Background="#FFEEEEEE" Padding="5,2">
-                                        <TextBlock Text="本周國際均價" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border BorderThickness="5,0,0,0" BorderBrush="#FFB2B2B2" Margin="3" Padding="3" Grid.Column="0" Grid.Row="0">
-                                            <TextBlock Text="布蘭特"/>
-                                        </Border>
-                                        <Border BorderThickness="5,0,0,0" BorderBrush="#FFB2B2B2" Margin="3" Padding="3" Grid.Column="0" Grid.Row="1">
-                                            <TextBlock Text="杜拜"/>
-                                        </Border>
-                                        <Border BorderThickness="5,0,0,0" BorderBrush="#FFB2B2B2" Margin="3" Padding="3" Grid.Column="0" Grid.Row="2">
-                                            <TextBlock Text="匯率"/>
-                                        </Border>
-                                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding DataContext.currentbrent, Converter={StaticResource priceConverter}, ElementName=predictPage}" HorizontalAlignment="Right" Margin="20,0,0,0" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding DataContext.currentdubai, Converter={StaticResource priceConverter}, ElementName=predictPage}" HorizontalAlignment="Right" Margin="20,0,0,0" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding DataContext.currentcurrency, Converter={StaticResource priceConverter}, ElementName=predictPage}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                    </Grid>
+                                        <Grid Height="40" Width="40" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Path Data="F1M0,29.898L34.523,29.898 17.262,0z" Fill="Red" UseLayoutRounding="False" Visibility="{Binding DataContext.pdprice, ConverterParameter=2, Converter={StaticResource signConverter}, ElementName=predictPage}"/>
+                                            <Path Data="F1M0,29.898L34.523,29.898 17.262,0z" Fill="#FF46DE46" UseLayoutRounding="False" Visibility="{Binding DataContext.pdprice, ConverterParameter=1, Converter={StaticResource signConverter}, ElementName=predictPage}">
+                                                <Path.RenderTransform>
+                                                    <CompositeTransform ScaleY="-1"/>
+                                                </Path.RenderTransform>
+                                            </Path>
+                                            <Rectangle Fill="#FFD1D1D1" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="24" Visibility="{Binding DataContext.pdprice, ConverterParameter=0, Converter={StaticResource signConverter}, ElementName=predictPage}"/>
+                                        </Grid>
+                                        <TextBlock FontSize="120"  Text="{Binding DataContext.pdprice, Converter={StaticResource priceConverter}, ElementName=predictPage, StringFormat=\{0:N1\}}" TextAlignment="Center" Foreground="{Binding DataContext.pdprice, Converter={StaticResource colorConverter}, ElementName=predictPage}"/>
+                                    </StackPanel>
                                 </StackPanel>
-                                <StackPanel Margin="5">
-                                    <Border Background="#FFEEEEEE" Padding="5,2">
-                                        <TextBlock Text="上周國際均價" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border BorderThickness="5,0,0,0" BorderBrush="#FFB2B2B2" Margin="3" Padding="3" Grid.Column="0" Grid.Row="0">
-                                            <TextBlock Text="布蘭特"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <StackPanel Margin="5">
+                                        <Border Background="#FFEEEEEE" Padding="5,2">
+                                            <TextBlock Text="本周國際均價" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
-                                        <Border BorderThickness="5,0,0,0" BorderBrush="#FFB2B2B2" Margin="3" Padding="3" Grid.Column="0" Grid.Row="1">
-                                            <TextBlock Text="杜拜"/>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border BorderThickness="5,0,0,0" BorderBrush="#FFB2B2B2" Margin="3" Padding="3" Grid.Column="0" Grid.Row="0">
+                                                <TextBlock Text="布蘭特"/>
+                                            </Border>
+                                            <Border BorderThickness="5,0,0,0" BorderBrush="#FFB2B2B2" Margin="3" Padding="3" Grid.Column="0" Grid.Row="1">
+                                                <TextBlock Text="杜拜"/>
+                                            </Border>
+                                            <Border BorderThickness="5,0,0,0" BorderBrush="#FFB2B2B2" Margin="3" Padding="3" Grid.Column="0" Grid.Row="2">
+                                                <TextBlock Text="匯率"/>
+                                            </Border>
+                                            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding DataContext.currentbrent, Converter={StaticResource priceConverter}, ElementName=predictPage}" HorizontalAlignment="Right" Margin="20,0,0,0" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding DataContext.currentdubai, Converter={StaticResource priceConverter}, ElementName=predictPage}" HorizontalAlignment="Right" Margin="20,0,0,0" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding DataContext.currentcurrency, Converter={StaticResource priceConverter}, ElementName=predictPage}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </StackPanel>
+                                    <StackPanel Margin="5">
+                                        <Border Background="#FFEEEEEE" Padding="5,2">
+                                            <TextBlock Text="上周國際均價" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
-                                        <Border BorderThickness="5,0,0,0" BorderBrush="#FFB2B2B2" Margin="3" Padding="3" Grid.Column="0" Grid.Row="2">
-                                            <TextBlock Text="匯率"/>
-                                        </Border>
-                                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding DataContext.pastbrent, Converter={StaticResource priceConverter}, ElementName=predictPage}" HorizontalAlignment="Right" Margin="20,0,0,0" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding DataContext.pastdubai, Converter={StaticResource priceConverter}, ElementName=predictPage}" HorizontalAlignment="Right" Margin="20,0,0,0" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding DataContext.pastcurrency, Converter={StaticResource priceConverter}, ElementName=predictPage}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                    </Grid>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border BorderThickness="5,0,0,0" BorderBrush="#FFB2B2B2" Margin="3" Padding="3" Grid.Column="0" Grid.Row="0">
+                                                <TextBlock Text="布蘭特"/>
+                                            </Border>
+                                            <Border BorderThickness="5,0,0,0" BorderBrush="#FFB2B2B2" Margin="3" Padding="3" Grid.Column="0" Grid.Row="1">
+                                                <TextBlock Text="杜拜"/>
+                                            </Border>
+                                            <Border BorderThickness="5,0,0,0" BorderBrush="#FFB2B2B2" Margin="3" Padding="3" Grid.Column="0" Grid.Row="2">
+                                                <TextBlock Text="匯率"/>
+                                            </Border>
+                                            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding DataContext.pastbrent, Converter={StaticResource priceConverter}, ElementName=predictPage}" HorizontalAlignment="Right" Margin="20,0,0,0" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding DataContext.pastdubai, Converter={StaticResource priceConverter}, ElementName=predictPage}" HorizontalAlignment="Right" Margin="20,0,0,0" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding DataContext.pastcurrency, Converter={StaticResource priceConverter}, ElementName=predictPage}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </StackPanel>
                                 </StackPanel>
+                                <TextBlock TextWrapping="Wrap" Text="公式：下周92價格=本周92價格+本周92價格×((本周杜拜均價×0.7+本周布蘭特均價×0.3)×本周匯率均價-上周國際油價（算法同本周）)÷上周國際油價×0.8" FontSize="16" Foreground="#FF515151" Margin="5,5,5,0"/>
+                                <TextBlock TextWrapping="Wrap" Text="本程式依照能源局公告之國際油價、匯率並依照中油浮動油價公式計算油價漲跌幅，若與中油最後參考鄰國油價等多重因素調整結果不同，一切依中油公司公告為準" FontSize="16" Margin="5" Foreground="#FF898989"/>
                             </StackPanel>
-                            <TextBlock TextWrapping="Wrap" Text="公式：下周92價格=本周92價格+本周92價格×((本周杜拜均價×0.7+本周布蘭特均價×0.3)×本周匯率均價-上周國際油價（算法同本周）)÷上周國際油價×0.8" FontSize="16" Foreground="#FF515151" Margin="5,5,5,0"/>
-                            <TextBlock TextWrapping="Wrap" Text="本程式依照能源局公告之國際油價、匯率並依照中油浮動油價公式計算油價漲跌幅，若與中油最後參考鄰國油價等多重因素調整結果不同，一切依中油公司公告為準" FontSize="16" Margin="5" Foreground="#FF898989"/>
                         </StackPanel>
-                        </ScrollViewer>
-                    </StackPanel>
+                    </ScrollViewer>
                 </Grid>
             </phone:PanoramaItem>
 

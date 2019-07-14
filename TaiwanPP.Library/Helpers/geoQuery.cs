@@ -31,7 +31,7 @@ namespace TaiwanPP.Library.Helpers
                     }
                     var httpClient = new HttpClient(handler);
                     httpClient.MaxResponseContentBufferSize = 256000;
-                    httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
+                    httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
                     Uri url = new Uri(Uri.EscapeUriString("http://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&sensor=false&language=zh-TW"));
                     return JsonConvert.DeserializeObject<GeoResponse>(await httpClient.GetStringAsync(url));
                 }

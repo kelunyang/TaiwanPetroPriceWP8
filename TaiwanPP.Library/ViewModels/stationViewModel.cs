@@ -873,7 +873,7 @@ namespace TaiwanPP.Library.ViewModels
                     }
                     var httpClient = new HttpClient(handler);
                     httpClient.MaxResponseContentBufferSize = 256000;
-                    httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
+                    httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
                     string aRespone = await httpClient.GetStringAsync(new Uri(Uri.EscapeUriString("http://www.fpcc.com.tw/tc/station_full.php?region=" + region + "&county=" + county)));
                     Regex pagereg = new Regex(@"pages(.+\n)+", RegexOptions.None);
                     Match pageMatch = pagereg.Match(aRespone);
@@ -926,7 +926,7 @@ namespace TaiwanPP.Library.ViewModels
                     }
                     var httpClient = new HttpClient(handler);
                     httpClient.MaxResponseContentBufferSize = 256000;
-                    httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
+                    httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
                     //HtmlDocument tHtmlDoc = new HtmlDocument();
                     string url = page != 0 ? "http://www.fpcc.com.tw/tc/station_full.php?region=" + region + "&county=" + county + "&page=" + page : "http://www.fpcc.com.tw/tc/station_full.php?region=" + region + "&county=" + county;
                     string aResponse = await httpClient.GetStringAsync(new Uri(Uri.EscapeUriString(url + "&nocache=" + DateTime.Now.Ticks)));
@@ -1004,7 +1004,7 @@ namespace TaiwanPP.Library.ViewModels
                                 selftype = 2;
                             }
                         }
-                        //System.Diagnostics.Debug.WriteLine("name:"+nameMatch.Value.Replace(">", "") + "/address:"+address+"/phone:"+Regex.Replace(phoneMatch.Value, @">|<", "")+"/latitude:"+latitude+"/longtitude:"+longitude+"/selftype:"+selftype+"/con:"+ contry+ "/time:"+time);
+                        Debug.WriteLine("name:"+nameMatch.Value.Replace(">", "") + "/address:"+address+"/phone:"+Regex.Replace(phoneMatch.Value, @">|<", "")+"/latitude:"+latitude+"/longtitude:"+longitude+"/selftype:"+selftype+"/con:"+ contry+ "/time:"+time);
                         fpccList.Add(new stationStorage()
                         {
                             name = nameMatch.Value.Replace(">", ""),
@@ -1059,7 +1059,8 @@ namespace TaiwanPP.Library.ViewModels
 
         private long GetOpenTime(string time)
         {
-            if (time == "24小時")
+            time = time.Replace("～", "~");
+            if (time == "24小時" || time == "00:00 - 24:00")
             {
                 return 0;
             } else if (time.Contains("暫停營業") || time.Contains("整修中") || time.Contains("停業中"))
@@ -1070,8 +1071,8 @@ namespace TaiwanPP.Library.ViewModels
             {
                 char sep = time.Contains("-") ? '-' : '~';
                 string[] starttime = time.Split(sep)[0].Split(':');
-                string shour = time.Split(sep)[0].Length == 4 ? time.Split(sep)[0].Substring(0, 2) : starttime[0];
-                string sminute = time.Split(sep)[0].Length == 4 ? time.Split(sep)[0].Substring(2, 2) : starttime[1];
+                string shour = time.Split(sep)[0].Length == 4 ? time.Split(sep)[0].Substring(0, 1) : starttime[0];
+                string sminute = time.Split(sep)[0].Length == 4 ? time.Split(sep)[0].Substring(3, 1) : starttime[1];
                 DateTime stime = new DateTime(1, 1, 1, Convert.ToInt32(shour), Convert.ToInt32(sminute), 0);
                 return stime.Ticks;
             }
@@ -1079,7 +1080,8 @@ namespace TaiwanPP.Library.ViewModels
 
         private long GetDurationTime(string time)
         {
-            if (time == "24小時")
+            time = time.Replace("～", "~");
+            if (time == "24小時" || time == "00:00 - 24:00")
             {
                 return 864000000000;
             } else if (time.Contains("暫停營業") || time.Contains("整修中") || time.Contains("停業中"))
@@ -1090,16 +1092,16 @@ namespace TaiwanPP.Library.ViewModels
             {
                 char sep = time.Contains("-") ? '-' : '~';
                 string[] starttime = time.Split(sep)[0].Split(':');
-                string shour = time.Split(sep)[0].Length == 4 ? time.Split(sep)[0].Substring(0, 2) : starttime[0];
-                string sminute = time.Split(sep)[0].Length == 4 ? time.Split(sep)[0].Substring(2, 2) : starttime[1];
+                string shour = time.Split(sep)[0].Length == 4 ? time.Split(sep)[0].Substring(0, 1) : starttime[0];
+                string sminute = time.Split(sep)[0].Length == 4 ? time.Split(sep)[0].Substring(3, 1) : starttime[1];
                 DateTime stime = new DateTime(1, 1, 1, Convert.ToInt32(shour), Convert.ToInt32(sminute), 0);
                 DateTime duration = DateTime.MinValue;
                 if (starttime.Length > 1)
                 {
                     string[] endtime = time.Split(sep)[1].Split(':');
-                    string dhour = time.Split(sep)[1].Length == 4 ? time.Split(sep)[1].Substring(0, 2) : endtime[0];
+                    string dhour = time.Split(sep)[1].Length == 4 ? time.Split(sep)[1].Substring(0, 1) : endtime[0];
                     dhour = dhour == "24" ? "0" : dhour;
-                    string dminute = time.Split(sep)[1].Length == 4 ? time.Split(sep)[1].Substring(2, 2) : endtime[1];
+                    string dminute = time.Split(sep)[1].Length == 4 ? time.Split(sep)[1].Substring(3, 1) : endtime[1];
                     duration = new DateTime(1, 1, 1, Convert.ToInt32(dhour), Convert.ToInt32(dminute), 0);
                 }
                 return duration.Subtract(stime).Ticks;

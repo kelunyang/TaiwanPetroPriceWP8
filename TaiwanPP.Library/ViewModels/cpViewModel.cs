@@ -39,7 +39,7 @@ namespace TaiwanPP.Library.ViewModels
         double _CPCdieselChange = double.NaN;
         double _FPCC95Change = double.NaN;
         double _FPCCdieselChange = double.NaN;
-        int _defaultPeriod = 0;
+        int _defaultPeriod = 3;
         bool _chartready = false;
         public List<priceStorage> save;
         public List<int> tiles;
@@ -55,6 +55,7 @@ namespace TaiwanPP.Library.ViewModels
             historicalPeriod.Add("最近一個月（資料庫存檔）");
             historicalPeriod.Add("半年");
             historicalPeriod.Add("一年");
+            historicalPeriod.Add("三年");
         }
         public int defaultPeroid
         {
@@ -519,7 +520,7 @@ namespace TaiwanPP.Library.ViewModels
         public void historicalPrice(double predictPrice, bool predictpause, string productid, IProgress<ProgressReport> messenger)
         {
             //System.Diagnostics.Debug.WriteLine(this.defaultPeroid);
-            long datelimit = this.defaultPeroid == 0 ? DateTime.Now.AddDays(-30).Ticks : this.defaultPeroid == 1 ? DateTime.Now.AddDays(-182).Ticks : DateTime.Now.AddDays(-365).Ticks;
+            long datelimit = this.defaultPeroid == 0 ? DateTime.Now.AddDays(-30).Ticks : this.defaultPeroid == 1 ? DateTime.Now.AddDays(-182).Ticks : this.defaultPeroid == 2 ? DateTime.Now.AddDays(-365).Ticks : DateTime.Now.AddDays(-1095).Ticks;
             chartready = false;
             messenger.Report(new ProgressReport() { progress = 0, progressMessage = "擷取歷史油價資料庫", display = true });
             int id = Convert.ToInt32(productid);
@@ -612,7 +613,7 @@ namespace TaiwanPP.Library.ViewModels
             {
                 try
                 {
-                    int fetchnumber = defaultPeroid == 0 ? 10 : defaultPeroid == 1 ? 25 : 50;
+                    int fetchnumber = defaultPeroid == 0 ? 10 : defaultPeroid == 1 ? 25 : defaultPeroid == 2 ? 50 : 150;
                     //List<AngleSharp.Dom.IElement> tAllNodes = new List<AngleSharp.Dom.IElement>();
                     var handler = new HttpClientHandler();
                     if (handler.SupportsAutomaticDecompression)
@@ -623,8 +624,8 @@ namespace TaiwanPP.Library.ViewModels
                     {
                         messenger.Report(new ProgressReport() { progress = 30, progressMessage = "開始下載油價公告", display = true });
                         httpClient.MaxResponseContentBufferSize = Int32.MaxValue;
-                        httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
-                        var byteData = await httpClient.GetByteArrayAsync(new Uri("https://www2.moeaboe.gov.tw/oil102/oil1022010/A01/A0108/allprices.asp?nocache=" + DateTime.Now.Ticks));
+                        httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
+                        var byteData = await httpClient.GetByteArrayAsync(new Uri("https://www2.moeaboe.gov.tw/oil102/oil2017/A01/A0108/allprices.asp?nocache=" + DateTime.Now.Ticks));
                         string data = Portable.Text.Encoding.GetEncoding(950).GetString(byteData);  //big5
                         //httpClient.Dispose();
                         RegexOptions opt = new RegexOptions();

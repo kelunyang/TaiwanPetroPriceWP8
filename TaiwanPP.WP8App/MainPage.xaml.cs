@@ -372,6 +372,7 @@ namespace TaiwanPP.WP8App
                             uienable = true;
                             await stvm.loadDB(DB_PATH);
                             if (autoupdate) await updateOnline(ppvm.runPredict);    //跳頁時不用重跑
+                            //MessageBox.Show("為了避免系統發生錯誤，暫時關閉啟動時更新加油站資訊、開發者更新的功能，如果你需要更新加油站，請自己按下螢幕正下方的更新按鈕","關於最近的一些奇怪錯誤",MessageBoxButton.OK);
                             //await dcvm.load(progress);
                             using (IsolatedStorageFileStream isf = new IsolatedStorageFileStream(XML_PATH, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, isoStore))
                             {
@@ -396,7 +397,7 @@ namespace TaiwanPP.WP8App
                                 }
                                 if (MessageBox.Show("背景執行程式似乎發生過錯誤，請問您是否想把錯誤回報給開發者？（回報與否都會自動消除這次的錯誤紀錄）","背景程式發生錯誤",MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                                 {
-                                    contactMail("錯誤訊息如下：" + errormsg + "，錯誤追蹤：" + errortrace);
+                                    contactMail("背景執行時發生錯誤，錯誤訊息如下：" + errormsg + "，錯誤追蹤：" + errortrace);
                                 }
                             }
                             if (executeStationQ) queryStation(false, false);
@@ -636,7 +637,7 @@ namespace TaiwanPP.WP8App
                 tileTask.Description = "定期抓取油價公告，更新動態磚，並在價格調整時發出提醒";
                 //if (ScheduledActionService.Find(tileTask.Name) != null) ScheduledActionService.Remove(tileTask.Name);
                 ScheduledActionService.Add(tileTask);
-                ScheduledActionService.LaunchForTest(tileTask.Name, TimeSpan.FromSeconds(10));    //test code, must be commented when released
+                //ScheduledActionService.LaunchForTest(tileTask.Name, TimeSpan.FromSeconds(10));    //test code, must be commented when released
             }
             catch
             {

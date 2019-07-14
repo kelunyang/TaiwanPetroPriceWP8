@@ -26,8 +26,7 @@ namespace TaiwanPP.Library.Helpers
         {
             try
             {
-                string cpcuri = "https://www2.moeaboe.gov.tw/oil102/oil1022010/A04/A0407/report.asp?MarkID=10001";
-                string fpccuri = "https://www2.moeaboe.gov.tw/oil102/oil1022010/A04/A0407/report.asp?MarkID=10002";
+                string stationurl = "https://www2.moeaboe.gov.tw/oil102/oil2017/A04/A0407/report.asp";
                 var handler = new HttpClientHandler();
                 if (handler.SupportsAutomaticDecompression)
                 {
@@ -35,54 +34,71 @@ namespace TaiwanPP.Library.Helpers
                 }
                 var httpClient = new HttpClient(handler);
                 httpClient.MaxResponseContentBufferSize = 2147483647;
-                httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
-                var byteData = await httpClient.GetByteArrayAsync(new Uri(Uri.EscapeUriString(cpcuri)));
-                string data = Portable.Text.Encoding.GetEncoding(950).GetString(byteData);
-                RegexOptions opt = RegexOptions.None;
-                Regex stat = new Regex(@"<(tr).+?>(.+\n){3}.+(a3)(.+\n){4}.+<\/(tr)>", opt);
-                MatchCollection stationlines = stat.Matches(data);
-                int count = 0;
-                foreach(Match m in stationlines)
+                httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
+                var parameters = new Dictionary<string, string> { { "MarkID", "10001" } };
+                var encodedContent = new FormUrlEncodedContent(parameters);
+
+                var response = await httpClient.PostAsync(stationurl, encodedContent).ConfigureAwait(false);
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    count++;
-                    if (count == 1) continue;
-                    stations.Add(generatePhoneData(m, 0));
+                    var byteData = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                    // Do something with response. Example get content:
+                    // var responseContent = await response.Content.ReadAsStringAsync ().ConfigureAwait (false);
+                    string data = Portable.Text.Encoding.GetEncoding(950).GetString(byteData);
+                    RegexOptions opt = RegexOptions.None;
+                    Regex stat = new Regex(@"<(tr).+?>(.+\n){3}.+(a3)(.+\n){4}.+<\/(tr)>", opt);
+                    MatchCollection stationlines = stat.Matches(data);
+                    int count = 0;
+                    foreach (Match m in stationlines)
+                    {
+                        count++;
+                        if (count == 1) continue;
+                        stations.Add(generatePhoneData(m, 0));
+                    }
+                    /*AngleSharp.Parser.Html.HtmlParser parser = new AngleSharp.Parser.Html.HtmlParser();
+                    AngleSharp.Dom.IDocument tHtmlDoc = parser.Parse(data);
+                    /*var ttable = from node in tHtmlDoc.DocumentNode.Descendants("table") where node.Attributes["summary"] != null select node;
+                    var tcell = (from node in ttable where node.Attributes["summary"].Value == "加油站品牌明細表，第一直行是序號，第二直行是編號，第三直行是查報名稱，第四直行是鄉鎮市區，第五直行是地址，第六直行是電話。" select node.Descendants("tr")).ToList();*/
+                    /*CPCstation = tHtmlDoc.QuerySelectorAll("table[summary='加油站品牌明細表，第一直行是序號，第二直行是編號，第三直行是查報名稱，第四直行是鄉鎮市區，第五直行是地址，第六直行是電話。'] tr[style='font-size:9pt;']").Where(node => node.ChildNodes.Count() == 13);
+                    /*var temp = (from node in tcell[0]
+                                where node.Attributes["style"] != null
+                                select node);
+                    CPCstation = (from node in temp
+                                  where node.Attributes["style"].Value == "font-size:9pt;" && node.ChildNodes.Count == 13
+                                  select node);*/
                 }
-                /*AngleSharp.Parser.Html.HtmlParser parser = new AngleSharp.Parser.Html.HtmlParser();
-                AngleSharp.Dom.IDocument tHtmlDoc = parser.Parse(data);
-                /*var ttable = from node in tHtmlDoc.DocumentNode.Descendants("table") where node.Attributes["summary"] != null select node;
-                var tcell = (from node in ttable where node.Attributes["summary"].Value == "加油站品牌明細表，第一直行是序號，第二直行是編號，第三直行是查報名稱，第四直行是鄉鎮市區，第五直行是地址，第六直行是電話。" select node.Descendants("tr")).ToList();*/
-                /*CPCstation = tHtmlDoc.QuerySelectorAll("table[summary='加油站品牌明細表，第一直行是序號，第二直行是編號，第三直行是查報名稱，第四直行是鄉鎮市區，第五直行是地址，第六直行是電話。'] tr[style='font-size:9pt;']").Where(node => node.ChildNodes.Count() == 13);
-                /*var temp = (from node in tcell[0]
-                            where node.Attributes["style"] != null
-                            select node);
-                CPCstation = (from node in temp
-                              where node.Attributes["style"].Value == "font-size:9pt;" && node.ChildNodes.Count == 13
-                              select node);*/
                 httpClient = new HttpClient(handler);
                 httpClient.MaxResponseContentBufferSize = 2147483647;
-                httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
-                byteData = await httpClient.GetByteArrayAsync(new Uri(Uri.EscapeUriString(fpccuri)));
-                data = Portable.Text.Encoding.GetEncoding(950).GetString(byteData);
-                stat = new Regex(@"<(tr).+?>(.+\n){3}.+(a3)(.+\n){4}.+<\/(tr)>", opt);
-                stationlines = stat.Matches(data);
-                count = 0;
-                foreach (Match m in stationlines)
+                httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
+                parameters = new Dictionary<string, string> { { "MarkID", "10002" } };
+                encodedContent = new FormUrlEncodedContent(parameters);
+
+                response = await httpClient.PostAsync(stationurl, encodedContent).ConfigureAwait(false);
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    count++;
-                    if (count == 1) continue;
-                    stations.Add(generatePhoneData(m, 1));
+                    var byteData = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                    var data = Portable.Text.Encoding.GetEncoding(950).GetString(byteData);
+                    RegexOptions opt = RegexOptions.None;
+                    var stat = new Regex(@"<(tr).+?>(.+\n){3}.+(a3)(.+\n){4}.+<\/(tr)>", opt);
+                    var stationlines = stat.Matches(data);
+                    var count = 0;
+                    foreach (Match m in stationlines)
+                    {
+                        count++;
+                        if (count == 1) continue;
+                        stations.Add(generatePhoneData(m, 1));
+                    }
+                    /*tHtmlDoc = await BrowsingContext.New(config).OpenAsync(m => m.Content(data));
+                    FPCCstation = tHtmlDoc.QuerySelectorAll("table[summary='加油站品牌明細表，第一直行是序號，第二直行是編號，第三直行是查報名稱，第四直行是鄉鎮市區，第五直行是地址，第六直行是電話。'] tr[style='font-size:9pt;']").Where(node => node.ChildNodes.Count() == 13);
+                    /*ttable = from node in tHtmlDoc.DocumentNode.Descendants("table") where node.Attributes["summary"] != null select node;
+                    tcell = (from node in ttable where node.Attributes["summary"].Value == "加油站品牌明細表，第一直行是序號，第二直行是編號，第三直行是查報名稱，第四直行是鄉鎮市區，第五直行是地址，第六直行是電話。" select node.Descendants("tr")).ToList();
+                    temp = (from node in tcell[0]
+                            where node.Attributes["style"] != null
+                            select node);
+                    FPCCstation = (from node in temp
+                                   where node.Attributes["style"].Value == "font-size:9pt;" && node.ChildNodes.Count == 13
+                                   select node);*/
                 }
-                /*tHtmlDoc = await BrowsingContext.New(config).OpenAsync(m => m.Content(data));
-                FPCCstation = tHtmlDoc.QuerySelectorAll("table[summary='加油站品牌明細表，第一直行是序號，第二直行是編號，第三直行是查報名稱，第四直行是鄉鎮市區，第五直行是地址，第六直行是電話。'] tr[style='font-size:9pt;']").Where(node => node.ChildNodes.Count() == 13);
-                /*ttable = from node in tHtmlDoc.DocumentNode.Descendants("table") where node.Attributes["summary"] != null select node;
-                tcell = (from node in ttable where node.Attributes["summary"].Value == "加油站品牌明細表，第一直行是序號，第二直行是編號，第三直行是查報名稱，第四直行是鄉鎮市區，第五直行是地址，第六直行是電話。" select node.Descendants("tr")).ToList();
-                temp = (from node in tcell[0]
-                        where node.Attributes["style"] != null
-                        select node);
-                FPCCstation = (from node in temp
-                               where node.Attributes["style"].Value == "font-size:9pt;" && node.ChildNodes.Count == 13
-                               select node);*/
             }
             catch
             {

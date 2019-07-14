@@ -20,7 +20,7 @@ namespace TaiwanPP.Library.ViewModels
         dcModel dc;
         HttpClient httpClient;
         bool connectivity = true;
-        string urlstr = "https://bitbucket.org/api/1.0/repositories/kelunyang/taiwan-petrol-price/wiki/Home";
+        string urlstr = "https://raw.githubusercontent.com/kelunyang/TaiwanPetroUWP/master/ann.md";
         public ObservableCollection<feedItem> feedlist { set; get; }
         public dcViewModel()
         {
@@ -45,21 +45,28 @@ namespace TaiwanPP.Library.ViewModels
                                                          DecompressionMethods.Deflate;
                     }
                     httpClient = new HttpClient(handler);
-                    httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                    httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/plain"));
                     httpClient.MaxResponseContentBufferSize = 256000;
-                    httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
+                    httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
                     Uri url = new Uri(Uri.EscapeUriString(urlstr));
-                    bitbucketPage obj = JsonConvert.DeserializeObject<bitbucketPage>(await httpClient.GetStringAsync(url));
-                    IEnumerable<string> data = from s in obj.data.Split('\n') where s.Contains("1.") || s.Contains("2.") select s;
-                    foreach (string s in data)
+                    var ct = Regex.Match(await httpClient.GetStringAsync(url), @"\*(.*\s*)*");
+                    string[] content = Regex.Split(ct.Value, @"## 其他公告");
+                    foreach(string s in content)
                     {
-                        var da = Regex.Match(s, @"\*(\d*\/\d*\/\d*)\*");
-                        string date = da.Value.Replace("*", "");
-                        var li = Regex.Match(s, @"\wiki\/\S*\)");
-                        string link = li.Value.Replace(")", "");
-                        var ti = Regex.Match(s, @"\[\S*\]");
-                        string title = ti.Value.Replace("[", "").Replace("]", "");
-                        dc.items.Add(new feedItem() { pubDate = DateTime.Parse(date), title = title, link = link, type = s.Contains("1.") ? 1 : 2 });
+                        string[] item = Regex.Split(s, @"---");
+                        foreach(string i in item)
+                        {
+                            if (Regex.Match(i, @"\*(\d*\/\d*\/\d*)\*").Success)
+                            {
+                                var da = Regex.Match(i, @"\*(\d*\/\d*\/\d*)\*");
+                                string date = da.Value.Replace("*", "");
+                                var mc = Regex.Matches(i, @">\s\d.\s\S*");
+                                string cont = String.Join("\n", mc.OfType<Match>().ToList());
+                                var ti = Regex.Match(i, @"_\S*_");
+                                string title = ti.Value.Replace("_", "");
+                                dc.items.Add(new feedItem() { pubDate = DateTime.Parse(date), title = title, link = "", content = cont, type = s.Contains("1.") ? 1 : 2 });
+                            }
+                        }
                     }
                     messenger.Report(new ProgressReport() { progress = 100, progressMessage = "開發者公告清單擷取完成", display = true });
                 }
@@ -84,19 +91,6 @@ namespace TaiwanPP.Library.ViewModels
                     messenger.Report(new ProgressReport() { progress = 100, progressMessage = "開發者公告內容擷取中", display = true });
                     foreach (feedItem fi in list)
                     {
-                        string urlstr = "https://bitbucket.org/api/1.0/repositories/kelunyang/taiwan-petrol-price/" + fi.link;
-                        HttpClientHandler handler = new HttpClientHandler();
-                        if (handler.SupportsAutomaticDecompression)
-                        {
-                            handler.AutomaticDecompression = DecompressionMethods.GZip |
-                                                             DecompressionMethods.Deflate;
-                        }
-                        var httpClient = new HttpClient(handler);
-                        httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                        httpClient.MaxResponseContentBufferSize = 256000;
-                        httpClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
-                        bitbucketPage obj = JsonConvert.DeserializeObject<bitbucketPage>(await httpClient.GetStringAsync(new Uri(urlstr)));
-                        fi.content = obj.data;
                         feedlist.Add(fi);
                     }
                 }

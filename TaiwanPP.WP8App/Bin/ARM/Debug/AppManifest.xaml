@@ -23,7 +23,6 @@
     <AssemblyPart x:Name="TaiwanPP.Library" Source="TaiwanPP.Library.dll" />
     <AssemblyPart x:Name="TaiwanPP.ScheduleAgent" Source="TaiwanPP.ScheduleAgent.dll" />
     <AssemblyPart x:Name="TaiwanPP.TileMaker" Source="TaiwanPP.TileMaker.dll" />
-    <AssemblyPart x:Name="AngleSharp" Source="AngleSharp.dll" />
     <AssemblyPart x:Name="PCLWebUtility" Source="PCLWebUtility.dll" />
     <AssemblyPart x:Name="Portable.Text.Encoding" Source="Portable.Text.Encoding.dll" />
     <AssemblyPart x:Name="Newtonsoft.Json" Source="Newtonsoft.Json.dll" />
